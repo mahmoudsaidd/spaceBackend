@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const paymentSchema= new mongoose.Schema({
     
     
-     mehod: {type: String,
+     method: {type: String,
 
     enum:["online", "on premises"],
     required: true
@@ -16,3 +16,6 @@ const paymentSchema= new mongoose.Schema({
 }}
 
 )
+
+
+export const paymentModel = mongoose.model('payment', paymentSchema);

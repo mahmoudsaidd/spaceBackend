@@ -1,26 +1,30 @@
-import * as dotenv from 'dotenv';
+import * as dotenv from 'dotenv'
 dotenv.config();
 
 import express from 'express';
-import connectDB from './Database/connection.js';
-import * as allRoutes from './modules/index.route.js'
+import {globalError} from './src/services/asyncHandler.js'
+import * as indexRouter from './src/modules/index.route.js'
+import connection from './Database/connection.js';
 const app=express();
 
 
 
+
 app.use(express.json());
- //app.use(`${process.env.baseURL}user`,allRoutes.userRouter)
- app.use(`${process.env.baseURL}auth`,allRoutes.authRouter)
-// app.use(`${process.env.baseURL}post`,allRoutes.postRouter)
+ app.use(`${process.env.baseURL}user`,indexRouter.userRouter)
+ app.use(`${process.env.baseURL}auth`,indexRouter.authRouter)
 
 
 
-app.get('*',(req,res)=>{
-    res.json({message:"Invalid Api"})
-     
-})
 
-connectDB()
+//  app.use("*", (req, res, next) => {
+//     res.send("In-valid Routing Plz check url  or  method");
+//   });
+
+app.use(globalError);
+
+connection()
 app.listen(3000,()=>{
     console.log("Server is running");
 })
+
