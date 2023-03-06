@@ -1,9 +1,9 @@
 import { Router } from "express";
-import * as workinggSpaceController from './controller/workingSpace.controller.js'
+import * as workSpaceController from './controller/workingSpace.controller.js'
 const router= Router();
 
 
-router.post('/addWS',workinggSpaceController.addWS)
+router.post('/addWS',workSpaceController.addWS)
 
 
 
