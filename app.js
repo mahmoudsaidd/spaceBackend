@@ -13,7 +13,7 @@ const app=express();
 app.use(express.json());
  app.use(`${process.env.baseURL}user`,indexRouter.userRouter)
  app.use(`${process.env.baseURL}auth`,indexRouter.authRouter)
-
+ app.use(`${process.env.baseURL}workingSpace`,indexRouter.workingSpaceRouter)
 
 
 

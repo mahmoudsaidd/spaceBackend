@@ -47,10 +47,9 @@ const workingSpaceScehma = new mongoose.Schema({
     type: String,
     required: true
   },
-  images: [{
+  images: {
     type: String,
-    required: true
-  }],
+  },
   schedule: [scheduleSchema],
   feedback: [feedbackSchema],
   owner: {
