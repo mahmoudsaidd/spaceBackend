@@ -46,3 +46,25 @@ export const updateBookingInfo=asyncHandler(async(req,res,next)=>{
 
 })
 
+
+export const searchByRate= asyncHandler(async(req, res, next) =>{
+    const rate = parseInt(req.params.rate);
+    const results = await workingSpaceModel.aggregate([
+        { $unwind: "$feedback" },
+        { $match: { "feedback.rate": { $gte: rate } } },
+        {
+          $group: {
+            _id: "$_id",
+            name: { $first: "$name" },
+            images: { $first: "$images" },
+            schedule: { $first: "$schedule" },
+            feedback: { $push: "$feedback" },
+            owner: { $first: "$owner" },
+            location: { $first: "$location" }
+          }
+        }
+      ])
+    res.status(200).json(results)
+    
+    });
+
