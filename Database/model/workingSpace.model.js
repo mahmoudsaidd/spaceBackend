@@ -70,6 +70,7 @@ const workingSpaceSchema = new mongoose.Schema({
     type: [String],
     required: [true, "Workspace images are required"],
   },
+  publicImageIds: [String],
   schedule: [scheduleSchema],
   feedback: [feedbackSchema],
   contact: [contactSchema],
