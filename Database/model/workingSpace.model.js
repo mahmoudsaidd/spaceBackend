@@ -42,16 +42,38 @@ const locationSchema = new mongoose.Schema({
   }
 });
 
-const workingSpaceScehma = new mongoose.Schema({
+const contactSchema = new mongoose.Schema({
+  phone: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  socialMedia: {
+    type: String,
+    required: true
+  }
+});
+
+const workingSpaceSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
   },
-  images: {
+  description:{
     type: String,
+    required: true
+  },
+  images: {
+    type: [String],
+    required: [true, "Workspace images are required"],
   },
   schedule: [scheduleSchema],
   feedback: [feedbackSchema],
+  contact: [contactSchema],
+
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',  //3ayzeen lesa ne3mel validation eno lazem yekon owner
@@ -62,4 +84,4 @@ const workingSpaceScehma = new mongoose.Schema({
     timestamps: true,
   });
 
- export const workingSpaceModel = mongoose.model('workingSpace', workingSpaceScehma);
+ export const workingSpaceModel = mongoose.model('workingSpace', workingSpaceSchema);

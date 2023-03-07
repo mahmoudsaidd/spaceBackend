@@ -1,12 +1,9 @@
-
-
-//Owner
-// import { workingSpace } from "../../../Database/model/workingSpace.model.js";
-// import { insertMany } from "../../../../Database/DBMethods.js";
-import { findByIdAndUpdate } from "../../../../Database/DBMethods.js";
+import { create, findByIdAndUpdate } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 
+
+//Owner
 //Handled by backend??
 export const hostRequest=asyncHandler(async(req,res,next)=>{
     // res.redirect('')
@@ -14,25 +11,17 @@ export const hostRequest=asyncHandler(async(req,res,next)=>{
 })
 
 
-
 export const fillForm=asyncHandler(async(req,res,next)=>{
-let {name,address}=req.body
-// let workspace=new workspaceModel({name,address})
-// let savedWorkspace=await workspace.save();
-const addedWorkspce=await insertMany({model:workingSpaceModel,data:{name,address}})
-res.json({message:"Done",addedWorkspce})
+// let {name,address}=req.body
+
+const addedWorkspace=await create({model:workingSpaceModel,data:req.body})
+res.json({message:"Done",addedWorkspace})
 })
 
 
 
 
 //admin validation
-
-
-
-
-//Login==auth
-
 
 
 
@@ -47,6 +36,8 @@ export const updateBookingInfo=asyncHandler(async(req,res,next)=>{
 })
 
 
+
+//Client
 export const searchByRate= asyncHandler(async(req, res, next) =>{
     const rate = parseInt(req.params.rate);
     const results = await workingSpaceModel.aggregate([
