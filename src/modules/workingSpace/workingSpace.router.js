@@ -4,7 +4,7 @@ const router= Router();
 
 
 router.post('/addWS',workSpaceController.addWS)
-
-
+router.get('/getBookingHistoryToWs/:WSid',workSpaceController.getBookingsForWorkingSpace)
+router.post('/addRoom',workSpaceController.addRoom)
 
 export default router;

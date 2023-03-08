@@ -6,7 +6,7 @@ import { endPoints } from "./user.endpoint.js";
 const router= Router();
 
 //Owner
-router.get('/hostRequest',userController.hostRequest)
+// router.get('/hostRequest',userController.hostRequest)
 router.post('/fillForm',auth(endPoints.fillForm),myMulter(fileValidation.image).array("image",7),HME,userController.fillForm)
 router.put('/updateBookingInfo/:bookingId',userController.updateBookingInfo)
 router.put('/updateWorkspaceInfo/:workspaceId',userController.updateWorkspaceInfo)

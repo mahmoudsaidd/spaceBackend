@@ -80,6 +80,11 @@ const workingSpaceSchema = new mongoose.Schema({
     ref: 'user',  //3ayzeen lesa ne3mel validation eno lazem yekon owner
     required: true
   },
+  // rooms: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'room',  
+  //   required: true
+  // }],
   location: locationSchema
 }, {
     timestamps: true,

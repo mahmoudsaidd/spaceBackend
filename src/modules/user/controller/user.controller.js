@@ -7,12 +7,6 @@ import cloudinary from "../../../services/cloudinary.js";
 
 
 //Owner
-//Handled by backend??
-export const hostRequest=asyncHandler(async(req,res,next)=>{
-    // res.redirect('')
-    res.json({message:"hstwtw"})
-})
-
 
 export const fillForm=asyncHandler(async(req,res,next)=>{
 // let {name,address}=req.body
@@ -64,6 +58,16 @@ export const updateWorkspaceInfo=asyncHandler(async(req,res,next)=>{
 
 
 })
+
+//add Available Times By Owners
+
+
+
+
+
+
+
+
 //addOffers
 //modifyOffers
 //ReportUser
