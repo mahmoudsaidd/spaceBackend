@@ -1,5 +1,6 @@
-import { create, findByIdAndUpdate } from "../../../../Database/DBMethods.js";
+import { create, findById, findByIdAndUpdate } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
+import { userModel } from "../../../../Database/model/user.model.js";
 import { workingSpaceModel } from "../../../../Database/model/workingSpace.model.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
@@ -44,17 +45,29 @@ res.json({message:"Done",addedWorkspace})
 
 
 
-//modify boooking info
+//modify booking info
 export const updateBookingInfo=asyncHandler(async(req,res,next)=>{
    let {bookingId}=req.params
-    let {price}=req.body;
-    let updatingBookingInfo=await findByIdAndUpdate({model:bookingModel,condition:{_id:bookingId},data:price})
+    let {price,duration,time,fees,promoCode}=req.body;
+    let updatingBookingInfo=await findByIdAndUpdate({model:bookingModel,condition:{_id:bookingId},data:req.body,options:{new:true}})
     res.status(200).json({ message: "Updated", updatingBookingInfo });
 
 
 })
 
 //modify workspaceInfo
+export const updateWorkspaceInfo=asyncHandler(async(req,res,next)=>{
+  let {workspaceId}=req.params
+   let {phone}=req.body;
+   let updatedWorkspaceInfo=await findByIdAndUpdate({model:workingSpaceModel,condition:{_id:workspaceId},data:req.body,options:{new:true}})
+   res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
+
+
+})
+//addOffers
+//modifyOffers
+//ReportUser
+
 
 
 
@@ -80,6 +93,9 @@ export const searchByRate= asyncHandler(async(req, res, next) =>{
     res.status(200).json(results)
     
     });
+
+
+  //Admin  
     //get client account  {admin}
 export const getClientAccount = asyncHandler(async (req, res, next) => {
   const user = await findById({ model: userModel, id: req.currentUserID });
@@ -93,7 +109,7 @@ export const getClientAccount = asyncHandler(async (req, res, next) => {
 
 //delete client account {admin}
 export const deleteClientAccount = asyncHandler(async (req, res, next) => {
-  const deletedUser = await findByIdAndDelete({ model: userModel, condition: { id: req.currentUserID } });
+  const deletedUser = await findByIdAndDelete({ model:userModel, condition: { id: req.currentUserID } });
   if (deletedUser) {
       res.json({ message: "Done", deletedUser });
   } else {

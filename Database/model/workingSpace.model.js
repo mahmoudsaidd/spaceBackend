@@ -73,7 +73,7 @@ const workingSpaceSchema = new mongoose.Schema({
   publicImageIds: [String],
   schedule: [scheduleSchema],
   feedback: [feedbackSchema],
-  contact: [contactSchema],
+  contact: contactSchema,
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,

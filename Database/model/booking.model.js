@@ -6,7 +6,7 @@ const bookingSchema = new mongoose.Schema({
   duration: { type: Number, required: true }, //3ayzeen neshof data type aw function lel duration gher number de
   time: { type: Date, required: true },
   fees: { type: Number },
-  promocode: { type: String },
+  promoCode: { type: String },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true }
 });
 
