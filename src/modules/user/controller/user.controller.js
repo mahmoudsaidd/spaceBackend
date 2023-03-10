@@ -1,4 +1,4 @@
-import { create, findById, findByIdAndUpdate } from "../../../../Database/DBMethods.js";
+import { create, findById, findByIdAndUpdate, findOneAndUpdate } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { userModel } from "../../../../Database/model/user.model.js";
 import { workingSpaceModel } from "../../../../Database/model/workingSpace.model.js";
@@ -8,7 +8,7 @@ import cloudinary from "../../../services/cloudinary.js";
 
 //Owner
 
-export const fillForm=asyncHandler(async(req,res,next)=>{
+export const addWsByFillForm=asyncHandler(async(req,res,next)=>{
 // let {name,address}=req.body
 if(!req.files?.length){
   next(new Error("You have to add workspace images",{cause:400}))
@@ -25,10 +25,15 @@ if(!req.files?.length){
   }
   req.body.images=imagesURLs
   req.body.publicImageIds = imagesIds;
+  req.body.ownerId=req.user._id
 
 
 }
-const addedWorkspace=await create({model:workingSpaceModel,data:req.body})
+const addedWorkspace=await create({model:workingSpaceModel,
+  data:
+  req.body
+})
+// const updateRole=await findOneAndUpdate({model:userModel,data:{role:Owner}})
 res.json({message:"Done",addedWorkspace})
 })
 

@@ -8,7 +8,11 @@ const bookingSchema = new mongoose.Schema({
   time: { type: Date, required: true },
   fees: { type: Number },
   promoCode: { type: String },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true }
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+  dateCreated: {
+    type: Date,
+    default: Date.now
+}
 });
 
  export const bookingModel = mongoose.model('booking', bookingSchema);
