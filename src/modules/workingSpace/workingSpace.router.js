@@ -6,6 +6,5 @@ const router= Router();
 
 router.get('/getWsRooms',workSpaceController.getWsRooms)
 router.get('/getAllWorkSpaces',workSpaceController.getAllWorkSpaces)
-// router.get('/getBookingHistoryToWs/:WSid',workSpaceController.getBookingsForWorkingSpace)
 
 export default router;

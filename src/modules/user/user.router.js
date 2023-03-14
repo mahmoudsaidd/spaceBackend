@@ -8,7 +8,6 @@ const router= Router();
 //Owner
 // router.get('/hostRequest',userController.hostRequest)
 router.post('/addWsByFillForm',auth(endPoints.addWsByFillForm),myMulter(fileValidation.image).array("image",7),HME,userController.addWsByFillForm)
-router.put('/updateBookingInfo/:bookingId',userController.updateBookingInfo)
 router.put('/updateWorkspaceInfo/:workspaceId',userController.updateWorkspaceInfo)
 
 //Client

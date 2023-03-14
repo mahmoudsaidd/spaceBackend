@@ -45,16 +45,6 @@ res.json({message:"Done",addedWorkspace})
 
 
 
-//modify booking info
-export const updateBookingInfo=asyncHandler(async(req,res,next)=>{
-   let {bookingId}=req.params
-    let {price,duration,time,fees,promoCode}=req.body;
-    let updatingBookingInfo=await findByIdAndUpdate({model:bookingModel,condition:{_id:bookingId},data:req.body,options:{new:true}})
-    res.status(200).json({ message: "Updated", updatingBookingInfo });
-
-
-})
-
 //modify workspaceInfo
 export const updateWorkspaceInfo=asyncHandler(async(req,res,next)=>{
   let {workspaceId}=req.params

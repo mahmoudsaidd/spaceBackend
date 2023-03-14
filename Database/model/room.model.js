@@ -5,7 +5,7 @@ const roomSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  number:{
+  roomNumber:{
     type: String,
     // required: [true, 'Room number is required']
   },
@@ -16,6 +16,26 @@ const roomSchema = new mongoose.Schema({
   capacity: {
     type: Number,
     // required: true
+  },
+  Amenities:{
+    //Equipments
+    scanner:{type:Boolean,default:false},
+    microphone:{type:Boolean,default:false},
+    printer:{type:Boolean,default:false},
+    smartTv:{type:Boolean,default:false},
+    computer:{type:Boolean,default:false},
+    monitor:{type:Boolean,default:false},
+    projectors:{type:Boolean,default:false},
+    //services
+    wifi:{type:Boolean,default:false},
+    heating:{type:Boolean,default:false},
+    airConditioning:{type:Boolean,default:false},
+    //seating
+    desk:{type:Boolean,default:false},
+    chairs:{type:Boolean,default:false},
+
+
+
   },
   type: {
     type: String, // aw momken nekhaliha enums zay desk w room w shared space w keda

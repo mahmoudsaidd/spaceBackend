@@ -29,11 +29,8 @@ export const getWsRooms=asyncHandler(async(req,res,next)=>{
 })
 
 
-export const getBookingHistoryToWs=asyncHandler(async(req,res,next)=>{
-    let{workspaceId}=req.params
-    // const History=await findById({model:workingSpaceModel,id:workspaceId,select:'Bookings',populate:'Bookings'})
-    res.status(200).json({message:"Done",History})
-})
+
+
     
 
 

@@ -82,6 +82,7 @@ const workingSpaceSchema = new mongoose.Schema(
     schedule: [scheduleSchema],
     feedback: [feedbackSchema],
     contact: contactSchema,
+    location: locationSchema,
 
 
     dateCreated: {
@@ -91,13 +92,13 @@ const workingSpaceSchema = new mongoose.Schema(
     ownerId: 
     { type:mongoose.Schema.ObjectId,
       ref: 'user'},
-    // rooms: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "room",
-    //   },
-    // ],
-    location: locationSchema,
+
+      // ////
+      // Bookings: 
+      // { type:mongoose.Schema.ObjectId,
+      //   ref: 'booking'},
+   
+
   },
   {
     timestamps: true,
