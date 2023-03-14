@@ -3,57 +3,30 @@ import {create, find, findById } from "../../../../Database/DBMethods.js";
 import { workingSpaceModel } from "../../../../Database/model/workingSpace.model.js";
 import { roomModel } from "../../../../Database/model/room.model.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
-import cloudinary from "../../../services/cloudinary.js";
 
 // workingspace/room/booking
 
 
 // get a list of ws from db
-// export const getWorkSpaces=asyncHandler(async(req,res,next)=>{
-//     let workSpace=await find({model:workingSpaceModel})
-//     res.status(200).json({message:"Done",workSpace})
+export const getAllWorkSpaces=asyncHandler(async(req,res,next)=>{
+    let workSpace=await find({model:workingSpaceModel})
+    res.status(200).json({message:"Done",workSpace})
 
-// })
+})
 
 
-// export const addWS= asyncHandler(async (req, res, next) => {
-//     if (!req.files?.length) {
-//         next(new Error("You have to add images", { cause: 400 }));
-//       } else {
-//         let imagesURLs = [];
-//         let imagesIds = [];
-//         for (const file of req.files) {
-//           let { secure_url, public_id } = await cloudinary.uploader.upload(
-//             file.path,
-//             { folder: "Workspaces" }
-//           );
-//           imagesURLs.push(secure_url);
-//           imagesIds.push(public_id);
-//         }
-//         req.body.images = imagesURLs;
-//         req.body.publicImageIds = imagesIds;
-//         let workspace=await create({model:workingSpaceModel,
-//             data:{
-//                 images: secure_url,
-//                 owner: req.user._id,
-//                 publicImageId: public_id,
-//             }
-//         })
-//         if (!workspace) {
-//             for (const id of imagesIds) {
-//             await cloudinary.uploader.destroy(id);
-//             }
-//             next(new Error("Error when insert to DB", { cause: 400 }));
-//         } else {
-//             res.status(201).json({ message: "Created", workspace });
-//         }
-//             }
 
-//     const savedWs= await create({model:workingSpaceModel, data:req.body});
-//     res.json({message:"Done",savedWs})
-    
-//     })
-
+export const getWsRooms=asyncHandler(async(req,res,next)=>{
+    const cursor = await workingSpaceModel.find().cursor();
+    let allWorkspaces=[]
+    for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {
+    let room=await find({model:roomModel,condition:{workspaceId:doc._id}})
+    let newObj= doc.toObject()  // doc heya kol ws 3ndi 7wltaha l newObj 3shan hea json , wl newObj da b2a el array bta3 el room el 7b3to lel ws
+    newObj.room=room
+    allWorkspaces.push(newObj);
+    }
+    res.json({message:"Done",allWorkspaces})
+})
 
 
 export const getBookingHistoryToWs=asyncHandler(async(req,res,next)=>{

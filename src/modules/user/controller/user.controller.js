@@ -7,9 +7,7 @@ import cloudinary from "../../../services/cloudinary.js";
 
 
 //Owner
-
 export const addWsByFillForm=asyncHandler(async(req,res,next)=>{
-// let {name,address}=req.body
 if(!req.files?.length){
   next(new Error("You have to add workspace images",{cause:400}))
 }else{
@@ -33,7 +31,10 @@ const addedWorkspace=await create({model:workingSpaceModel,
   data:
   req.body
 })
-// const updateRole=await findOneAndUpdate({model:userModel,data:{role:Owner}})
+// const updated=await findOneAndUpdate({model:userModel,
+//   condition:{_id:ownerId,role:User},
+//   data:{role:Owner}
+// })
 res.json({message:"Done",addedWorkspace})
 })
 

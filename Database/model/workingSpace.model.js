@@ -91,12 +91,12 @@ const workingSpaceSchema = new mongoose.Schema(
     ownerId: 
     { type:mongoose.Schema.ObjectId,
       ref: 'user'},
-    rooms: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "room",
-      },
-    ],
+    // rooms: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "room",
+    //   },
+    // ],
     location: locationSchema,
   },
   {

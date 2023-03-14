@@ -7,7 +7,7 @@ const roomSchema = new mongoose.Schema({
   },
   number:{
     type: String,
-    required: [true, 'Room number is required']
+    // required: [true, 'Room number is required']
   },
   isBooked: {
     type: Boolean,
@@ -15,24 +15,24 @@ const roomSchema = new mongoose.Schema({
   },
   capacity: {
     type: Number,
-    required: true
+    // required: true
   },
   type: {
     type: String, // aw momken nekhaliha enums zay desk w room w shared space w keda
-    required: [true, 'Please specify room type']
+    // required: [true, 'Please specify room type']
   },
   roomImages: [{
     type: String,
-    required: true
+    // required: true
   }],
   dateCreated: {
     type: Date,
     default: Date.now
-}
-  // workingSpace: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'workingSpace'
-  // }
+},
+  workspaceId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'workingSpace'
+  }
 });
 
 export const roomModel = mongoose.model('room', roomSchema);
