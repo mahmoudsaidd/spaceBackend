@@ -167,7 +167,7 @@ export const sendCode = async (req, res) => {
 };
 
 export const forgetPassword = asyncHandler(async (req, res) => {
-  let { OTPCode, email, password } = req.body;
+  let { OTPCode, email, password} = req.body;
   if (!OTPCode) {
     res.json({ message: "Code is not valid" });
   } else {

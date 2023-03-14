@@ -24,5 +24,6 @@ export const signInSchema={
         .required().messages({
           "string.pattern.base":"Not matching pattern"
         }),
+        cPassword: joi.string().valid(joi.ref("password")).required(),
     })
 }
