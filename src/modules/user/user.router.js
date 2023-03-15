@@ -12,14 +12,8 @@ router.put('/updateWorkspaceInfo/:workspaceId',userController.updateWorkspaceInf
 
 //Client
 router.get('/searchByRate/:rate', userController.searchByRate)
-router.get('/getClientAccount',auth(),userController.getClientAccount)
-router.delete('/deleteClientAccount',userController.deleteClientAccount)
-
 
 //Admin
-router.get('/getClientAccountByAdmin/:userId',auth(endPoints.getClientAccount),userController.getClientAccount)
-router.delete('/deleteClientAccountByAdmin/:userId',auth(endPoints.deleteClientAccount),userController.deleteClientAccount)
-router.get('/getWorkSpaceByAdmin',auth(endPoints.deleteWorkSpace),userController.getWorkSpace)
-router.delete('/deleteWorkSpaceByAdmin',auth(endPoints.deleteWorkSpace),userController.deleteWorkSpace)
-
+router.get('/getClientAccount',auth(),userController.getClientAccount)
+router.delete('/deleteClientAccount',userController.deleteClientAccount)
 export default router;
