@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema(
     BuildingNumber:String,
     age: Date,
     OTPCode:String,
-    isConfirmed: {
+    confirmEmail: {
       type: Boolean,
       default: false,
     },

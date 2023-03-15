@@ -62,23 +62,22 @@ export const signUp = asyncHandler(async (req, res, next) => {
 
 export const confirmEmail = asyncHandler(async (req, res, next) => {
   let { token } = req.params;
-  let decoded = jwt.verify(token, process.env.emailToken);
-  if (!decoded && !decoded.id) {
+  let decoded = jwt.verify (token, process.env.emailToken);
+   if (!decoded && !decoded.id) {
     next(new Error("Invalid data token", { cause: 400 }));
   } else {
-    let updatedUser = await findOneAndUpdate({
-      model: userModel,
-      condition: { _id: decoded.id, confirmEmail: false },
-      data: { confirmEmail: true },
-      options: { new: true },
-    });
-    if (updatedUser) {
-      next(new Error("Confirmed", { cause: 200 }));
-    } else {
-      next(new Error("Invalid token data", { cause: 400 }));
+    let updatedUser=await findOneAndUpdate({
+      model:userModel,
+      condition:{_id:decoded.id,confirmEmail:false},
+      data:{confirmEmail:true},
+      options:{new:true}
+    })
+    if(updatedUser){
+      next (new Error("Confirmed",{cause:200}))
+    }else{
+      next(new Error("Invalid token data confirmmm",{cause:400}))
     }
-  }
-});
+}});
 
 export const refreshToken = async (req, res) => {
   let { token } = req.params;
@@ -168,7 +167,7 @@ export const sendCode = async (req, res) => {
 };
 
 export const forgetPassword = asyncHandler(async (req, res) => {
-  let { OTPCode, email, password } = req.body;
+  let { OTPCode, email, password} = req.body;
   if (!OTPCode) {
     res.json({ message: "Code is not valid" });
   } else {
@@ -189,8 +188,6 @@ export const forgetPassword = asyncHandler(async (req, res) => {
     }
   }
 });
-
-
 
 
 

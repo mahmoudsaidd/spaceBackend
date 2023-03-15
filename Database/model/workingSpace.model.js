@@ -1,65 +1,111 @@
+
 import mongoose from "mongoose";
 // kol el composite attributes 3amaltelha schema lwa7daha
 // badal ma akhaly el model kolo f schema wa7da 7ases keda a7san w as-hal
 const scheduleSchema = new mongoose.Schema({
   holidays: {
-    type: Date,
-    required: true
+    type: String, // m4 date 3shan ana 7ktb en el mkan off youm el gom3a msln 
+    required: true,
   },
   openingTime: {
-    type: Date,
-    required: true
+    type: Number,
+    required: true,
+    min:1,
+    max:24
   },
   closingTime: {
-    type: Date,
-    required: true
-  }
+    type: Number,
+    required: true,
+    min:1,
+    max:24
+  },
 });
 
 const feedbackSchema = new mongoose.Schema({
   rate: {
     type: Number,
-    required: true
+    required: true,
+    min:1,
+    max:5
   },
-  comments: {
+  comments: [{
     type: String,
-    required: true
-  }
+    required: true,
+  },]
 });
 
 const locationSchema = new mongoose.Schema({
   city: {
     type: String,
-    required: true
+    required: true,
   },
   streetName: {
     type: String,
-    required: true
+    required: true,
   },
   buildingNumber: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
-const workingSpaceScehma = new mongoose.Schema({
-  name: {
+const contactSchema = new mongoose.Schema({
+  phone: {
     type: String,
-    required: true
+    required: true,
   },
-  images: {
+  email: {
     type: String,
+    required: true,
   },
-  schedule: [scheduleSchema],
-  feedback: [feedbackSchema],
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',  //3ayzeen lesa ne3mel validation eno lazem yekon owner
-    required: true
+  socialMedia: {
+    type: String,
+    required: true,
   },
-  location: locationSchema
-}, {
-    timestamps: true,
-  });
+});
 
- export const workingSpaceModel = mongoose.model('workingSpace', workingSpaceScehma);
+const workingSpaceSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+     
+    },
+    images: {
+      type: [String],
+      required: [true, "Workspace images are required"],
+    },
+    publicImageIds: [String],
+    schedule: [scheduleSchema],
+    feedback: [feedbackSchema],
+    contact: contactSchema,
+    location: locationSchema,
+
+
+    dateCreated: {
+      type: Date,
+      default: Date.now,
+    },
+    ownerId: 
+    { type:mongoose.Schema.ObjectId,
+      ref: 'user'},
+
+      // ////
+      // Bookings: 
+      // { type:mongoose.Schema.ObjectId,
+      //   ref: 'booking'},
+   
+
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export const workingSpaceModel = mongoose.model(
+  "workingSpace",
+  workingSpaceSchema
+);

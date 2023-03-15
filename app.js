@@ -1,5 +1,9 @@
-import * as dotenv from 'dotenv'
-dotenv.config();
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+
+const __dirname=path.dirname(fileURLToPath(import.meta.url))
+dotenv.config({path:path.join(__dirname,"./config/.env")});
 
 import express from 'express';
 import {globalError} from './src/services/asyncHandler.js'
@@ -14,6 +18,10 @@ app.use(express.json());
  app.use(`${process.env.baseURL}/user`,indexRouter.userRouter)
  app.use(`${process.env.baseURL}/auth`,indexRouter.authRouter)
  app.use(`${process.env.baseURL}/workingSpace`,indexRouter.workingSpaceRouter)
+ app.use(`${process.env.baseURL}/room`,indexRouter.roomRouter)
+ app.use(`${process.env.baseURL}/booking`,indexRouter.bookingRouter)
+
+
 
 
 
