@@ -7,6 +7,6 @@ const router=Router()
 
 router.post('/createBooking',bookingController.createBooking)
 router.put('/updateBookingInfo/:bookingId',bookingController.updateBookingInfo)
-// router.get('/getBookingsHistoryToWs/:workspaceId',bookingController.getBookingsHistoryToWs)
+router.get('/getBookingsHistoryToWs/:workspaceId',bookingController.getBookingsHistoryToWs)
 
 export default router

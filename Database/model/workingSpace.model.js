@@ -93,11 +93,7 @@ const workingSpaceSchema = new mongoose.Schema(
     { type:mongoose.Schema.ObjectId,
       ref: 'user'},
 
-      // ////
-      // Bookings: 
-      // { type:mongoose.Schema.ObjectId,
-      //   ref: 'booking'},
-   
+     
 
   },
   {

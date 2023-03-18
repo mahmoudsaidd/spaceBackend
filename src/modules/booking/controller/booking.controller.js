@@ -39,14 +39,14 @@ export const updateBookingInfo=asyncHandler(async(req,res,next)=>{
 
 
 
-// export const getBookingsHistoryToWs=asyncHandler(async(req,res,next)=>{
-//     let{workspaceId}=req.params
-//     let ws=await findById({model:workingSpaceModel,condition:{_id:workspaceId}})
-//         let history=await findById({model:bookingModel,condition:{_id:ws.Bookings._id}})
-//         res.status(200).json({message:"Done",history})
-//     }
+export const getBookingsHistoryToWs=asyncHandler(async(req,res,next)=>{
+    let{workspaceId}=req.params
+    let ws=await findById({model:workingSpaceModel,condition:{_id:workspaceId}})
+        let history=await findById({model:bookingModel,condition:{_id:Bookings}})
+        res.status(200).json({message:"Done",history})
+    }
    
-// )
+)
     
 
 
