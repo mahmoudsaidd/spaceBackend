@@ -5,7 +5,7 @@ import * as bookingController from './controller/booking.controller.js'
 const router=Router()
 
 
-router.post('/createBooking',bookingController.createBooking)
+router.post('/createBooking',bookingController.addBooking)
 router.put('/updateBookingInfo/:bookingId',bookingController.updateBookingInfo)
 router.get('/getBookingsHistoryToWs/:workspaceId',bookingController.getBookingsHistoryToWs)
 

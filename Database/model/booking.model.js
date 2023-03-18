@@ -1,22 +1,16 @@
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
-  // price: { type: Number, required: true },
-  // workspaceId: { type: mongoose.Schema.Types.ObjectId, ref: 'workingSpace' },
-  roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'room', required: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'user',
-  //  required: true 
-  },
-  bookingStart: {type: Date, required: true},
-  bookingEnd:{type: Date, required: true},
-  // startHour:Number,
-  // endHour:Number,
-  // duration:Number,
-  // recurring: [],
+  price: { type: Number, required: true },
 
-
+  room: { type: mongoose.Schema.Types.ObjectId, ref: 'room', required: true },
+  duration: { type: Number, required: true }, //3ayzeen neshof data type aw function lel duration gher number de
+  // time: { type: Date, required: true },
+  startTime:{type : Date},
+  endTime:{type : Date},
   fees: { type: Number },
-  promoCode: { type: String },
+  promocode: { type: String },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
   dateCreated: {
     type: Date,
     default: Date.now
