@@ -1,15 +1,15 @@
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import {create, find, findById } from "../../../../Database/DBMethods.js";
-import { workingSpaceModel } from "../../../../Database/model/workingSpace.model.js";
 import { roomModel } from "../../../../Database/model/room.model.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
+import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 
 // workingspace/room/booking
 
 
 // get a list of ws from db
 export const getAllWorkSpaces=asyncHandler(async(req,res,next)=>{
-    let workSpace=await find({model:workingSpaceModel})
+    let workSpace=await find({model:workSpaceModel})
     res.status(200).json({message:"Done",workSpace})
 
 })

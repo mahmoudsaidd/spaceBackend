@@ -6,7 +6,7 @@ import {
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { userModel } from "../../../../Database/model/user.model.js";
-import { workingSpaceModel } from "../../../../Database/model/workSpace.model.js";
+import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
 
@@ -30,7 +30,7 @@ export const addWsByFillForm = asyncHandler(async (req, res, next) => {
     req.body.ownerId = req.user._id;
   }
   const addedWorkspace = await create({
-    model: workingSpaceModel,
+    model: workSpaceModel,
     data: req.body,
   });
 

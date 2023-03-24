@@ -8,7 +8,7 @@ import {
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { roomModel } from "../../../../Database/model/room.model.js";
-import { workingSpaceModel } from "../../../../Database/model/workSpace.model.js";
+import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 
 import moment from "moment";
 // var a = moment().format('MMMM Do YYYY, h:mm:ss a');

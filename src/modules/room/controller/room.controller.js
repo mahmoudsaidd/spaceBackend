@@ -1,6 +1,6 @@
 import { create, findById } from "../../../../Database/DBMethods.js";
 import { roomModel } from "../../../../Database/model/room.model.js";
-import { workingSpaceModel } from "../../../../Database/model/workingSpace.model.js";
+import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 
 // export const addRoom= asyncHandler(async (req, res, next) => {
@@ -13,7 +13,7 @@ export const addRoom =asyncHandler(async(req,res,next)=>{
     let{price}=req.body
     // let{ownerId}=req.user._id
     let{workspaceId}=req.params
-    let workspace=await findById({model:workingSpaceModel,id:workspaceId})
+    let workspace=await findById({model:workSpaceModel,id:workspaceId})
     if(!workspace){
         res.status(404).json({message:"workspace not found"})
     }else{
