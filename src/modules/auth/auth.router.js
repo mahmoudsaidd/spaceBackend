@@ -1,4 +1,5 @@
 import { Router } from "express";
+import passport from "passport";
 import { auth } from "../../middleware/auth.js";
 import { validation } from "../../middleware/validation.js";
 import { endPoints } from "./auth.endPoint.js";
@@ -16,6 +17,14 @@ router.put('/updateRole',auth(endPoints.updateRole),authController.updateRole)
 
 router.post('/sendCode',authController.sendCode)
 router.post('/forgetPassword',authController.forgetPassword)
+
+
+//auth google
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email',] }));
+
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    res.redirect('/profile');
+});
 
 
 
