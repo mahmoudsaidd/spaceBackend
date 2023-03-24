@@ -64,7 +64,7 @@ const contactSchema = new mongoose.Schema({
   },
 });
 
-const workingSpaceSchema = new mongoose.Schema(
+const workSpaceSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -101,7 +101,7 @@ const workingSpaceSchema = new mongoose.Schema(
   }
 );
 
-export const workingSpaceModel = mongoose.model(
-  "workingSpace",
-  workingSpaceSchema
+export const workSpaceModel = mongoose.model(
+  "workSpace",
+  workSpaceSchema
 );

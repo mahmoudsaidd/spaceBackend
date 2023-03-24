@@ -6,7 +6,7 @@ import {
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { userModel } from "../../../../Database/model/user.model.js";
-import { workingSpaceModel } from "../../../../Database/model/workingSpace.model.js";
+import { workingSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
 
