@@ -131,15 +131,17 @@ export const conflictBooking = async (req, res, next) => {
       endTime: { $gte: currentTime },
     },
   });
-  const job = schedule.scheduleJob(endTime, function(){
-    // console.log('The answer to life, the universe, and everything!');
-    
-    // let flag=await find({model:roomModel,})
 
-  });
   res.status(200).json({ message: "Done", bookings });
 };
 
+
+// const job = schedule.scheduleJob(endTime, function(){
+//   // console.log('The answer to life, the universe, and everything!');
+  
+//   // let flag=await find({model:roomModel,})
+
+// });
 
 
 
