@@ -6,5 +6,6 @@ const router= Router();
 
 router.get('/getWsRooms',workSpaceController.getWsRooms)
 router.get('/getAllWorkSpaces',workSpaceController.getAllWorkSpaces)
+router.post('/feedback/:id',workSpaceController.feedback)
 
 export default router;
