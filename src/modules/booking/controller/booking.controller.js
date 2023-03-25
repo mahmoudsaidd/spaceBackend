@@ -9,6 +9,7 @@ import {
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { roomModel } from "../../../../Database/model/room.model.js";
 import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
+import schedule from 'node-schedule'
 
 import moment from "moment";
 // var a = moment().format('MMMM Do YYYY, h:mm:ss a');
@@ -19,7 +20,7 @@ import moment from "moment";
 
 
 export const addBooking = asyncHandler(async (req, res, next) => {
-  let { room, startTime, endTime, price } = req.body;
+  let { room, startTime, endTime } = req.body;
 let foundedRoom =await findById({model:roomModel,id:room})
 if(!foundedRoom){
   res.status(404).json({ message: "Room not found" });
@@ -118,17 +119,29 @@ export const getBookingsHistoryToWs = asyncHandler(async (req, res, next) => {
   res.status(200).json({ message: "Done", history });
 });
 
+
+
 export const conflictBooking = async (req, res, next) => {
   let currentTime = new Date();
   let bookings = await find({
     model: bookingModel,
     condition: {
+      //startTime=2 ,endTime=4 ,currentTime=3
       startTime: { $lte: currentTime },
       endTime: { $gte: currentTime },
     },
   });
+  const job = schedule.scheduleJob(endTime, function(){
+    // console.log('The answer to life, the universe, and everything!');
+    
+    // let flag=await find({model:roomModel,})
+
+  });
   res.status(200).json({ message: "Done", bookings });
 };
+
+
+
 
 // npm install --save node-cron
 // const cron = require('node-cron');

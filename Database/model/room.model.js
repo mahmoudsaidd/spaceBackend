@@ -34,8 +34,6 @@ const roomSchema = new mongoose.Schema({
     desk:{type:Boolean,default:false},
     chairs:{type:Boolean,default:false},
 
-
-
   },
   type: {
     type: String, // aw momken nekhaliha enums zay desk w room w shared space w keda
