@@ -47,8 +47,9 @@ export const adminValidation=asyncHandler(async(req,res,next)=>{
   if (!owner) {
         res.status(404).json({ message: "Owner not found" });
       } else {
-        // if(!owner.adminValidation){
-          if(adminValidation===true){
+        
+          if(adminValidation=="true"){
+            console.log(adminValidation) 
              let accept =await findOneAndUpdate({
               model:userModel,
               condition:{adminValidation:false,role:"User"},
@@ -58,6 +59,10 @@ export const adminValidation=asyncHandler(async(req,res,next)=>{
         res.status(200).json({ message: "owner Accepted By Admin", accept });
 
         }else{
+          let deleteWorkSpace = await deleteOne({
+            model: workSpaceModel,
+            condition: { owner: ownerId }
+          });
          res.status(200).json({ message: "owner Refused By Admin" });
 
         }
