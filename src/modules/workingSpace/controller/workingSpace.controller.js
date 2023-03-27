@@ -8,7 +8,7 @@ import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 // workingspace/room/booking
 
 export const getWsRooms=asyncHandler(async(req,res,next)=>{
-    const cursor = await workingSpaceModel.find().cursor();
+    const cursor = await workSpaceModel.find().cursor();
     let allWorkspaces=[]
     for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {
     let room=await find({model:roomModel,condition:{workspaceId:doc._id}})

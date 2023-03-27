@@ -6,10 +6,10 @@ import { endPoints } from "./user.endpoint.js";
 const router= Router();
 
 //Owner
-// router.get('/hostRequest',userController.hostRequest)
+
 router.post('/addWsByFillForm',auth(endPoints.addWsByFillForm),myMulter(fileValidation.image).array("image",7),HME,userController.addWsByFillForm)
 router.put('/updateWorkspaceInfo/:workspaceId',userController.updateWorkspaceInfo)
-router.put('/adminValidation/:workspaceId',userController.adminValidation)
+router.put('/adminValidation',userController.adminValidation)
 
 //Client
 router.get('/searchByRate/:rate', userController.searchByRate)

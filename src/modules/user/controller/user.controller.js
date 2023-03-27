@@ -41,6 +41,28 @@ export const addWsByFillForm = asyncHandler(async (req, res, next) => {
 
 
 
+export const adminValidation=asyncHandler(async(req,res,next)=>{
+  let {ownerId,adminValidation}=req.body
+  let owner=await findById({model:userModel,id:ownerId})
+  if (!owner) {
+        res.status(404).json({ message: "Owner not found" });
+      } else {
+        // if(!owner.adminValidation){
+          if(adminValidation===true){
+             let accept =await findOneAndUpdate({
+              model:userModel,
+              condition:{adminValidation:false,role:"User"},
+              data:{adminValidation:true,role:"Owner"},
+              options: { new: true },
+             })
+        res.status(200).json({ message: "owner Accepted By Admin", accept });
+
+        }else{
+         res.status(200).json({ message: "owner Refused By Admin" });
+
+        }
+      }
+})
 
 
 
@@ -49,62 +71,23 @@ export const addWsByFillForm = asyncHandler(async (req, res, next) => {
 
 
 
-//Lesaaa
-//admin validation
-export const adminValidation = asyncHandler(async (req, res, next) => {
-  let { workspaceId } = req.params;
-  let { adminValidation } = req.body;
-  let workspace = await findById({ model: workingSpaceModel, id: workspaceId });
-  if (!workspace) {
-    res.status(404).json({ message: "Workspace not found" });
-  } else {
-    //if true (role=owner) else false (role=user)
-    //  if(workspace.ownerId)
-
-    if (req.body.adminValidation == true) {
-      let accept = await findByIdAndUpdate({
-        model: userModel,
-        condition: { _id: workspace.ownerId, adminValidation: false },
-        data: { adminValidation: true, role: "Owner" },
-        options: { new: true },
-      });
-  res.status(200).json({ message: "owner Accepted By Admin", accept });
 
 
-    }else{
-   res.status(200).json({ message: "owner Refused By Admin" });
 
-    }
-  }
-});
-// if (accept) {
-//   res.status(200).json({ message: "owner Accepted By Admin", accept });
-// } else {
-//   let refuse = await findByIdAndUpdate({
-//     model: userModel,
-//     condition: { _id: workspace.ownerId, adminValidation: false },
-//     data: { adminValidation: false, role: "User" },
-//     options: { new: true },
-//   });
-//   res.status(200).json({ message: "owner Refused By Admin",refuse });
-// }
 
-//   else{
-//     if(req.body.adminValidation==true){
-//     let validation=await findByIdAndUpdate({model:userModel,
-//       condition:{role:User},
-//       data:{role:Owner}
-//         })
-//     // }else{
-//     //   let ownerSwitch =await findByIdAndUpdate({model:userModel,
-//     //   condition:{role:User},
-//     //   data:{role:Owner}
 
-//     // })
-// res.status(200).json({message:"owner Accepted",ownerSwitch})
 
-//     }
-//   }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -126,7 +109,7 @@ export const updateWorkspaceInfo = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
   let { phone } = req.body;
   let updatedWorkspaceInfo = await findByIdAndUpdate({
-    model: workingSpaceModel,
+    model: workSpaceModel,
     condition: { _id: workspaceId },
     data: req.body,
     options: { new: true },

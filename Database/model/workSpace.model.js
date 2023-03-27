@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 // kol el composite attributes 3amaltelha schema lwa7daha
 // badal ma akhaly el model kolo f schema wa7da 7ases keda a7san w as-hal
 const scheduleSchema = new mongoose.Schema({
-  holidays: {
+  holidays:[ {
     type: String, // m4 date 3shan ana 7ktb en el mkan off youm el gom3a msln 
     required: true,
-  },
+  }],
   openingTime: {
     type: Number,
     required: true,
@@ -50,18 +50,18 @@ const locationSchema = new mongoose.Schema({
 });
 
 const contactSchema = new mongoose.Schema({
-  phone: {
+  phone:[ {
     type: String,
     required: true,
-  },
-  email: {
+  }],
+  email: [{
     type: String,
     required: true,
-  },
-  socialMedia: {
+  }],
+  socialMedia:[ {
     type: String,
     required: true,
-  },
+  },]
 });
 
 const workSpaceSchema = new mongoose.Schema(
