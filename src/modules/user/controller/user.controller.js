@@ -1,5 +1,6 @@
 import {
   create,
+  deleteOne,
   findById,
   findByIdAndUpdate,
   findOneAndUpdate,
@@ -61,7 +62,8 @@ export const adminValidation=asyncHandler(async(req,res,next)=>{
         }else{
           let deleteWorkSpace = await deleteOne({
             model: workSpaceModel,
-            condition: { owner: ownerId }
+            // condition: { owner: ownerId }
+            condition: {ownerId}
           });
          res.status(200).json({ message: "owner Refused By Admin" });
 
