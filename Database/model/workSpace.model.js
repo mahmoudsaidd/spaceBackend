@@ -3,21 +3,22 @@ import mongoose from "mongoose";
 // kol el composite attributes 3amaltelha schema lwa7daha
 // badal ma akhaly el model kolo f schema wa7da 7ases keda a7san w as-hal
 const scheduleSchema = new mongoose.Schema({
-  holidays:[ {
-    type: String, // m4 date 3shan ana 7ktb en el mkan off youm el gom3a msln 
+  holidays: {
+    type: String,
     required: true,
-  }],
+    enum: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  }
+  ,
   openingTime: {
-    type: Number,
+    type: String,
     required: true,
-    min:1,
-    max:24
-  },
+    match: /^([01]\d|2[0-3]):([0-5]\d)$/, // regex to match HH:MM format
+  }
+  ,
   closingTime: {
-    type: Number,
+    type: String,
     required: true,
-    min:1,
-    max:24
+    match: /^([01]\d|2[0-3]):([0-5]\d)$/, // regex to match HH:MM format
   },
 });
 

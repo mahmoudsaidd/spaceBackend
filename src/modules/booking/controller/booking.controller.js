@@ -25,6 +25,28 @@ let foundedRoom =await findById({model:roomModel,id:room})
 if(!foundedRoom){
   res.status(404).json({ message: "Room not found" });
 
+
+  const workspaceId = foundRoom.workingSpace;
+
+  const foundWorkspace = await findOne({ model: workSpaceModel, id:workspaceId });
+
+  if (!foundWorkspace) {
+    return res.status(404).json({ message: "Workspace not found" });
+  }
+
+  // Convert booking start and end time to hours
+  const bookingStartHour = new Date(startTime).getHours();
+  const bookingEndHour = new Date(endTime).getHours();
+
+  // Convert workspace opening and closing time to hours
+  const workspaceOpeningHour = new Date(foundWorkspace.schedule[0].openingTime).getHours();
+  const workspaceClosingHour = new Date(foundWorkspace.schedule[0].closingTime).getHours();
+
+  // Check if booking time is within workspace opening and closing time
+  if (bookingStartHour < workspaceOpeningHour || bookingEndHour > workspaceClosingHour) {
+    return res.status(400).json({ message: "Booking time is outside workspace opening and closing time" });
+  }
+
 }else{
     //Calculate Duration automatic
     const total = new Date(endTime).getTime() - new Date(startTime).getTime();
