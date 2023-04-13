@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 // kol el composite attributes 3amaltelha schema lwa7daha
 // badal ma akhaly el model kolo f schema wa7da 7ases keda a7san w as-hal
 const scheduleSchema = new mongoose.Schema({
-  holidays: {
+  holidays: [{
     type: String,
     required: true,
     enum: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  }
+  }]
   ,
   openingTime: {
     type: String,
@@ -22,18 +22,24 @@ const scheduleSchema = new mongoose.Schema({
   },
 });
 
-const feedbackSchema = new mongoose.Schema({
-  rate: {
-    type: Number,
-    required: true,
-    min:1,
-    max:5
-  },
-  comments: [{
-    type: String,
-    required: true,
-  },]
-});
+
+
+// const feedbackSchema = new mongoose.Schema({
+//   rate: {
+//     type:Number,
+//     default:1,
+//     required:true,
+//     min:[1,"min 1"],
+//     max:[5,"max 5"]
+//   },
+//   comments: [{
+//     type: String,
+//     required: true,
+//   },]
+// });
+
+
+
 
 const locationSchema = new mongoose.Schema({
   city: {
@@ -52,16 +58,16 @@ const locationSchema = new mongoose.Schema({
 
 const contactSchema = new mongoose.Schema({
   phone:[ {
-    type: String,
+    type: Number,
     required: true,
   }],
   email: [{
     type: String,
-    required: true,
+    
   }],
   socialMedia:[ {
     type: String,
-    required: true,
+    
   },]
 });
 
@@ -80,10 +86,21 @@ const workSpaceSchema = new mongoose.Schema(
       required: [true, "Workspace images are required"],
     },
     publicImageIds: [String],
-    schedule: [scheduleSchema],
-    feedback: [feedbackSchema],
+    schedule: scheduleSchema,
+    // feedback: feedbackSchema,
     contact: contactSchema,
     location: locationSchema,
+
+
+    // latitude: {
+    //   type: Number,
+    // },
+    // longitude: {
+    //   type: Number,
+    // },
+
+
+
 
 
     dateCreated: {

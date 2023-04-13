@@ -99,34 +99,39 @@ if(!foundedRoom){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//modify booking info
-export const updateBookingInfo = asyncHandler(async (req, res, next) => {
+//modify booking info By Owner
+export const updateBookingInfoByOwner = asyncHandler(async (req, res, next) => {
   let { bookingId } = req.params;
-  let { price, duration, time, fees, promoCode } = req.body;
+  let {price, room,startTime, endTime, user ,fees, promoCode } = req.body;
+
+  const total = new Date(endTime).getTime() - new Date(startTime).getTime();
+    const calculatedDuration = Math.floor(total / 1000) / 3600;
+    console.log(calculatedDuration);
+
+
   let updatingBookingInfo = await findByIdAndUpdate({
     model: bookingModel,
     condition: { _id: bookingId },
-    data: req.body,
+    data: {
+      price, 
+      room,
+      startTime,
+       endTime, 
+       user ,
+       fees, 
+       promoCode,
+       duration: calculatedDuration,
+
+    },
     options: { new: true },
   });
   res.status(200).json({ message: "Updated", updatingBookingInfo });
 });
+
+
+
+
+
 
 export const getBookingsHistoryToWs = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;

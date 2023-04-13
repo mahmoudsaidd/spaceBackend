@@ -2,13 +2,6 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    userName: {
-      type: String,
-      required: [true, "userName is required"],
-      min: [2, "minimum length 2 char"],
-      max: [20, "max length 2 char"],
-      unique: [true, "userName must be unique value"],
-    },
     // firstName: {
     //   type: String,
     //   required: true,
@@ -16,7 +9,15 @@ const userSchema = new mongoose.Schema(
     // lastName: {
     //   type: String,
     //   required: true,
-    // },
+    // }, 
+    userName: {
+      type: String,
+      required: [true, "userName is required"],
+      min: [2, "minimum length 2 char"],
+      max: [20, "max length 2 char"],
+      unique: [true, "userName must be unique value"],
+    },
+   
 
     email: {
       type: String,
@@ -57,7 +58,14 @@ const userSchema = new mongoose.Schema(
     adminValidation:{
       type:Boolean,
       default:false
-    }
+    },
+
+
+    // feedback: 
+    // { type:mongoose.Schema.ObjectId,
+    //   ref: 'user'},
+
+    
   },
   {
     timestamps: true,

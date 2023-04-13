@@ -8,8 +8,10 @@ const router=Router()
 
 
 router.post('/createBooking',validation(createBookingSchema),auth(endPoints.createBooking),bookingController.addBooking)
-router.put('/updateBookingInfo/:bookingId',bookingController.updateBookingInfo)
+router.put('/updateBookingInfoByOwner/:bookingId',bookingController.updateBookingInfoByOwner)
 router.get('/getBookingsHistoryToWs/:workspaceId',bookingController.getBookingsHistoryToWs)
+
+
 
 router.get('/conflictBooking',bookingController.conflictBooking)
 export default router
