@@ -171,20 +171,21 @@ export const Update = asyncHandler(async (req, res, next) => {
 
     // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
     if (workspace.ownerId.toString() == req.user._id.toString()) {
-      if (req.files?.length) {
-        let imagesURLs = [];
-        let imagesIds = [];
-        for (const file of req.files) {
-          let { secure_url, public_id } = await cloudinary.uploader.upload(
-            file.path,
-            { folder: "workspaces" }
-          );
-          imagesURLs.push(secure_url);
-          imagesIds.push(public_id);
-        }
-        req.body.images = imagesURLs;
-        req.body.publicImageIds = imagesIds;
-      }
+      // if (req.files?.length) {
+      //   let imagesURLs = [];
+      //   let imagesIds = [];
+      //   for (const file of req.files) {
+      //     let { secure_url, public_id } = await cloudinary.uploader.upload(
+      //       file.path,
+      //       { folder: "workspaces" }
+      //     );
+      //     imagesURLs.push(secure_url);
+      //     imagesIds.push(public_id);
+      //   }
+      //   req.body.images = imagesURLs;
+      //   req.body.publicImageIds = imagesIds;
+      // }
+      console.log(workspace.location.city);
 
       // let updatedWorkspaceInfo = await findByIdAndUpdate({
       //   model: workSpaceModel,
@@ -195,7 +196,6 @@ export const Update = asyncHandler(async (req, res, next) => {
       //   options: { new: true },
       // });
 
-      res.status(200).json({ message: "Updated" });
     } else {
       next(
         new Error("Sorry, you are not the owner of this workspace", {
