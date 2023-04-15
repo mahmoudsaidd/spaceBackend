@@ -279,21 +279,6 @@ export const deleteWorkspaceInfoByOwner = asyncHandler(
       name,
       description,
       image,
-
-<<<<<<< HEAD
-//modify workspaceInfo
-export const updateWorkspaceInfo = asyncHandler(async (req, res, next) => {
-  let { workspaceId } = req.params;
-  let { phone } = req.body;
-  let updatedWorkspaceInfo = await findByIdAndUpdate({
-    model: workSpaceModel,
-    condition: { _id: workspaceId },
-    data: req.body,
-    options: { new: true },
-  });
-  res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
-});
-=======
       holidays,
       openingTime,
       closingTime,
@@ -342,7 +327,6 @@ export const updateWorkspaceInfo = asyncHandler(async (req, res, next) => {
 
 
 
->>>>>>> 2fe483dfd3b9af8420a760ca6021d62da66afe52
 
 
 
