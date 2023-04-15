@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { auth } from "../../middleware/auth.js";
+import { auth, roles } from "../../middleware/auth.js";
 import { fileValidation, HME, myMulter } from "../../services/multer.js";
 import * as userController from './controller/user.controller.js'
 import { endPoints } from "./user.endpoint.js";
@@ -15,6 +15,9 @@ router.put('/adminValidation',userController.adminValidation)
 router.get('/searchByRate/:rate', userController.searchByRate)
 
 //Admin
-router.get('/getClientAccount',auth(),userController.getClientAccount)
-router.delete('/deleteClientAccount',userController.deleteClientAccount)
+router.get('/getClientAccountsByAdmin',auth(endPoints.getClientAccount),userController.getClientAccountsByAdmin)
+router.get('/getAccountByAdmin/:UserId',auth(endPoints.getClientAccount),userController.getAccountByAdmin)
+router.delete('/deleteClientAccountByAdmin/:DId',auth(endPoints.deleteClientAccount),userController.deleteClientAccountByAdmin)
+router.get('/getWorkSpaceByAdmin/:WorkSpaceId',auth(endPoints.getWorkSpace),userController.getWorkSpaceByAdmin)
+router.delete('/deleteWorkSpaceByAdmin/:WorkSpaceId',auth(endPoints.deleteWorkSpace),userController.deleteWorkSpaceByAdmin)
 export default router;

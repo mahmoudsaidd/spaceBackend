@@ -4,10 +4,13 @@ import {
   findById,
   findByIdAndUpdate,
   findOneAndUpdate,
+  find,
+  findByIdAndDelete
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { userModel } from "../../../../Database/model/user.model.js";
 import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
+import { roles } from "../../../middleware/auth.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
 
@@ -101,16 +104,6 @@ export const adminValidation=asyncHandler(async(req,res,next)=>{
 
 
 
-
-
-
-
-
-
-
-
-
-
 //modify workspaceInfo
 export const updateWorkspaceInfo = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
@@ -151,10 +144,25 @@ export const searchByRate = asyncHandler(async (req, res, next) => {
   res.status(200).json(results);
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Admin
-//get client account  {admin}
-export const getClientAccount = asyncHandler(async (req, res, next) => {
-  const user = await findById({ model: userModel, id: req.currentUserID });
+//get client accounts  {admin}
+export const getClientAccountsByAdmin = asyncHandler(async (req, res, next) => {
+  const user = await find({ model: userModel,condition:{$nor: [ { role:"Admin" }]}});
   if (user) {
     res.json({ message: "Founded", user });
   } else {
@@ -162,12 +170,23 @@ export const getClientAccount = asyncHandler(async (req, res, next) => {
   }
 });
 
+//get specific account {admin}
+export const getAccountByAdmin = asyncHandler(async (req, res, next) => {
+  let {UserId}=req.params;
+  const account = await findById({ model: userModel, id:UserId});
+  if (account) {
+    res.json({ message: "Founded", account });
+  } else {
+    res.json({ message: "Not have account" });
+  }
+});
+
+
 //delete client account {admin}
-export const deleteClientAccount = asyncHandler(async (req, res, next) => {
+export const deleteClientAccountByAdmin = asyncHandler(async (req, res, next) => {
+  let { DId } = req.params;
   const deletedUser = await findByIdAndDelete({
-    model: userModel,
-    condition: { id: req.currentUserID },
-  });
+    model: userModel, condition:{_id: DId }});
   if (deletedUser) {
     res.json({ message: "Done", deletedUser });
   } else {
@@ -176,9 +195,9 @@ export const deleteClientAccount = asyncHandler(async (req, res, next) => {
 });
 
 //get &delete WS {admin}
-export const getWorkSpace = asyncHandler(async (req, res, next) => {
+export const getWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
   let { WorkSpaceId } = req.params;
-  const WS = await findById({ model: workingSpaceModel, _id: WorkSpaceId });
+  const WS = await findById({ model: workSpaceModel, id: WorkSpaceId });
   if (WS) {
     res.json({ message: "Founded", WS });
   } else {
@@ -186,11 +205,11 @@ export const getWorkSpace = asyncHandler(async (req, res, next) => {
   }
 });
 
-export const deleteWorkSpace = asyncHandler(async (req, res, next) => {
+export const deleteWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
   let { WorkSpaceId } = req.params;
   const deletedWS = await findByIdAndDelete({
-    model: workingSpaceModel,
-    condition: { id: WorkSpaceId },
+    model: workSpaceModel,
+    condition: { _id: WorkSpaceId },
   });
   if (deletedWS) {
     res.json({ message: "Done", deletedWS });
