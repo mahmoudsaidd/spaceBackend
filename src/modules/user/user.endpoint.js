@@ -8,6 +8,11 @@ export const endPoints={
     deleteWorkSpace:[roles.Admin],
   
     
-    addWsByFillForm:[roles.User] 
+    addWsByFillForm:[roles.User] ,
+    adminValidation:[roles.Admin],
+    updateWorkspaceInfo:[roles.Owner],
+    deleteWorkspaceInfo:[roles.Owner]
+
+
 
 }

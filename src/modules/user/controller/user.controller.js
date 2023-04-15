@@ -2,6 +2,7 @@ import {
   create,
   deleteOne,
   findById,
+  findByIdAndDelete,
   findByIdAndUpdate,
   findOneAndUpdate,
   find,
@@ -41,38 +42,110 @@ export const addWsByFillForm = asyncHandler(async (req, res, next) => {
   res.json({ message: "Done", addedWorkspace });
 });
 
-
-
-
-
-export const adminValidation=asyncHandler(async(req,res,next)=>{
-  let {ownerId,adminValidation}=req.body
-  let owner=await findById({model:userModel,id:ownerId})
+export const adminValidation = asyncHandler(async (req, res, next) => {
+  let { ownerId, adminValidation } = req.body;
+  let owner = await findById({ model: userModel, id: ownerId });
   if (!owner) {
-        res.status(404).json({ message: "Owner not found" });
-      } else {
-        
-          if(adminValidation=="true"){
-            console.log(adminValidation) 
-             let accept =await findOneAndUpdate({
-              model:userModel,
-              condition:{adminValidation:false,role:"User"},
-              data:{adminValidation:true,role:"Owner"},
-              options: { new: true },
-             })
-        res.status(200).json({ message: "owner Accepted By Admin", accept });
+    res.status(404).json({ message: "Owner not found" });
+  } else {
+    if (adminValidation == "true") {
+      console.log(adminValidation);
+      let accept = await findOneAndUpdate({
+        model: userModel,
+        condition: { adminValidation: false, role: "User" },
+        data: { adminValidation: true, role: "Owner" },
+        options: { new: true },
+      });
+      res.status(200).json({ message: "owner Accepted By Admin", accept });
+    } else {
+      let deleteWorkSpace = await deleteOne({
+        model: workSpaceModel,
+        // condition: { owner: ownerId }
+        condition: { ownerId },
+      });
+      res.status(200).json({ message: "owner Refused By Admin" });
+    }
+  }
+});
 
-        }else{
-          let deleteWorkSpace = await deleteOne({
-            model: workSpaceModel,
-            // condition: { owner: ownerId }
-            condition: {ownerId}
-          });
-         res.status(200).json({ message: "owner Refused By Admin" });
-
+//modify workspaceInfo
+export const updateWorkspaceInfoByOwner = asyncHandler(
+  async (req, res, next) => {
+    let { workspaceId } = req.params;
+    let {
+      name,
+      description,
+      holidays,
+      openingTime,
+      closingTime,
+      rate,
+      comments,
+      phone,
+      email,
+      socialMedia,
+      city,
+      streetName,
+      buildingNumber,
+    } = req.body;
+    let workspace = await findById({ model: workSpaceModel, id: workspaceId });
+    if (!workspace) {
+      next(new Error("Workspace not found", { cause: 404 }));
+    } else {
+      // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
+      if (workspace.ownerId.toString() == req.user._id.toString()) {
+        if (req.files?.length) {
+          let imagesURLs = [];
+          let imagesIds = [];
+          for (const file of req.files) {
+            let { secure_url, public_id } = await cloudinary.uploader.upload(
+              file.path,
+              { folder: "workspaces" }
+            );
+            imagesURLs.push(secure_url);
+            imagesIds.push(public_id);
+          }
+          req.body.images = imagesURLs;
+          req.body.publicImageIds = imagesIds;
         }
+
+        // for (const day of req.body) {
+        //    workspace.schedule.holidays[day]=req.body.holidays[day]
+        // }
+
+        // ProductModel.findOneAndUpdate({productCode: userData.productCode}, dataToBeUpdated, {new: true})
+
+        let updatedWorkspaceInfo = await findByIdAndUpdate({
+          model: workSpaceModel,
+          condition: { _id: workspaceId },
+          data: req.body,
+          options: { new: true },
+        });
+        // console.log(workspace.feedback.comments);
+        // if (!updatedWorkspaceInfo) {
+        //   if (req.body.publicImageIds) {
+        //     for (const id of req.body.imagesIds) {
+        //       await cloudinary.uploader.destroy(id);
+        //     }
+        //   }
+        //   next(new Error("Database Error", { cause: 400 }));
+        // } else {
+        //   if (req.body.publicImageIds) {
+        //     for (const id of workspace.publicImageIds) {
+        //       await cloudinary.uploader.destroy(id);
+        //     }
+        //   }
+        // }
+        res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
+      } else {
+        next(
+          new Error("Sorry, you are not the owner of this workspace", {
+            cause: 403,
+          })
+        );
       }
-})
+    }
+  }
+);
 
 
 
@@ -90,6 +163,75 @@ export const adminValidation=asyncHandler(async(req,res,next)=>{
 
 
 
+//3dl f el api de m4 ele fo2
+export const Update = asyncHandler(
+  async (req, res, next) => {
+    let { workspaceId } = req.params;
+    let {
+      name,
+      description,
+      holidays,
+      openingTime,
+      closingTime,
+      rate,
+      comments,
+      phone,
+      email,
+      socialMedia,
+      city,
+      streetName,
+      buildingNumber,
+    } = req.body;
+    let workspace = await findById({ model: workSpaceModel, id: workspaceId });
+    if (!workspace) {
+      next(new Error("Workspace not found", { cause: 404 }));
+    } else {
+      // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
+      if (workspace.ownerId.toString() == req.user._id.toString()) {
+        if (req.files?.length) {
+          let imagesURLs = [];
+          let imagesIds = [];
+          for (const file of req.files) {
+            let { secure_url, public_id } = await cloudinary.uploader.upload(
+              file.path,
+              { folder: "workspaces" }
+            );
+            imagesURLs.push(secure_url);
+            imagesIds.push(public_id);
+          }
+          req.body.images = imagesURLs;
+          req.body.publicImageIds = imagesIds;
+        }
+
+
+
+        // workspace.feedback.rate=req.body.feedback.rate
+        let updatedWorkspaceInfo = await findByIdAndUpdate({
+          model: workSpaceModel,
+          condition: { _id: workspaceId },
+          data:{
+            $set:{
+              'email':req.body.email
+              
+            }
+          },
+           
+          
+          options: { new: true},
+        });
+    
+    
+        res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
+      } else {
+        next(
+          new Error("Sorry, you are not the owner of this workspace", {
+            cause: 403,
+          })
+        );
+      }
+    }
+  }
+);
 
 
 
@@ -100,10 +242,17 @@ export const adminValidation=asyncHandler(async(req,res,next)=>{
 
 
 
+//hna brdo byms7 kol el obj m4 byms7 ele ana 2oltlo 3leh bs 
+//delete workspaceInfo by owner
+export const deleteWorkspaceInfoByOwner = asyncHandler(
+  async (req, res, next) => {
+    let { workspaceId } = req.params;
+    let {
+      name,
+      description,
+      image,
 
-
-
-
+<<<<<<< HEAD
 //modify workspaceInfo
 export const updateWorkspaceInfo = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
@@ -116,12 +265,58 @@ export const updateWorkspaceInfo = asyncHandler(async (req, res, next) => {
   });
   res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
 });
+=======
+      holidays,
+      openingTime,
+      closingTime,
+      rate,
+      comments,
+      phone,
+      email,
+      socialMedia,
+      city,
+      streetName,
+      buildingNumber,
+    } = req.body;
+    let workspace = await findById({ model: workSpaceModel, id: workspaceId });
+    if (!workspace) {
+      next(new Error("Workspace not found", { cause: 404 }));
+    } else {
+      // if(workspace.ownerId.toString()== req.user._id.toString()){
+      // if(workspace.ownerId.toString() == req.user._id.toString()){
 
-//add Available Times By Owners
+      let deletedWorkspaceInfo = await findByIdAndUpdate({
+        model: workSpaceModel,
+        condition: { _id: workspaceId },
+        data: {
+          $pull: req.body,
+        },
+
+        options: { new: true },
+      });
+      res.status(200).json({ message: "Deleted", deletedWorkspaceInfo });
+      //   }else{
+      // next(new Error("Sorry, you are not the owner of this workspace", { cause: 403 }));
+
+      //   }
+
+      // cloudinary.v2.uploader.destroy('Asset_2_bdxdsl', function(error,result) {
+      //   console.log(result, error) })
+    }
+  }
+);
 
 //addOffers
 //modifyOffers
 //ReportUser
+
+
+
+
+
+>>>>>>> 2fe483dfd3b9af8420a760ca6021d62da66afe52
+
+
 
 //Client
 export const searchByRate = asyncHandler(async (req, res, next) => {

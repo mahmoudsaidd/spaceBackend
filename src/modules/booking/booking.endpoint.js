@@ -1,5 +1,6 @@
 import { roles } from "../../middleware/auth.js";
 
 export const endPoints={
-    createBooking:[roles.User]
+    createBooking:[roles.User],
+    updateBookingInfoByOwner:[roles.Owner]
 }
