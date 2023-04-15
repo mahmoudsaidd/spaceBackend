@@ -66,83 +66,83 @@ export const adminValidation = asyncHandler(async (req, res, next) => {
 });
 
 //modify workspaceInfo
-export const updateWorkspaceInfoByOwner = asyncHandler(
-  async (req, res, next) => {
-    let { workspaceId } = req.params;
-    let {
-      name,
-      description,
-      holidays,
-      openingTime,
-      closingTime,
-      rate,
-      comments,
-      phone,
-      email,
-      socialMedia,
-      city,
-      streetName,
-      buildingNumber,
-    } = req.body;
-    let workspace = await findById({ model: workSpaceModel, id: workspaceId });
-    if (!workspace) {
-      next(new Error("Workspace not found", { cause: 404 }));
-    } else {
-      // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
-      if (workspace.ownerId.toString() == req.user._id.toString()) {
-        if (req.files?.length) {
-          let imagesURLs = [];
-          let imagesIds = [];
-          for (const file of req.files) {
-            let { secure_url, public_id } = await cloudinary.uploader.upload(
-              file.path,
-              { folder: "workspaces" }
-            );
-            imagesURLs.push(secure_url);
-            imagesIds.push(public_id);
-          }
-          req.body.images = imagesURLs;
-          req.body.publicImageIds = imagesIds;
-        }
+// export const updateWorkspaceInfoByOwner = asyncHandler(
+//   async (req, res, next) => {
+//     let { workspaceId } = req.params;
+//     let {
+//       name,
+//       description,
+//       holidays,
+//       openingTime,
+//       closingTime,
+//       rate,
+//       comments,
+//       phone,
+//       email,
+//       socialMedia,
+//       city,
+//       streetName,
+//       buildingNumber,
+//     } = req.body;
+//     let workspace = await findById({ model: workSpaceModel, id: workspaceId });
+//     if (!workspace) {
+//       next(new Error("Workspace not found", { cause: 404 }));
+//     } else {
+//       // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
+//       if (workspace.ownerId.toString() == req.user._id.toString()) {
+//         if (req.files?.length) {
+//           let imagesURLs = [];
+//           let imagesIds = [];
+//           for (const file of req.files) {
+//             let { secure_url, public_id } = await cloudinary.uploader.upload(
+//               file.path,
+//               { folder: "workspaces" }
+//             );
+//             imagesURLs.push(secure_url);
+//             imagesIds.push(public_id);
+//           }
+//           req.body.images = imagesURLs;
+//           req.body.publicImageIds = imagesIds;
+//         }
 
-        // for (const day of req.body) {
-        //    workspace.schedule.holidays[day]=req.body.holidays[day]
-        // }
+//         // for (const day of req.body) {
+//         //    workspace.schedule.holidays[day]=req.body.holidays[day]
+//         // }
 
-        // ProductModel.findOneAndUpdate({productCode: userData.productCode}, dataToBeUpdated, {new: true})
+//         // ProductModel.findOneAndUpdate({productCode: userData.productCode}, dataToBeUpdated, {new: true})
 
-        let updatedWorkspaceInfo = await findByIdAndUpdate({
-          model: workSpaceModel,
-          condition: { _id: workspaceId },
-          data: req.body,
-          options: { new: true },
-        });
-        // console.log(workspace.feedback.comments);
-        // if (!updatedWorkspaceInfo) {
-        //   if (req.body.publicImageIds) {
-        //     for (const id of req.body.imagesIds) {
-        //       await cloudinary.uploader.destroy(id);
-        //     }
-        //   }
-        //   next(new Error("Database Error", { cause: 400 }));
-        // } else {
-        //   if (req.body.publicImageIds) {
-        //     for (const id of workspace.publicImageIds) {
-        //       await cloudinary.uploader.destroy(id);
-        //     }
-        //   }
-        // }
-        res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
-      } else {
-        next(
-          new Error("Sorry, you are not the owner of this workspace", {
-            cause: 403,
-          })
-        );
-      }
-    }
-  }
-);
+//         let updatedWorkspaceInfo = await findByIdAndUpdate({
+//           model: workSpaceModel,
+//           condition: { _id: workspaceId },
+//           data: req.body,
+//           options: { new: true },
+//         });
+//         // console.log(workspace.feedback.comments);
+//         // if (!updatedWorkspaceInfo) {
+//         //   if (req.body.publicImageIds) {
+//         //     for (const id of req.body.imagesIds) {
+//         //       await cloudinary.uploader.destroy(id);
+//         //     }
+//         //   }
+//         //   next(new Error("Database Error", { cause: 400 }));
+//         // } else {
+//         //   if (req.body.publicImageIds) {
+//         //     for (const id of workspace.publicImageIds) {
+//         //       await cloudinary.uploader.destroy(id);
+//         //     }
+//         //   }
+//         // }
+//         res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
+//       } else {
+//         next(
+//           new Error("Sorry, you are not the owner of this workspace", {
+//             cause: 403,
+//           })
+//         );
+//       }
+//     }
+//   }
+// );
 
 
 
@@ -164,68 +164,96 @@ export const updateWorkspaceInfoByOwner = asyncHandler(
 export const Update = asyncHandler(
   async (req, res, next) => {
     let { workspaceId } = req.params;
-    let {
-      name,
-      description,
-      holidays,
-      openingTime,
-      closingTime,
-      rate,
-      comments,
-      phone,
-      email,
-      socialMedia,
-      city,
-      streetName,
-      buildingNumber,
-    } = req.body;
+    // let {
+    //   name,
+    //   description,
+    //   holidays,
+    //   openingTime,
+    //   closingTime,
+    //   rate,
+    //   comments,
+    //   phone,
+    //   email,
+    //   socialMedia,
+    //   city,
+    //   streetName,
+    //   buildingNumber,
+    // } = req.body;
+
+
     let workspace = await findById({ model: workSpaceModel, id: workspaceId });
     if (!workspace) {
       next(new Error("Workspace not found", { cause: 404 }));
     } else {
+      var i
+      // workspace.schedule.holidays[i]=req.body.schedule.holidays[i]
+      // workspace.schedule.openingTime=req.body.schedule.openingTime
+      // workspace.schedule.closingTime=req.body.schedule.closingTime
+
+      // workspace.contact.phone=req.body.contact.phone
+      workspace.contact.email=req.body.contact.email
+      // workspace.contact.socialMedia=req.body.contact.socialMedia
+
+      // workspace.location.city=req.body.location.city
+      // workspace.location.streetName=req.body.location.streetName
+      // workspace.location.buildingNumber=req.body.location.buildingNumber
+
+
+      await workspace.save()
+      
+      res.status(200).json({ message: "Updated",workspace });
+
+
+
+
+
+
+
+
+
       // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
-      if (workspace.ownerId.toString() == req.user._id.toString()) {
-        if (req.files?.length) {
-          let imagesURLs = [];
-          let imagesIds = [];
-          for (const file of req.files) {
-            let { secure_url, public_id } = await cloudinary.uploader.upload(
-              file.path,
-              { folder: "workspaces" }
-            );
-            imagesURLs.push(secure_url);
-            imagesIds.push(public_id);
-          }
-          req.body.images = imagesURLs;
-          req.body.publicImageIds = imagesIds;
-        }
+      // if (workspace.ownerId.toString() == req.user._id.toString()) {
+      //   if (req.files?.length) {
+      //     let imagesURLs = [];
+      //     let imagesIds = [];
+      //     for (const file of req.files) {
+      //       let { secure_url, public_id } = await cloudinary.uploader.upload(
+      //         file.path,
+      //         { folder: "workspaces" }
+      //       );
+      //       imagesURLs.push(secure_url);
+      //       imagesIds.push(public_id);
+      //     }
+      //     req.body.images = imagesURLs;
+      //     req.body.publicImageIds = imagesIds;
+      //   }
 
 
 
         // workspace.feedback.rate=req.body.feedback.rate
-        let updatedWorkspaceInfo = await findByIdAndUpdate({
-          model: workSpaceModel,
-          condition: { _id: workspaceId },
-          data:{
-            $set:{
-              'email':req.body.email
+    //     let updatedWorkspaceInfo = await findByIdAndUpdate({
+    //       model: workSpaceModel,
+    //       condition: { _id: workspaceId },
+    //       data:{
+    //         $set:{
+    //           'location.city':"cairo"
               
-            }
-          },
+    //         }
+    //       },
            
           
-          options: { new: true},
-        });
+    //       options: { new: true},
+    //     });
+    // await updatedWorkspaceInfo.save()
     
-    
-        res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
-      } else {
-        next(
-          new Error("Sorry, you are not the owner of this workspace", {
-            cause: 403,
-          })
-        );
-      }
+        // res.status(200).json({ message: "Updated" });
+      // } else {
+      //   next(
+      //     new Error("Sorry, you are not the owner of this workspace", {
+      //       cause: 403,
+      //     })
+      //   );
+      // }
     }
   }
 );

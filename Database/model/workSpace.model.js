@@ -44,15 +44,15 @@ const scheduleSchema = new mongoose.Schema({
 const locationSchema = new mongoose.Schema({
   city: {
     type: String,
-    required: true,
+    // required: true,
   },
   streetName: {
     type: String,
-    required: true,
+    // required: true,
   },
   buildingNumber: {
     type: String,
-    required: true,
+    // required: true,
   },
 });
 

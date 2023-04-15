@@ -5,6 +5,7 @@ import {
   findOneAndUpdate,
   findById,
   findByIdAndUpdate,
+  findByIdAndDelete,
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { roomModel } from "../../../../Database/model/room.model.js";
@@ -12,6 +13,7 @@ import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import schedule from 'node-schedule'
 
 import moment from "moment";
+import { userModel } from "../../../../Database/model/user.model.js";
 // var a = moment().format('MMMM Do YYYY, h:mm:ss a');
 // var b =moment().format('LLLL');
 // var b =moment().toDate();
@@ -136,7 +138,7 @@ export const updateBookingInfoByOwner = asyncHandler(async (req, res, next) => {
 export const getBookingsHistoryToWs = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
   let ws = await findById({
-    model: workingSpaceModel,
+    model: workSpaceModel,
     condition: { _id: workspaceId },
   });
   let history = await findById({
@@ -161,6 +163,50 @@ export const conflictBooking = async (req, res, next) => {
 
   res.status(200).json({ message: "Done", bookings });
 };
+
+
+
+export const CancelBooking=asyncHandler(async(req,res,next)=>{
+  let{bookingId}=req.params
+  const Booking=await findById({model:bookingModel,id:bookingId})
+  if(!Booking){
+    res.status(404).json({message:"Booking not found"})
+  }else{
+    //Booking >> Room >> WS >> Owner
+    let room=await findById({model:roomModel,id:Booking.room})
+    let workspace=await findById({model:workSpaceModel,id:room.workspaceId})
+    let owner=await findById({model:userModel,id:workspace.ownerId})
+
+    console.log(Booking.user.toString() || owner.toString());
+
+      if(Booking.user.toString()  == req.user._id.toString() || owner.toString() ==req.user._id.toString()){
+        
+      const deletedBooking=await findByIdAndDelete({model:bookingModel,condition:{_id:bookingId}})
+      res.status(200).json({message:"Deleted",deletedBooking})
+    }
+    else{
+      res.json({message:"you cannot delete this booking"})
+    }
+    
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // const job = schedule.scheduleJob(endTime, function(){

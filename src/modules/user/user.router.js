@@ -8,7 +8,7 @@ const router= Router();
 //Owner
 router.post('/addWsByFillForm',auth(endPoints.addWsByFillForm),myMulter(fileValidation.image).array("image",7),HME,userController.addWsByFillForm)
 router.put('/adminValidation',auth(endPoints.adminValidation),userController.adminValidation)
-router.put('/updateWorkspaceInfoByOwner/:workspaceId',auth(endPoints.updateWorkspaceInfo),myMulter(fileValidation.image).array("image",7),HME,userController.updateWorkspaceInfoByOwner)
+// router.put('/updateWorkspaceInfoByOwner/:workspaceId',auth(endPoints.updateWorkspaceInfo),myMulter(fileValidation.image).array("image",7),HME,userController.updateWorkspaceInfoByOwner)
 
 
 router.put('/update/:workspaceId',auth(endPoints.updateWorkspaceInfo),myMulter(fileValidation.image).array("image",7),HME,userController.Update)
