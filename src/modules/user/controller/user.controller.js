@@ -5,8 +5,7 @@ import {
   findByIdAndDelete,
   findByIdAndUpdate,
   findOneAndUpdate,
-  find,
-  findByIdAndDelete
+  find
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { userModel } from "../../../../Database/model/user.model.js";

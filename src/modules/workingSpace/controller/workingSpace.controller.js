@@ -10,6 +10,7 @@ import { roomModel } from "../../../../Database/model/room.model.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import cloudinary from "../../../services/cloudinary.js";
 import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
+import reviewModel from "../../../../Database/model/review.model.js";
 
 // workingspace/room/booking
 
@@ -44,47 +45,52 @@ export const getBookingHistoryToWs = asyncHandler(async (req, res, next) => {
 });
 
 //MahmoudTry
-export const feedback=asyncHandler( async (req, res, next) => {
-    const workspaceId = req.params.id;
-    const feedback = req.body.feedback;
+// export const feedback=asyncHandler( async (req, res, next) => {
+//     const workspaceId = req.params.id;
+//     const feedback = req.body.feedback;
 
-      const workspace = await workSpaceModel.findById(workspaceId);
+//       const workspace = await workSpaceModel.findById(workspaceId);
 
-      workspace.feedback.push(feedback);
-      await workspace.save();
+//       workspace.feedback.push(feedback);
+//       await workspace.save();
 
-      res.status(200).json(workspace);
+//       res.status(200).json(workspace);
 
-  }); //3amel function 3ashan el feedback yet3amal men ay user w yet3amalo save fel model automatic
-  // mesh e7na elly no7oto w e7na bene3mel create lel workspace
+//});
+//3amel function 3ashan el feedback yet3amal men ay user w yet3amalo save fel model automatic
+// mesh e7na elly no7oto w e7na bene3mel create lel workspace
 
+//Maryam Try 
+export const createReview = asyncHandler(async (req, res, next) => {
+  let { workspaceId } = req.params;
+  let { rating } = req.body;
 
+  const workspace = await findById({ model: workSpaceModel, id: workspaceId });
+  if (!workspace) {
+    res.status(404).json({ message: "Workspace not found" });
+  } else{
+    const review = await find({ model: reviewModel });
+    // elmoshkela f length
+    // Don't allow more than one review per user(salma)
+    for (let i=0; i<review.rating.length; i++) {
+      console.log(review.rating.length)
+      if (workspace.rating[i].user._id.toString() === req.user._id.toString()) {
+        res.status(401).json({message:"Sorry, you can only add one rate per ws"})
+      }else{
+        const review = await create({
+          model: reviewModel,
+          data: {
+            createdBy:req.user._id,
+            workspace: workspaceId,
+            rating},
+          });
+          //console.log(review);
+          res.status(201).json({ message: "Created" ,review});}}
+        }});
 
-
-
-  
-//Maryam Try
-// export const createReview = asyncHandler(async (req, res, next) => {
-//   let { workspaceId } = req.params;
-//   let { comment, rating } = req.body;
-//   // const checkReview=await findOne({model:reviewModel,condition:{createdBy:_id,workspaceId}})
-//   const workspace = await findById({ model: workSpaceModel, id: workspaceId });
-//   if (!workspace) {
-//     res.status(404).json({ message: "Workspace not found" });
-//   } else {
-//     const review = await create({
-//       model: reviewModel,
-//       data: {
-//         // createdBy:req.user._id,
-//         workspace: workspaceId,
-//         $push: { comments: comment },
-//         // $inc:{commentcount: 1} ,
-//         rating,
-//       },
-//     });
-//     res.status(201).json({ message: "Created" ,review});
-//   }
-// });
-
-
+//try salma
+// Don't allow the course owner to post a review on their own course
+// if (req.user._id.toJSON() === review.user._id.toJSON()) {
+//    res.status(401).json({message:"Sorry, you can't review your own ws.");
+// }
 

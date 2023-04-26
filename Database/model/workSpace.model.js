@@ -24,19 +24,20 @@ const scheduleSchema = new mongoose.Schema({
 
 
 
-// const feedbackSchema = new mongoose.Schema({
+//  const feedbackSchema = new mongoose.Schema({
 //   rate: {
-//     type:Number,
-//     default:1,
-//     required:true,
-//     min:[1,"min 1"],
-//     max:[5,"max 5"]
-//   },
-//   comments: [{
-//     type: String,
-//     required: true,
-//   },]
+//      type:Number,
+//      default:1,
+//      required:true,
+//      min:[1,"min 1"],
+//      max:[5,"max 5"]
+//    },
+//    comments: [{
+//      type: String,
+//      required: true,
+//    },]
 // });
+
 
 
 
@@ -77,9 +78,7 @@ const workSpaceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    description: {
-      type: String,
-     
+    description: {type: String,
     },
     images: {
       type: [String],
@@ -87,7 +86,7 @@ const workSpaceSchema = new mongoose.Schema(
     },
     publicImageIds: [String],
     schedule: scheduleSchema,
-    // feedback: feedbackSchema,
+    //feedback: feedbackSchema,
     contact: contactSchema,
     location: locationSchema,
 
@@ -109,10 +108,7 @@ const workSpaceSchema = new mongoose.Schema(
     },
     ownerId: 
     { type:mongoose.Schema.ObjectId,
-      ref: 'user'},
-
-     
-
+      ref: 'user'}
   },
   {
     timestamps: true,
