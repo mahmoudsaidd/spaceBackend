@@ -5,7 +5,11 @@ import {
   findByIdAndDelete,
   findByIdAndUpdate,
   findOneAndUpdate,
+<<<<<<< HEAD
   find
+=======
+  find,
+>>>>>>> de2f10369b299dc9417e2cab3ad2e4ab2cf735cc
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { userModel } from "../../../../Database/model/user.model.js";
@@ -146,130 +150,67 @@ export const adminValidation = asyncHandler(async (req, res, next) => {
 //   }
 // );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //3dl f el api de m4 ele fo2
-export const Update = asyncHandler(
-  async (req, res, next) => {
-    let { workspaceId } = req.params;
-    // let {
-    //   name,
-    //   description,
-    //   holidays,
-    //   openingTime,
-    //   closingTime,
-    //   rate,
-    //   comments,
-    //   phone,
-    //   email,
-    //   socialMedia,
-    //   city,
-    //   streetName,
-    //   buildingNumber,
-    // } = req.body;
+export const Update = asyncHandler(async (req, res, next) => {
+  let { workspaceId } = req.params;
+  let workspace = await findById({ model: workSpaceModel, id: workspaceId });
+  if (!workspace) {
+    next(new Error("Workspace not found", { cause: 404 }));
+  } else {
+    // workspace.schedule.holidays = req.body.schedule.holidays;
+    // workspace.schedule.openingTime = req.body.schedule.openingTime;
+    // workspace.schedule.closingTime = req.body.schedule.closingTime;
 
+    // workspace.contact.phone = req.body.contact.phone;
+    // workspace.contact.email = req.body.contact.email;
+    // workspace.contact.socialMedia = req.body.contact.socialMedia;
 
-    let workspace = await findById({ model: workSpaceModel, id: workspaceId });
-    if (!workspace) {
-      next(new Error("Workspace not found", { cause: 404 }));
-    } else {
-      var i
-      // workspace.schedule.holidays[i]=req.body.schedule.holidays[i]
-      // workspace.schedule.openingTime=req.body.schedule.openingTime
-      // workspace.schedule.closingTime=req.body.schedule.closingTime
+    workspace.location.city = req.body.location.city;
+    // workspace.location.streetName = req.body.location.streetName;
+    // workspace.location.buildingNumber = req.body.location.buildingNumber;
 
-      // workspace.contact.phone=req.body.contact.phone
-      workspace.contact.email=req.body.contact.email
-      // workspace.contact.socialMedia=req.body.contact.socialMedia
+    await workspace.save();
 
-      // workspace.location.city=req.body.location.city
-      // workspace.location.streetName=req.body.location.streetName
-      // workspace.location.buildingNumber=req.body.location.buildingNumber
+    res.status(200).json({ message: "Updated", workspace });
 
-
-      await workspace.save()
-      
-      res.status(200).json({ message: "Updated",workspace });
-
-
-
-
-
-
-
-
-
-      // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
-      // if (workspace.ownerId.toString() == req.user._id.toString()) {
-      //   if (req.files?.length) {
-      //     let imagesURLs = [];
-      //     let imagesIds = [];
-      //     for (const file of req.files) {
-      //       let { secure_url, public_id } = await cloudinary.uploader.upload(
-      //         file.path,
-      //         { folder: "workspaces" }
-      //       );
-      //       imagesURLs.push(secure_url);
-      //       imagesIds.push(public_id);
-      //     }
-      //     req.body.images = imagesURLs;
-      //     req.body.publicImageIds = imagesIds;
+    // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
+    if (workspace.ownerId.toString() == req.user._id.toString()) {
+      // if (req.files?.length) {
+      //   let imagesURLs = [];
+      //   let imagesIds = [];
+      //   for (const file of req.files) {
+      //     let { secure_url, public_id } = await cloudinary.uploader.upload(
+      //       file.path,
+      //       { folder: "workspaces" }
+      //     );
+      //     imagesURLs.push(secure_url);
+      //     imagesIds.push(public_id);
       //   }
-
-
-
-        // workspace.feedback.rate=req.body.feedback.rate
-    //     let updatedWorkspaceInfo = await findByIdAndUpdate({
-    //       model: workSpaceModel,
-    //       condition: { _id: workspaceId },
-    //       data:{
-    //         $set:{
-    //           'location.city':"cairo"
-              
-    //         }
-    //       },
-           
-          
-    //       options: { new: true},
-    //     });
-    // await updatedWorkspaceInfo.save()
-    
-        // res.status(200).json({ message: "Updated" });
-      // } else {
-      //   next(
-      //     new Error("Sorry, you are not the owner of this workspace", {
-      //       cause: 403,
-      //     })
-      //   );
+      //   req.body.images = imagesURLs;
+      //   req.body.publicImageIds = imagesIds;
       // }
+      console.log(workspace.location.city);
+
+      // let updatedWorkspaceInfo = await findByIdAndUpdate({
+      //   model: workSpaceModel,
+      //   condition: { _id: workspaceId },
+      //   data: {
+      //     $set: req.body,
+      //   },
+      //   options: { new: true },
+      // });
+
+    } else {
+      next(
+        new Error("Sorry, you are not the owner of this workspace", {
+          cause: 403,
+        })
+      );
     }
   }
-);
+});
 
-
-
-
-
-
-
-
-
-
-//hna brdo byms7 kol el obj m4 byms7 ele ana 2oltlo 3leh bs 
+//hna brdo byms7 kol el obj m4 byms7 ele ana 2oltlo 3leh bs
 //delete workspaceInfo by owner
 export const deleteWorkspaceInfoByOwner = asyncHandler(
   async (req, res, next) => {
@@ -322,13 +263,6 @@ export const deleteWorkspaceInfoByOwner = asyncHandler(
 //modifyOffers
 //ReportUser
 
-
-
-
-
-
-
-
 //Client
 export const searchByRate = asyncHandler(async (req, res, next) => {
   const rate = parseInt(req.params.rate);
@@ -350,25 +284,13 @@ export const searchByRate = asyncHandler(async (req, res, next) => {
   res.status(200).json(results);
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Admin
 //get client accounts  {admin}
 export const getClientAccountsByAdmin = asyncHandler(async (req, res, next) => {
-  const user = await find({ model: userModel,condition:{$nor: [ { role:"Admin" }]}});
+  const user = await find({
+    model: userModel,
+    condition: { $nor: [{ role: "Admin" }] },
+  });
   if (user) {
     res.json({ message: "Founded", user });
   } else {
@@ -378,8 +300,8 @@ export const getClientAccountsByAdmin = asyncHandler(async (req, res, next) => {
 
 //get specific account {admin}
 export const getAccountByAdmin = asyncHandler(async (req, res, next) => {
-  let {UserId}=req.params;
-  const account = await findById({ model: userModel, id:UserId});
+  let { UserId } = req.params;
+  const account = await findById({ model: userModel, id: UserId });
   if (account) {
     res.json({ message: "Founded", account });
   } else {
@@ -387,18 +309,21 @@ export const getAccountByAdmin = asyncHandler(async (req, res, next) => {
   }
 });
 
-
 //delete client account {admin}
-export const deleteClientAccountByAdmin = asyncHandler(async (req, res, next) => {
-  let { DId } = req.params;
-  const deletedUser = await findByIdAndDelete({
-    model: userModel, condition:{_id: DId }});
-  if (deletedUser) {
-    res.json({ message: "Done", deletedUser });
-  } else {
-    res.json({ message: "Failed" });
+export const deleteClientAccountByAdmin = asyncHandler(
+  async (req, res, next) => {
+    let { DId } = req.params;
+    const deletedUser = await findByIdAndDelete({
+      model: userModel,
+      condition: { _id: DId },
+    });
+    if (deletedUser) {
+      res.json({ message: "Done", deletedUser });
+    } else {
+      res.json({ message: "Failed" });
+    }
   }
-});
+);
 
 //get &delete WS {admin}
 export const getWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
