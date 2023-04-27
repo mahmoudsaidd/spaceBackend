@@ -4,8 +4,8 @@ import {
   findById,
   findByIdAndDelete,
   findByIdAndUpdate,
-  findOneAndUpdate,
-  find,
+  findOneAndUpdate,find
+
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { userModel } from "../../../../Database/model/user.model.js";
@@ -41,30 +41,34 @@ export const addWsByFillForm = asyncHandler(async (req, res, next) => {
   res.json({ message: "Done", addedWorkspace });
 });
 
+
+
 export const adminValidation = asyncHandler(async (req, res, next) => {
   let { ownerId, adminValidation } = req.body;
   let owner = await findById({ model: userModel, id: ownerId });
   if (!owner) {
     res.status(404).json({ message: "Owner not found" });
   } else {
-    if (adminValidation == "true") {
-      console.log(adminValidation);
-      let accept = await findOneAndUpdate({
-        model: userModel,
-        condition: { adminValidation: false, role: "User" },
-        data: { adminValidation: true, role: "Owner" },
-        options: { new: true },
-      });
-      res.status(200).json({ message: "owner Accepted By Admin", accept });
-    } else {
-      let deleteWorkSpace = await deleteOne({
-        model: workSpaceModel,
-        // condition: { owner: ownerId }
-        condition: { ownerId },
-      });
-      res.status(200).json({ message: "owner Refused By Admin" });
+      if (adminValidation == 'true') {
+        console.log(adminValidation);
+        let accept = await findOneAndUpdate({
+          model: userModel,
+          condition: {_id:ownerId ,role:'User',  adminValidation: 'false'},
+          data: { adminValidation: 'true', role: "Owner" },
+          options: { new: true },
+        });
+        res.status(200).json({ message: "owner Accepted By Admin", accept });
+      } else {
+        let deleteWorkSpace = await deleteOne({
+          model: workSpaceModel,
+          // condition: { owner: ownerId }
+          condition: { ownerId },
+        });
+        res.status(200).json({ message: "owner Refused By Admin" ,deleteWorkSpace});
+      }
+    
     }
-  }
+    
 });
 
 //modify workspaceInfo
@@ -146,7 +150,19 @@ export const adminValidation = asyncHandler(async (req, res, next) => {
 //   }
 // );
 
+
+
+
+
+
 //3dl f el api de m4 ele fo2
+
+
+
+
+
+
+
 export const Update = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
   let workspace = await findById({ model: workSpaceModel, id: workspaceId });
@@ -154,17 +170,18 @@ export const Update = asyncHandler(async (req, res, next) => {
     next(new Error("Workspace not found", { cause: 404 }));
   } else {
     if(req.body)
-    {// workspace.schedule.holidays[0] = req.body.schedule.holidays;
-    // workspace.schedule.openingTime = req.body.schedule.openingTime;
-    // workspace.schedule.closingTime = req.body.schedule.closingTime;
+    {
+    workspace.schedule.holidays = req.body.schedule.holidays;
+    workspace.schedule.openingTime = req.body.schedule.openingTime;
+    workspace.schedule.closingTime = req.body.schedule.closingTime;
 
-    // workspace.contact.phone = req.body.contact.phone;
-    // workspace.contact.email = req.body.contact.email;
-    // workspace.contact.socialMedia = req.body.contact.socialMedia;
+    workspace.contact.phone = req.body.contact.phone;
+    workspace.contact.email = req.body.contact.email;
+    workspace.contact.socialMedia = req.body.contact.socialMedia;
 
-    // workspace.location.city = req.body.location.city;
-    // workspace.location.streetName = req.body.location.streetName;
-    // workspace.location.buildingNumber = req.body.location.buildingNumber;
+    workspace.location.city = req.body.location.city;
+    workspace.location.streetName = req.body.location.streetName;
+    workspace.location.buildingNumber = req.body.location.buildingNumber;
 
 }
   
@@ -219,6 +236,13 @@ export const Update = asyncHandler(async (req, res, next) => {
     }
   }
 });
+
+
+
+
+
+
+
 
 //hna brdo byms7 kol el obj m4 byms7 ele ana 2oltlo 3leh bs
 //delete workspaceInfo by owner

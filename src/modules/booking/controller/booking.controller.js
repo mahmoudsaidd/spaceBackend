@@ -161,10 +161,10 @@ export const conflictBooking = async (req, res, next) => {
 };
 
 
-
-
-
-
+// CancelBooking api 
+// HTTP method: DELETE
+// inputs from params:bookingId
+// roles:user who making this booking or the owner of the workspace that have this booking
 export const CancelBooking = asyncHandler(async (req, res, next) => {
   let { bookingId } = req.params;
   const Booking = await findById({ model: bookingModel, id: bookingId });
@@ -172,18 +172,26 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
     res.status(404).json({ message: "Booking not found" });
   } else {
     //Booking >> Room >> WS >> Owner
-    // let room = await findById({ model: roomModel, id: Booking.room });
-    // let workspace = await findById({
-    //   model: workSpaceModel,
-    //   id: room.workspaceId,
-    // });
-    // let owner = await findById({ model: userModel, id: workspace.ownerId });
 
-    // console.log(Booking.user.toString() || owner.toString());
+    let room = await findById({
+      model: roomModel,
+      id: Booking.room,
+    });
+    let workspace = await findById({
+      model: workSpaceModel,
+      id: room.workspaceId,
+    });
+    let owner = await findById({ model: userModel, id: workspace.ownerId });
 
-
+    console.log("room: ", room);
+    console.log("workspace: ", workspace);
+    console.log("owner: ", owner);
     
-    if (Booking.user.toString() == req.user._id.toString()) {
+
+    if (
+      req.user._id.toString() ===Booking.user.toString()  ||
+       req.user._id.toString() === owner.id.toString()
+    ) {
       const deletedBooking = await findByIdAndDelete({
         model: bookingModel,
         condition: { _id: bookingId },
@@ -197,28 +205,15 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
 
 
 
+//Lessaaa
+// export const CancelledBookings=asyncHandler(async(req,res,next)=>{
+// const cancelledBookings=await find({model:bookingModel})
+// // if(req.user._id ===cancelledBookings.user){
+
+// // }
+// res.status(200).json({message:cancelledBookings})
+// })
 
 
 
 
-
-
-
-
-
-
-
-
-// const job = schedule.scheduleJob(endTime, function(){
-//   // console.log('The answer to life, the universe, and everything!');
-
-//   // let flag=await find({model:roomModel,})
-
-// });
-
-// npm install --save node-cron
-// const cron = require('node-cron');
-// cron.schedule('0 9 * * *', () => {
-//   // Function to run
-// });
-// 0 */59 * * * *

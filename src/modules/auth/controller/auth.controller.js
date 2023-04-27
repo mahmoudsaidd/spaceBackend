@@ -4,12 +4,14 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "../../../services/sendEmail.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import {
+  find,
   findById,
   findByIdAndUpdate,
   findOne,
   findOneAndUpdate,
 } from "../../../../Database/DBMethods.js";
 import { nanoid } from "nanoid";
+import { bookingModel } from "../../../../Database/model/booking.model.js";
 
 
 // signUp api 
@@ -113,6 +115,7 @@ export const refreshToken = async (req, res) => {
   }
 };
 
+
 // signIn api 
 // HTTP method: POST
 // inputs from body:email, password 
@@ -215,6 +218,4 @@ export const forgetPassword = asyncHandler(async (req, res) => {
 });
 
 
-
-
-
+//ProfilePic
