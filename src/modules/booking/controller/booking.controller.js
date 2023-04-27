@@ -10,7 +10,7 @@ import {
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { roomModel } from "../../../../Database/model/room.model.js";
 import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
-import schedule from 'node-schedule'
+import schedule from "node-schedule";
 
 import moment from "moment";
 import { userModel } from "../../../../Database/model/user.model.js";
@@ -20,43 +20,52 @@ import { userModel } from "../../../../Database/model/user.model.js";
 
 // console.log(b);
 
-
 export const addBooking = asyncHandler(async (req, res, next) => {
   let { room, startTime, endTime } = req.body;
-let foundedRoom =await findById({model:roomModel,id:room})
-if(!foundedRoom){
-  res.status(404).json({ message: "Room not found" });
+  let foundedRoom = await findById({ model: roomModel, id: room });
+  if (!foundedRoom) {
+    res.status(404).json({ message: "Room not found" });
 
+    const workspaceId = foundRoom.workingSpace;
 
-  const workspaceId = foundRoom.workingSpace;
+    const foundWorkspace = await findOne({
+      model: workSpaceModel,
+      id: workspaceId,
+    });
 
-  const foundWorkspace = await findOne({ model: workSpaceModel, id:workspaceId });
+    if (!foundWorkspace) {
+      return res.status(404).json({ message: "Workspace not found" });
+    }
 
-  if (!foundWorkspace) {
-    return res.status(404).json({ message: "Workspace not found" });
-  }
+    // Convert booking start and end time to hours
+    const bookingStartHour = new Date(startTime).getHours();
+    const bookingEndHour = new Date(endTime).getHours();
 
-  // Convert booking start and end time to hours
-  const bookingStartHour = new Date(startTime).getHours();
-  const bookingEndHour = new Date(endTime).getHours();
+    // Convert workspace opening and closing time to hours
+    const workspaceOpeningHour = new Date(
+      foundWorkspace.schedule[0].openingTime
+    ).getHours();
+    const workspaceClosingHour = new Date(
+      foundWorkspace.schedule[0].closingTime
+    ).getHours();
 
-  // Convert workspace opening and closing time to hours
-  const workspaceOpeningHour = new Date(foundWorkspace.schedule[0].openingTime).getHours();
-  const workspaceClosingHour = new Date(foundWorkspace.schedule[0].closingTime).getHours();
-
-  // Check if booking time is within workspace opening and closing time
-  if (bookingStartHour < workspaceOpeningHour || bookingEndHour > workspaceClosingHour) {
-    return res.status(400).json({ message: "Booking time is outside workspace opening and closing time" });
-  }
-
-}else{
+    // Check if booking time is within workspace opening and closing time
+    if (
+      bookingStartHour < workspaceOpeningHour ||
+      bookingEndHour > workspaceClosingHour
+    ) {
+      return res.status(400).json({
+        message: "Booking time is outside workspace opening and closing time",
+      });
+    }
+  } else {
     //Calculate Duration automatic
     const total = new Date(endTime).getTime() - new Date(startTime).getTime();
     const calculatedDuration = Math.floor(total / 1000) / 3600;
     console.log(calculatedDuration);
-  //Store price automatic depend on room price stored on room Model
-  const cost=foundedRoom.price
-  console.log(cost);
+    //Store price automatic depend on room price stored on room Model
+    const cost = foundedRoom.price;
+    console.log(cost);
 
     const overlappingBooking = await bookingModel.findOne({
       room,
@@ -77,7 +86,7 @@ if(!foundedRoom){
           room,
           startTime,
           endTime,
-          price:cost,
+          price: cost,
           user: req.user._id,
           duration: calculatedDuration,
         },
@@ -91,49 +100,38 @@ if(!foundedRoom){
           });
         }
       }
-  
+
       res.json({ message: "Done", addedBooking });
     }
-}
-
+  }
 });
-
-
-
 
 //modify booking info By Owner
 export const updateBookingInfoByOwner = asyncHandler(async (req, res, next) => {
   let { bookingId } = req.params;
-  let {price, room,startTime, endTime, user ,fees, promoCode } = req.body;
+  let { price, room, startTime, endTime, user, fees, promoCode } = req.body;
 
   const total = new Date(endTime).getTime() - new Date(startTime).getTime();
-    const calculatedDuration = Math.floor(total / 1000) / 3600;
-    console.log(calculatedDuration);
-
+  const calculatedDuration = Math.floor(total / 1000) / 3600;
+  console.log(calculatedDuration);
 
   let updatingBookingInfo = await findByIdAndUpdate({
     model: bookingModel,
     condition: { _id: bookingId },
     data: {
-      price, 
+      price,
       room,
       startTime,
-       endTime, 
-       user ,
-       fees, 
-       promoCode,
-       duration: calculatedDuration,
-
+      endTime,
+      user,
+      fees,
+      promoCode,
+      duration: calculatedDuration,
     },
     options: { new: true },
   });
   res.status(200).json({ message: "Updated", updatingBookingInfo });
 });
-
-
-
-
-
 
 export const getBookingsHistoryToWs = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
@@ -147,8 +145,6 @@ export const getBookingsHistoryToWs = asyncHandler(async (req, res, next) => {
   });
   res.status(200).json({ message: "Done", history });
 });
-
-
 
 export const conflictBooking = async (req, res, next) => {
   let currentTime = new Date();
@@ -166,34 +162,38 @@ export const conflictBooking = async (req, res, next) => {
 
 
 
-export const CancelBooking=asyncHandler(async(req,res,next)=>{
-  let{bookingId}=req.params
-  const Booking=await findById({model:bookingModel,id:bookingId})
-  if(!Booking){
-    res.status(404).json({message:"Booking not found"})
-  }else{
+
+
+
+export const CancelBooking = asyncHandler(async (req, res, next) => {
+  let { bookingId } = req.params;
+  const Booking = await findById({ model: bookingModel, id: bookingId });
+  if (!Booking) {
+    res.status(404).json({ message: "Booking not found" });
+  } else {
     //Booking >> Room >> WS >> Owner
-    let room=await findById({model:roomModel,id:Booking.room})
-    let workspace=await findById({model:workSpaceModel,id:room.workspaceId})
-    let owner=await findById({model:userModel,id:workspace.ownerId})
+    // let room = await findById({ model: roomModel, id: Booking.room });
+    // let workspace = await findById({
+    //   model: workSpaceModel,
+    //   id: room.workspaceId,
+    // });
+    // let owner = await findById({ model: userModel, id: workspace.ownerId });
 
-    console.log(Booking.user.toString() || owner.toString());
+    // console.log(Booking.user.toString() || owner.toString());
 
-      if(Booking.user.toString()  == req.user._id.toString() || owner.toString() ==req.user._id.toString()){
-        
-      const deletedBooking=await findByIdAndDelete({model:bookingModel,condition:{_id:bookingId}})
-      res.status(200).json({message:"Deleted",deletedBooking})
-    }
-    else{
-      res.json({message:"you cannot delete this booking"})
-    }
+
     
+    if (Booking.user.toString() == req.user._id.toString()) {
+      const deletedBooking = await findByIdAndDelete({
+        model: bookingModel,
+        condition: { _id: bookingId },
+      });
+      res.status(200).json({ message: "Deleted", deletedBooking });
+    } else {
+      res.json({ message: "you cannot delete this booking" });
+    }
   }
-})
-
-
-
-
+});
 
 
 
@@ -211,12 +211,10 @@ export const CancelBooking=asyncHandler(async(req,res,next)=>{
 
 // const job = schedule.scheduleJob(endTime, function(){
 //   // console.log('The answer to life, the universe, and everything!');
-  
+
 //   // let flag=await find({model:roomModel,})
 
 // });
-
-
 
 // npm install --save node-cron
 // const cron = require('node-cron');

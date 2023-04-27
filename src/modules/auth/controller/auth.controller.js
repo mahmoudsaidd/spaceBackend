@@ -11,6 +11,10 @@ import {
 } from "../../../../Database/DBMethods.js";
 import { nanoid } from "nanoid";
 
+
+// signUp api 
+// HTTP method: POST
+// inputs from body:userName, email, password 
 export const signUp = asyncHandler(async (req, res, next) => {
   const { userName, email, password } = req.body;
   const user = await findOne({
@@ -60,6 +64,10 @@ export const signUp = asyncHandler(async (req, res, next) => {
   }
 });
 
+
+// confirmEmail api 
+// HTTP method: Get
+// inputs from params :Token
 export const confirmEmail = asyncHandler(async (req, res, next) => {
   let { token } = req.params;
   let decoded = jwt.verify (token, process.env.emailToken);
@@ -79,6 +87,9 @@ export const confirmEmail = asyncHandler(async (req, res, next) => {
     }
 }});
 
+// refreshToken api 
+// HTTP method: Get
+// inputs from params :Token
 export const refreshToken = async (req, res) => {
   let { token } = req.params;
   let decoded = jwt.verify(token, process.env.emailToken);
@@ -102,6 +113,9 @@ export const refreshToken = async (req, res) => {
   }
 };
 
+// signIn api 
+// HTTP method: POST
+// inputs from body:email, password 
 export const signIn = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await findOne({ model: userModel, condition: { email } });
@@ -130,6 +144,9 @@ export const signIn = asyncHandler(async (req, res, next) => {
   }
 });
 
+// updateRole api 
+// HTTP method: PUT
+// inputs from body:userId
 export const updateRole = async (req, res, next) => {
   let { userId } = req.body;
   let user = await findById({ model: userModel, id: userId });
@@ -151,6 +168,9 @@ export const updateRole = async (req, res, next) => {
   }
 };
 
+// sendCode api 
+// HTTP method: POST
+// inputs from body:email
 export const sendCode = async (req, res) => {
   let { email } = req.body;
   let user = await userModel.findOne({ email });
@@ -166,6 +186,11 @@ export const sendCode = async (req, res) => {
   }
 };
 
+
+
+// forgetPassword api 
+// HTTP method: POST
+// inputs from body: OTPCode, email, password
 export const forgetPassword = asyncHandler(async (req, res) => {
   let { OTPCode, email, password} = req.body;
   if (!OTPCode) {

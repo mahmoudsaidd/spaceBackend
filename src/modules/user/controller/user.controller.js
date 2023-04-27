@@ -153,7 +153,8 @@ export const Update = asyncHandler(async (req, res, next) => {
   if (!workspace) {
     next(new Error("Workspace not found", { cause: 404 }));
   } else {
-    // workspace.schedule.holidays = req.body.schedule.holidays;
+    if(req.body)
+    {// workspace.schedule.holidays[0] = req.body.schedule.holidays;
     // workspace.schedule.openingTime = req.body.schedule.openingTime;
     // workspace.schedule.closingTime = req.body.schedule.closingTime;
 
@@ -161,9 +162,13 @@ export const Update = asyncHandler(async (req, res, next) => {
     // workspace.contact.email = req.body.contact.email;
     // workspace.contact.socialMedia = req.body.contact.socialMedia;
 
-    workspace.location.city = req.body.location.city;
+    // workspace.location.city = req.body.location.city;
     // workspace.location.streetName = req.body.location.streetName;
     // workspace.location.buildingNumber = req.body.location.buildingNumber;
+
+}
+  
+
 
     await workspace.save();
 
@@ -185,16 +190,25 @@ export const Update = asyncHandler(async (req, res, next) => {
       //   req.body.images = imagesURLs;
       //   req.body.publicImageIds = imagesIds;
       // }
-      console.log(workspace.location.city);
+      console.log(workspace.schedule.holidays);
 
-      // let updatedWorkspaceInfo = await findByIdAndUpdate({
-      //   model: workSpaceModel,
-      //   condition: { _id: workspaceId },
-      //   data: {
-      //     $set: req.body,
-      //   },
-      //   options: { new: true },
-      // });
+      let updatedWorkspaceInfo = await findByIdAndUpdate({
+        model: workSpaceModel,
+        condition: { _id: workspaceId },
+        data: {
+        //   $set:{
+        //  'schedule.$.holidays': req.body.schedule.holidays, 
+
+        //   }
+
+        },
+        options: { new: true },
+      });
+
+    
+
+
+
 
     } else {
       next(

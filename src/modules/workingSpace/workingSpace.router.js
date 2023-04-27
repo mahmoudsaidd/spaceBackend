@@ -8,7 +8,7 @@ router.get('/getWsRooms',workSpaceController.getWsRooms)
 router.get('/getAllWorkSpaces',workSpaceController.getWorkSpaces)
 router.post('/feedback/:id',workSpaceController.feedback)
 
-// router.post('/createReview/:workspaceId',workSpaceController.createReview)
+router.post('/createReview/:workspaceId',auth(endPoints.createReview),workSpaceController.createReview)
 
 
 

@@ -9,6 +9,7 @@ import * as authController from './controller/auth.controller.js'
 const router = Router()
 
 
+
 router.post('/signUp',validation(signUpSchema),authController.signUp)
 router.get('/confirmEmail/:token',authController.confirmEmail)
 router.get('/refreshToken/:token',authController.refreshToken)
