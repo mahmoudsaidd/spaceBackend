@@ -97,7 +97,7 @@ const workSpaceSchema = new mongoose.Schema(
     // longitude: {
     //   type: Number,
     // },
-
+     
 
 
 
@@ -109,6 +109,8 @@ const workSpaceSchema = new mongoose.Schema(
     ownerId: 
     { type:mongoose.Schema.ObjectId,
       ref: 'user'}
+
+
   },
   {
     timestamps: true,

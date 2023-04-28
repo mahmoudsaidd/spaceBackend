@@ -12,6 +12,6 @@ router.post('/createReview/:workspaceId',auth(endPoints.createReview),workSpaceC
 
 // router.post('/rating/:WorkSpaceId',workSpaceController.rating)
 
-router.get('/avgRate/:workspaceId',auth(endPoints),workSpaceController.avgRate)
+router.get('/avgRate/:workspaceId',auth(endPoints.avgRate),workSpaceController.avgRate)
 
 export default router;

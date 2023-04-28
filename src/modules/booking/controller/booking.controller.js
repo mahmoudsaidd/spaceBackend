@@ -133,18 +133,29 @@ export const updateBookingInfoByOwner = asyncHandler(async (req, res, next) => {
   res.status(200).json({ message: "Updated", updatingBookingInfo });
 });
 
+
+
+
+//kont 7ata property esmha 'Bookings' f el model w kant 48ala bs 4kl 8erna el logic tany w el propert etms7t 3shan kda mkn4 2areha , ana 3dltha 5las 3ala a5r update 
 export const getBookingsHistoryToWs = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
-  let ws = await findById({
-    model: workSpaceModel,
-    condition: { _id: workspaceId },
-  });
-  let history = await findById({
-    model: bookingModel,
-    condition: { _id: Bookings },
-  });
-  res.status(200).json({ message: "Done", history });
+  const ws =await findById({model:workSpaceModel,id:workspaceId})
+  if(!ws){
+res.status(404).json({message:"Workspace not found"})
+  }else{
+    // Ws>> Rooms>>Bookings
+    let rooms=await find({model:roomModel,condition:{workspaceId:ws._id}})
+    console.log(rooms);
+    let history = await find({
+      model: bookingModel,
+      condition: { room: rooms },
+    });
+    console.log(history);
+    res.status(200).json({ message: "Done", history });
+  }
 });
+
+
 
 export const conflictBooking = async (req, res, next) => {
   let currentTime = new Date();

@@ -4,7 +4,7 @@ import {
   findById,
   findByIdAndDelete,
   findByIdAndUpdate,
-  findOneAndUpdate,find
+  findOneAndUpdate,find, updateOne
 
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
@@ -13,6 +13,7 @@ import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { roles } from "../../../middleware/auth.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
+
 
 //Owner
 export const addWsByFillForm = asyncHandler(async (req, res, next) => {
@@ -381,4 +382,37 @@ export const deleteWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
   } else {
     res.json({ message: "Failed" });
   }
+});
+
+
+
+
+
+//ProfilePic
+export const profilePic = async (req, res) => {
+  if (req.file) {
+    let { secure_url, public_id } = await cloudinary.uploader.upload(
+      req.file.path,
+      { folder: "profilePic" }
+    );
+    req.body.profilePic = secure_url;
+    req.body.publicImageId = public_id;
+  }
+
+  let uploadedPic = await findByIdAndUpdate({model:userModel,condition:{_id:req.user._id},data:req.body,options:{new:true}})
+  res.json({ message: "Done", uploadedPic });
+
+};
+
+
+export const getBookingsHistoryToUser = asyncHandler(async (req, res, next) => {
+  let user = await findById({
+    model: userModel,
+    condition: { _id:req.user._id },
+  });
+  let history = await find({
+    model: bookingModel,
+    condition: { user: req.user._id },
+  });
+  res.status(200).json({ message: "Done", history });
 });
