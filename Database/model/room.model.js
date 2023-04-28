@@ -3,18 +3,19 @@ import mongoose from "mongoose";
 const roomSchema = new mongoose.Schema({
   price: {
     type: Number,
-    required: true
+    required: true,
+    min:0
   },
   roomNumber:{
     type: String,
-    // required: [true, 'Room number is required']
   },
-  isBooked: {
-    type: Boolean,
-    default: false
-  },
+  // isBooked: {
+  //   type: Boolean,
+  //   default: false
+  // },
   capacity: {
     type: Number,
+    min:1
     // required: true
   },
   Amenities:{
@@ -36,20 +37,22 @@ const roomSchema = new mongoose.Schema({
 
   },
   type: {
-    type: String, // aw momken nekhaliha enums zay desk w room w shared space w keda
+    type: String, 
     // required: [true, 'Please specify room type']
   },
-  roomImages: [{
-    type: String,
-    // required: true
-  }],
+  roomImages: {
+    type: [String],
+    required: [true, "Rooms' images are required"],
+  },
+  publicImageIds: [String],
+
   dateCreated: {
     type: Date,
     default: Date.now
 },
   workspaceId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'workingSpace'
+  type:mongoose.Schema.ObjectId,
+  ref:'workSpace'
   }
 });
 

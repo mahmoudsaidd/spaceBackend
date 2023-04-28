@@ -6,10 +6,12 @@ const router= Router();
 
 router.get('/getWsRooms',workSpaceController.getWsRooms)
 router.get('/getAllWorkSpaces',workSpaceController.getWorkSpaces)
-//router.post('/feedback/:id',workSpaceController.feedback)
 
-router.post('/createReview/:workspaceId',auth(endPoints.rate),workSpaceController.createReview)
+
+router.post('/createReview/:workspaceId',auth(endPoints.createReview),workSpaceController.createReview)
+
 // router.post('/rating/:WorkSpaceId',workSpaceController.rating)
 
+router.get('/avgRate/:workspaceId',auth(endPoints),workSpaceController.avgRate)
 
 export default router;
