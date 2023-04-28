@@ -5,11 +5,7 @@ import {
   findByIdAndDelete,
   findByIdAndUpdate,
   findOneAndUpdate,
-<<<<<<< HEAD
-  find
-=======
-  find,
->>>>>>> de2f10369b299dc9417e2cab3ad2e4ab2cf735cc
+
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { userModel } from "../../../../Database/model/user.model.js";
@@ -106,7 +102,7 @@ export const adminValidation = asyncHandler(async (req, res, next) => {
 //             );
 //             imagesURLs.push(secure_url);
 //             imagesIds.push(public_id);
-//           }
+//            }
 //           req.body.images = imagesURLs;
 //           req.body.publicImageIds = imagesIds;
 //         }

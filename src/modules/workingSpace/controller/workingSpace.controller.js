@@ -89,7 +89,7 @@ export const createReview = asyncHandler(async (req, res, next) => {
         }});
 
 //try salma
-// Don't allow the course owner to post a review on their own course
+// Don't allow the ws owner to post a review on their own ws
 // if (req.user._id.toJSON() === review.user._id.toJSON()) {
 //    res.status(401).json({message:"Sorry, you can't review your own ws.");
 // }
