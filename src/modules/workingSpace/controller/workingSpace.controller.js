@@ -57,10 +57,9 @@ export const createReview = asyncHandler(async (req, res, next) => {
       condition:{
       createdBy:req.user._id,
       workspace:workspaceId,
-   
     }});
     if(existingReview){
-   res.status(401).json({message:"Sorry,you can only add one review per workspace"})
+      res.status(401).json({message:"Sorry,you can only add one review per workspace"})
     }else{
       const review = await create({
         model: reviewModel,
@@ -74,6 +73,13 @@ export const createReview = asyncHandler(async (req, res, next) => {
       });
     
     
+
+
+//try salma
+// Don't allow the ws owner to post a review on their own ws
+// if (req.user._id.toJSON() === review.user._id.toJSON()) {
+//    res.status(401).json({message:"Sorry, you can't review your own ws.");
+// }
 
 
 export const avgRate=asyncHandler(async(req,res,next)=>{
@@ -93,5 +99,5 @@ res.status(404).json({message:"Workspace not found"})
     const avgRating=totalRating/totalReviews
     res.status(200).json({message:"Done",avgRating})
   }
- 
+
 })
