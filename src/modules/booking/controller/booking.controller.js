@@ -58,14 +58,28 @@ export const addBooking = asyncHandler(async (req, res, next) => {
         message: "Booking time is outside workspace opening and closing time",
       });
     }
-  } else {
-    //Calculate Duration automatic
-    const total = new Date(endTime).getTime() - new Date(startTime).getTime();
-    const calculatedDuration = Math.floor(total / 1000) / 3600;
-    console.log(calculatedDuration);
-    //Store price automatic depend on room price stored on room Model
-    const cost = foundedRoom.price;
-    console.log(cost);
+  
+
+    // validating booking on holidays
+  function getDayOfWeek(dateString) {
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const date = new Date(dateString);
+    const dayOfWeekNumber = date.getDay();
+    const dayOfWeekName = daysOfWeek[dayOfWeekNumber];
+    return dayOfWeekName;
+  }
+  
+    // Check if booking is on a holiday of the workspace
+    const dayName= getDayOfWeek(startTime)
+    const workspaceHolidays = foundWorkspace.schedule[0].holidays;
+    const holidays = workspaceHolidays.map(dateString => getDayOfWeek(dateString));
+    console.log(holidays) //el moshkela hena en el holidays de betraga3 value wa7da f array el holidays
+    // w betmna3 el booking fel youm elly betraga3o da bas
+    console.log(dayName)
+    if (holidays.includes(dayName)) {
+      return res.status(400).json({ message: "Booking is not allowed on workspace holidays" });
+    }
+
 
     const overlappingBooking = await bookingModel.findOne({
       room,
@@ -79,7 +93,18 @@ export const addBooking = asyncHandler(async (req, res, next) => {
       return res
         .status(400)
         .json({ message: "The room is not available at the requested time." });
-    } else {
+    } 
+
+
+    //Calculate Duration automatic
+    const total = new Date(endTime).getTime() - new Date(startTime).getTime();
+    const calculatedDuration = Math.floor(total / 1000) / 3600;
+    console.log(calculatedDuration);
+    //Store price automatic depend on room price stored on room Model
+    const cost = foundedRoom.price;
+    console.log(cost);
+
+
       const addedBooking = await create({
         model: bookingModel,
         data: {
@@ -91,6 +116,9 @@ export const addBooking = asyncHandler(async (req, res, next) => {
           duration: calculatedDuration,
         },
       });
+
+// el isBooked ba2a malhash lazma el mafrod??
+
       if (addedBooking) {
         {
           const room = await findOneAndUpdate({
@@ -104,7 +132,7 @@ export const addBooking = asyncHandler(async (req, res, next) => {
       res.json({ message: "Done", addedBooking });
     }
   }
-});
+);
 
 //modify booking info By Owner
 export const updateBookingInfoByOwner = asyncHandler(async (req, res, next) => {
