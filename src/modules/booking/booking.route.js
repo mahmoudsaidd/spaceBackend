@@ -10,7 +10,10 @@ const router=Router()
 router.post('/createBooking',validation(createBookingSchema),auth(endPoints.createBooking),bookingController.addBooking)
 router.put('/updateBookingInfoByOwner/:bookingId',bookingController.updateBookingInfoByOwner)
 router.get('/getBookingsHistoryToWs/:workspaceId',bookingController.getBookingsHistoryToWs)
-router.delete('/CancelBooking/:bookingId',auth(endPoints.CancelBooking),bookingController.CancelBooking)
+router.put('/CancelBooking/:bookingId',auth(endPoints.CancelBooking),bookingController.CancelBooking)
+router.get('/cancelledBookingsHistoryToUser',bookingController.cancelledBookingsHistoryToUser)
+
+
 // router.get('/CancelledBookings',auth(),bookingController.CancelledBookings)
 
 

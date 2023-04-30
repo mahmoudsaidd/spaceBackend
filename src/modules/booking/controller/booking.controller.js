@@ -231,15 +231,34 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
       req.user._id.toString() ===Booking.user.toString()  ||
        req.user._id.toString() === owner.id.toString()
     ) {
-      const deletedBooking = await findByIdAndDelete({
+      const bookingCancellation = await findOneAndUpdate({
         model: bookingModel,
         condition: { _id: bookingId },
+        data: { isCancelled: true },
       });
-      res.status(200).json({ message: "Deleted", deletedBooking });
+      // const deletedBooking = await findByIdAndDelete({
+      //   model: bookingModel,
+      //   condition: { _id: bookingId },
+      // });
+      res.status(200).json({ message: "Cancelled", bookingCancellation });
     } else {
-      res.json({ message: "you cannot delete this booking" });
+      res.json({ message: "you cannot cancel this booking" });
     }
   }
+});
+
+
+//3ayez yetgarab lesa bardo
+export const cancelledBookingsHistoryToUser = asyncHandler(async (req, res, next) => {
+  let user = await findById({
+    model: userModel,
+    condition: { _id:req.user._id },
+  });
+  let history = await find({
+    model: bookingModel,
+    conditions: [{ user: req.user._id }, { isCancelled: true }],
+  });
+  res.status(200).json({ message: "Done", history });
 });
 
 
