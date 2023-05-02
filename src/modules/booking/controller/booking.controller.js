@@ -24,7 +24,8 @@ export const addBooking = asyncHandler(async (req, res, next) => {
   let { room, startTime, endTime } = req.body;
   let foundedRoom = await findById({ model: roomModel, id: room });
   if (!foundedRoom) {
-    res.status(404).json({ message: "Room not found" });
+    return res.status(404).json({ message: "Room not found" });
+  }
 
     const workspaceId = foundRoom.workingSpace;
 
@@ -100,8 +101,8 @@ export const addBooking = asyncHandler(async (req, res, next) => {
     const total = new Date(endTime).getTime() - new Date(startTime).getTime();
     const calculatedDuration = Math.floor(total / 1000) / 3600;
     console.log(calculatedDuration);
-    //Store price automatic depend on room price stored on room Model
-    const cost = foundedRoom.price;
+    //Store price automatic depend on room price stored on room Model and duration
+    const cost = foundedRoom.price*calculatedDuration;
     console.log(cost);
 
 
