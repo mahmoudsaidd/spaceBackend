@@ -132,7 +132,7 @@ export const addBooking = asyncHandler(async (req, res, next) => {
 
       res.json({ message: "Done", addedBooking });
     }
-  }
+  
 );
 
 //modify booking info By Owner
