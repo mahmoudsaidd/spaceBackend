@@ -6,6 +6,7 @@ import {
   findById,
   findByIdAndUpdate,
   findByIdAndDelete,
+  findOne,
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import { roomModel } from "../../../../Database/model/room.model.js";
@@ -20,13 +21,17 @@ import { userModel } from "../../../../Database/model/user.model.js";
 
 // console.log(b);
 
+
+
+
+
 export const addBooking = asyncHandler(async (req, res, next) => {
   let { room, startTime, endTime } = req.body;
   let foundedRoom = await findById({ model: roomModel, id: room });
   if (!foundedRoom) {
-    res.status(404).json({ message: "Room not found" });
+    res.status(404).json({ message: "Room not found" });}
 
-    const workspaceId = foundRoom.workingSpace;
+    const workspaceId = foundedRoom.workspaceId;
 
     const foundWorkspace = await findOne({
       model: workSpaceModel,
@@ -131,8 +136,19 @@ export const addBooking = asyncHandler(async (req, res, next) => {
 
       res.json({ message: "Done", addedBooking });
     }
-  }
+  
 );
+
+
+
+
+
+
+
+
+
+
+
 
 //modify booking info By Owner
 export const updateBookingInfoByOwner = asyncHandler(async (req, res, next) => {
@@ -204,6 +220,71 @@ export const conflictBooking = async (req, res, next) => {
 // HTTP method: DELETE
 // inputs from params:bookingId
 // roles:user who making this booking or the owner of the workspace that have this booking
+// export const CancelBooking = asyncHandler(async (req, res, next) => {
+//   let { bookingId } = req.params;
+//   const Booking = await findById({ model: bookingModel, id: bookingId });
+//   if (!Booking) {
+//     res.status(404).json({ message: "Booking not found" });
+//   } else {
+//     //Booking >> Room >> WS >> Owner
+
+//     let room = await findById({
+//       model: roomModel,
+//       id: Booking.room,
+//     });
+//     let workspace = await findById({
+//       model: workSpaceModel,
+//       id: room.workspaceId,
+//     });
+//     let owner = await findById({ model: userModel, id: workspace.ownerId });
+
+//     console.log("room: ", room);
+//     console.log("workspace: ", workspace);
+//     console.log("owner: ", owner);
+    
+
+//     if (
+//       req.user._id.toString() ===Booking.user.toString()  ||
+//        req.user._id.toString() === owner.id.toString()
+//     ) {
+//       const bookingCancellation = await findOneAndUpdate({
+//         model: bookingModel,
+//         condition: { _id: bookingId },
+//         data: { isCancelled: true },
+//       });
+//       // const deletedBooking = await findByIdAndDelete({
+//       //   model: bookingModel,
+//       //   condition: { _id: bookingId },
+//       // });
+//       res.status(200).json({ message: "Cancelled", bookingCancellation });
+//     } else {
+//       res.json({ message: "you cannot cancel this booking" });
+//     }
+//   }
+// });
+
+
+//3ayez yetgarab lesa bardo
+export const cancelledBookingsHistoryToUser = asyncHandler(async (req, res, next) => {
+  let user = await findById({
+    model: userModel,
+    condition: { _id:req.user._id },
+  });
+  let history = await find({
+    model: bookingModel,
+    conditions: [{ user: req.user._id }, { isCancelled: true }],
+  });
+  res.status(200).json({ message: "Done", history });
+});
+
+
+
+
+
+
+
+
+//Mahmoud
 export const CancelBooking = asyncHandler(async (req, res, next) => {
   let { bookingId } = req.params;
   const Booking = await findById({ model: bookingModel, id: bookingId });
@@ -246,32 +327,3 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
     }
   }
 });
-
-
-//3ayez yetgarab lesa bardo
-export const cancelledBookingsHistoryToUser = asyncHandler(async (req, res, next) => {
-  let user = await findById({
-    model: userModel,
-    condition: { _id:req.user._id },
-  });
-  let history = await find({
-    model: bookingModel,
-    conditions: [{ user: req.user._id }, { isCancelled: true }],
-  });
-  res.status(200).json({ message: "Done", history });
-});
-
-
-
-//Lessaaa
-// export const CancelledBookings=asyncHandler(async(req,res,next)=>{
-// const cancelledBookings=await find({model:bookingModel})
-// // if(req.user._id ===cancelledBookings.user){
-
-// // }
-// res.status(200).json({message:cancelledBookings})
-// })
-
-
-
-

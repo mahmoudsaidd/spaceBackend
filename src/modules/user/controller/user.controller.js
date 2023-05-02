@@ -390,7 +390,10 @@ export const deleteWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
 
 
 
-//ProfilePic
+//ProfilePic api
+//HTTP method: PUT
+//inputs from body:profilePic
+
 export const profilePic = async (req, res) => {
   if (req.file) {
     let { secure_url, public_id } = await cloudinary.uploader.upload(
