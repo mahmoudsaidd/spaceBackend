@@ -24,7 +24,6 @@ router.put('/deleteWorkspaceInfoByOwner/:workspaceId',userController.deleteWorks
 router.put('/profilePic',auth(endPoints.profilePic),myMulter(fileValidation.image).single("image"),userController.profilePic)
 router.get('/getBookingsHistoryToUser',auth(),userController.getBookingsHistoryToUser)
 
-
 //Admin
 router.get('/getClientAccountsByAdmin',auth(endPoints.getClientAccount),userController.getClientAccountsByAdmin)
 router.get('/getAccountByAdmin/:UserId',auth(endPoints.getClientAccount),userController.getAccountByAdmin)

@@ -22,6 +22,9 @@ app.use(express.json());
  app.use(`${process.env.baseURL}/workingSpace`,indexRouter.workingSpaceRouter)
  app.use(`${process.env.baseURL}/room`,indexRouter.roomRouter)
  app.use(`${process.env.baseURL}/booking`,indexRouter.bookingRouter)
+ app.use(`${process.env.baseURL}/favorite`,indexRouter.favoriteRouter)
+
+
 
 
 

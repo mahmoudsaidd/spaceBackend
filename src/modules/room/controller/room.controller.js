@@ -1,4 +1,4 @@
-import { create, findById } from "../../../../Database/DBMethods.js";
+import { create, find, findById } from "../../../../Database/DBMethods.js";
 import { roomModel } from "../../../../Database/model/room.model.js";
 import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
@@ -47,3 +47,20 @@ export const addRoom = asyncHandler(async (req, res, next) => {
 });
 
 
+
+
+export const getRoomsForSpecificWs=asyncHandler(async(req,res,next)=>{
+let {workspaceId}=req.params
+const foundedWs=await findById({model:workSpaceModel,id:workspaceId})
+if(!foundedWs){
+  res.status(404).json({message:"Workspace not found"})
+}else{
+    let room = await find({
+      model: roomModel,
+      condition: { workspaceId},
+    });
+  res.json({ message: "Done", room });
+    
+  }
+}
+)

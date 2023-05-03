@@ -16,7 +16,7 @@ import reviewModel from "../../../../Database/model/review.model.js";
 
 // workingspace/room/booking
 
-export const getWsRooms = asyncHandler(async (req, res, next) => {
+export const getAllWsRooms = asyncHandler(async (req, res, next) => {
   const cursor = await workSpaceModel.find().cursor();
   let allWorkspaces = [];
   for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {
@@ -45,6 +45,7 @@ export const getBookingHistoryToWs = asyncHandler(async (req, res, next) => {
   });
   res.status(200).json({ message: "Done", History });
 });
+
 
 
 // //MahmoudTry
@@ -100,6 +101,7 @@ export const getBookingHistoryToWs = asyncHandler(async (req, res, next) => {
 // // mesh e7na elly no7oto w e7na bene3mel create lel workspace
 
 // //Maryam Try 
+
 
 export const createReview = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
@@ -165,14 +167,18 @@ export const searchByRate = asyncHandler(async (req, res, next) => {
 //   return b-a;
 //}
   
-export const HighestRate = asyncHandler(async (req, res, next) => {
-  const HRate=await find({model:workSpaceModel,select:"avgRate"})
-  console.log(HRate);
-  if(avgRate<HRate){
-    res.status
-  }else{
-    res.status(404).json({message:"not founded WorkSpace have this rate"})
-  }});
+
+
+
+ export const HighestRate = asyncHandler(async (req, res, next) => {
+  //  const HRate=await find({model:workSpaceModel,select:"avgRate"}).sort({'avgRate':-1})
+  const HRate=await workSpaceModel.find().sort({'avgRate':1})
+   console.log(HRate);
+    // x= HRate.sort({'avgRate':-1})
+    // console.log(x);
+   res.status(200).json({message:"Done",HRate})
+  });
+
 
 
 

@@ -4,7 +4,7 @@ import * as workSpaceController from './controller/workingSpace.controller.js'
 import { endPoints } from "./workingSpace.endpoint.js";
 const router= Router();
 
-router.get('/getWsRooms',workSpaceController.getWsRooms)
+router.get('/getAllWsRooms',workSpaceController.getAllWsRooms)
 router.get('/getAllWorkSpaces',workSpaceController.getWorkSpaces)
 
 
@@ -12,8 +12,10 @@ router.post('/createReview/:workspaceId',auth(endPoints.createReview),workSpaceC
 
 // router.post('/rating/:WorkSpaceId',workSpaceController.rating)
 
+router.get('/searchByRate/:rate',workSpaceController.searchByRate)
 router.get('/avgRate/:workspaceId',auth(endPoints.avgRate),workSpaceController.avgRate)
 router.get('/searchByRate/:rate', workSpaceController.searchByRate)
 router.get('/HighestRate',workSpaceController.HighestRate)
 
+router.get('/HighestRate',workSpaceController.HighestRate)
 export default router;
