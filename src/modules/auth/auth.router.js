@@ -20,6 +20,7 @@ router.post('/sendCode',authController.sendCode)
 router.post('/forgetPassword',authController.forgetPassword)
 
 
+
 //auth google
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email',] }));
 

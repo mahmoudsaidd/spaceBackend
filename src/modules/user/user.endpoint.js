@@ -7,6 +7,7 @@ export const endPoints={
     getWorkSpace:[roles.Admin],
     deleteWorkSpace:[roles.Admin],
   
+    profilePic:[roles.User,roles.Admin,roles.Owner],
     
     addWsByFillForm:[roles.User] ,
     adminValidation:[roles.Admin],

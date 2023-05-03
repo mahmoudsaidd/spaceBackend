@@ -14,14 +14,21 @@ router.put('/adminValidation',auth(endPoints.adminValidation),userController.adm
 router.put('/update/:workspaceId',auth(endPoints.updateWorkspaceInfo),myMulter(fileValidation.image).array("image",7),HME,userController.Update)
 
 
-// router.get('/',userController.tryy)
+
 
 
 
 router.put('/deleteWorkspaceInfoByOwner/:workspaceId',userController.deleteWorkspaceInfoByOwner)
 
 
+<<<<<<< HEAD
 
+=======
+//Client
+router.get('/searchByRate/:rate', userController.searchByRate)
+router.put('/profilePic',auth(endPoints.profilePic),myMulter(fileValidation.image).single("image"),userController.profilePic)
+router.get('/getBookingsHistoryToUser',auth(),userController.getBookingsHistoryToUser)
+>>>>>>> b4661c831477a1f5d0189fe864fc26e84c6c8b1a
 
 //Admin
 router.get('/getClientAccountsByAdmin',auth(endPoints.getClientAccount),userController.getClientAccountsByAdmin)

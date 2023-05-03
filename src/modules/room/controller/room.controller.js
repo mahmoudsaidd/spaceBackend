@@ -36,14 +36,8 @@ export const addRoom = asyncHandler(async (req, res, next) => {
       let addedRoom = await create({
         model: roomModel,
         data: {
-          price,
-          roomNumber,
-          capacity,
-          Amenities,
-          type,
-          roomImages,
-          workspaceId,
-        },
+          ...req.body,
+         ... req.params},
       });
       res.status(201).json({ message: "Added", addedRoom });
     } else {

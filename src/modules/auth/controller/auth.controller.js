@@ -218,4 +218,3 @@ export const forgetPassword = asyncHandler(async (req, res) => {
 });
 
 
-//ProfilePic

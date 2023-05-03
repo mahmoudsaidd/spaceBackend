@@ -91,6 +91,7 @@ const workSpaceSchema = new mongoose.Schema(
     contact: contactSchema,
     location: locationSchema,
 
+avgRate:Number,
 
     // latitude: {
     //   type: Number,
@@ -98,7 +99,7 @@ const workSpaceSchema = new mongoose.Schema(
     // longitude: {
     //   type: Number,
     // },
-
+     
 
 
 
@@ -110,6 +111,8 @@ const workSpaceSchema = new mongoose.Schema(
     ownerId: 
     { type:mongoose.Schema.ObjectId,
       ref: 'user'}
+
+
   },
   {
     timestamps: true,

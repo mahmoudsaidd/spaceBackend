@@ -44,6 +44,8 @@ const userSchema = new mongoose.Schema(
     },
 
     profilePic: String,
+    publicImageId: String,
+
     City:String,
     StreetName:String,
     BuildingNumber:String,
@@ -61,10 +63,7 @@ const userSchema = new mongoose.Schema(
     },
 
 
-    // feedback: 
-    // { type:mongoose.Schema.ObjectId,
-    //   ref: 'user'},
-
+  
     
   },
   {
