@@ -4,12 +4,9 @@ import {
   findById,
   findByIdAndDelete,
   findByIdAndUpdate,
-
-
-  findOneAndUpdate,find, updateOne
-
-
-
+  findOneAndUpdate,
+  find,
+  updateOne,
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import reviewModel from "../../../../Database/model/review.model.js";
@@ -18,7 +15,6 @@ import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { roles } from "../../../middleware/auth.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
-
 
 //Owner
 export const addWsByFillForm = asyncHandler(async (req, res, next) => {
@@ -47,34 +43,32 @@ export const addWsByFillForm = asyncHandler(async (req, res, next) => {
   res.json({ message: "Done", addedWorkspace });
 });
 
-
-
 export const adminValidation = asyncHandler(async (req, res, next) => {
   let { ownerId, adminValidation } = req.body;
   let owner = await findById({ model: userModel, id: ownerId });
   if (!owner) {
     res.status(404).json({ message: "Owner not found" });
   } else {
-      if (adminValidation == 'true') {
-        console.log(adminValidation);
-        let accept = await findOneAndUpdate({
-          model: userModel,
-          condition: {_id:ownerId ,role:'User',  adminValidation: 'false'},
-          data: { adminValidation: 'true', role: "Owner" },
-          options: { new: true },
-        });
-        res.status(200).json({ message: "owner Accepted By Admin", accept });
-      } else {
-        let deleteWorkSpace = await deleteOne({
-          model: workSpaceModel,
-          // condition: { owner: ownerId }
-          condition: { ownerId },
-        });
-        res.status(200).json({ message: "owner Refused By Admin" ,deleteWorkSpace});
-      }
-    
+    if (adminValidation == "true") {
+      console.log(adminValidation);
+      let accept = await findOneAndUpdate({
+        model: userModel,
+        condition: { _id: ownerId, role: "User", adminValidation: "false" },
+        data: { adminValidation: "true", role: "Owner" },
+        options: { new: true },
+      });
+      res.status(200).json({ message: "owner Accepted By Admin", accept });
+    } else {
+      let deleteWorkSpace = await deleteOne({
+        model: workSpaceModel,
+        // condition: { owner: ownerId }
+        condition: { ownerId },
+      });
+      res
+        .status(200)
+        .json({ message: "owner Refused By Admin", deleteWorkSpace });
     }
-    
+  }
 });
 
 //modify workspaceInfo
@@ -156,16 +150,7 @@ export const adminValidation = asyncHandler(async (req, res, next) => {
 //   }
 // );
 
-
-
-
-
-
 //3dl f el api de m4 ele fo2
-
-
-
-
 
 
 
@@ -175,80 +160,71 @@ export const Update = asyncHandler(async (req, res, next) => {
   if (!workspace) {
     next(new Error("Workspace not found", { cause: 404 }));
   } else {
-    if(req.body)
-    {
-    workspace.schedule.holidays = req.body.schedule.holidays;
-    workspace.schedule.openingTime = req.body.schedule.openingTime;
-    workspace.schedule.closingTime = req.body.schedule.closingTime;
-
-    workspace.contact.phone = req.body.contact.phone;
-    workspace.contact.email = req.body.contact.email;
-    workspace.contact.socialMedia = req.body.contact.socialMedia;
-
-    workspace.location.city = req.body.location.city;
-    workspace.location.streetName = req.body.location.streetName;
-    workspace.location.buildingNumber = req.body.location.buildingNumber;
-
-}
-  
-
-
-    await workspace.save();
-
-    res.status(200).json({ message: "Updated", workspace });
-
-    // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
-    if (workspace.ownerId.toString() == req.user._id.toString()) {
-      // if (req.files?.length) {
-      //   let imagesURLs = [];
-      //   let imagesIds = [];
-      //   for (const file of req.files) {
-      //     let { secure_url, public_id } = await cloudinary.uploader.upload(
-      //       file.path,
-      //       { folder: "workspaces" }
-      //     );
-      //     imagesURLs.push(secure_url);
-      //     imagesIds.push(public_id);
-      //   }
-      //   req.body.images = imagesURLs;
-      //   req.body.publicImageIds = imagesIds;
-      // }
-      console.log(workspace.schedule.holidays);
-
-      let updatedWorkspaceInfo = await findByIdAndUpdate({
-        model: workSpaceModel,
-        condition: { _id: workspaceId },
-        data: {
-        //   $set:{
-        //  'schedule.$.holidays': req.body.schedule.holidays, 
-
-        //   }
-
-        },
-        options: { new: true },
-      });
-
+    const { schedule, contact, location } = req.body;
+    const updatedWorkspace = new workSpaceModel({
+      ...workspace.toObject(),
+      schedule: { ...workspace.schedule.toObject(), ...schedule },
+      contact: { ...workspace.contact.toObject(), ...contact },
+      location: { ...workspace.location.toObject(), ...location }
+    });
+    
+    await updatedWorkspace.save();
     
 
+    // workspace.schedule.holidays = req.body.schedule?.holidays;
+    // workspace.schedule.openingTime = req.body.schedule?.openingTime;
+    // workspace.schedule.closingTime = req.body.schedule?.closingTime;
 
+    // workspace.contact.phone = req.body.contact?.phone;
+    // workspace.contact.email = req.body.contact?.email;
+    // workspace.contact.socialMedia = req.body.contact?.socialMedia;
 
+    // workspace.location.city = req.body.location?.city;
+    // workspace.location.streetName = req.body.location?.streetName;
+    // workspace.location.buildingNumber = req.body.location?.buildingNumber;
+  
 
-    } else {
-      next(
-        new Error("Sorry, you are not the owner of this workspace", {
-          cause: 403,
-        })
-      );
+  await workspace.save();
+
+  res.status(200).json({ message: "Updated", workspace });
+
+  // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
+  if (workspace.ownerId.toString() == req.user._id.toString()) {
+    // if (req.files?.length) {
+    //   let imagesURLs = [];
+    //   let imagesIds = [];
+    //   for (const file of req.files) {
+    //     let { secure_url, public_id } = await cloudinary.uploader.upload(
+    //       file.path,
+    //       { folder: "workspaces" }
+    //     );
+    //     imagesURLs.push(secure_url);
+    //     imagesIds.push(public_id);
+    //   }
+    //   req.body.images = imagesURLs;
+    //   req.body.publicImageIds = imagesIds;
+    // }
+    console.log(workspace.schedule.holidays);
+
+    let updatedWorkspaceInfo = await findByIdAndUpdate({
+      model: workSpaceModel,
+      condition: { _id: workspaceId },
+      data: req.body,
+
+      options: { new: true },
+      
     }
+    
+    );
+    return res.json({message:"Done",updatedWorkspaceInfo})
+  } else {
+    next(
+      new Error("Sorry, you are not the owner of this workspace", {
+        cause: 403,
+      })
+    );
   }
-});
-
-
-
-
-
-
-
+}});
 
 //hna brdo byms7 kol el obj m4 byms7 ele ana 2oltlo 3leh bs
 //delete workspaceInfo by owner
@@ -302,7 +278,6 @@ export const deleteWorkspaceInfoByOwner = asyncHandler(
 //addOffers
 //modifyOffers
 //ReportUser
-
 
 //Admin
 //get client accounts  {admin}
@@ -369,10 +344,6 @@ export const deleteWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
   }
 });
 
-
-
-
-
 //ProfilePic api
 //HTTP method: PUT
 //inputs from body:profilePic
@@ -387,16 +358,19 @@ export const profilePic = async (req, res) => {
     req.body.publicImageId = public_id;
   }
 
-  let uploadedPic = await findByIdAndUpdate({model:userModel,condition:{_id:req.user._id},data:req.body,options:{new:true}})
+  let uploadedPic = await findByIdAndUpdate({
+    model: userModel,
+    condition: { _id: req.user._id },
+    data: req.body,
+    options: { new: true },
+  });
   res.json({ message: "Done", uploadedPic });
-
 };
-
 
 export const getBookingsHistoryToUser = asyncHandler(async (req, res, next) => {
   let user = await findById({
     model: userModel,
-    condition: { _id:req.user._id },
+    condition: { _id: req.user._id },
   });
   let history = await find({
     model: bookingModel,

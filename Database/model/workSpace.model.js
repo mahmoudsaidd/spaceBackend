@@ -93,12 +93,12 @@ const workSpaceSchema = new mongoose.Schema(
 
 avgRate:Number,
 
-    // latitude: {
-    //   type: Number,
-    // },
-    // longitude: {
-    //   type: Number,
-    // },
+    latitude: {
+      type: String,
+    },
+    longitude: {
+      type: String,
+    },
      
 
 

@@ -78,7 +78,7 @@ export const createReview = asyncHandler(async (req, res, next) => {
     
 
 
-//try salma
+//avgRate
 export const avgRate=asyncHandler(async(req,res,next)=>{
   let {workspaceId}=req.params
   const Workspace=await findById({model:workSpaceModel,id:workspaceId})
@@ -108,9 +108,7 @@ export const searchByRate = asyncHandler(async (req, res, next) => {
   }});
 
 
-// function Descsort(a,b){
-//   return b-a;
-//}
+
   
  export const HighestRate = asyncHandler(async (req, res, next) => {
   //  const HRate=await find({model:workSpaceModel,select:"avgRate"}).sort({'avgRate':-1})
