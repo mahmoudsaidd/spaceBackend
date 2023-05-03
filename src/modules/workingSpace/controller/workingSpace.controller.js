@@ -46,68 +46,7 @@ export const getBookingHistoryToWs = asyncHandler(async (req, res, next) => {
   res.status(200).json({ message: "Done", History });
 });
 
-<<<<<<< HEAD
-// //MahmoudTry
-// // export const feedback=asyncHandler( async (req, res, next) => {
-// //     const workspaceId = req.params.id;
-// //     const feedback = req.body.feedback;
 
-// //       const workspace = await workSpaceModel.findById(workspaceId);
-
-// //       workspace.feedback.push(feedback);
-// //       await workspace.save();
-
-// <<<<<<< HEAD
-//       res.status(200).json(workspace);
-
-//   }); //3amel function 3ashan el feedback yet3amal men ay user w yet3amalo save fel model automatic
-//   // mesh e7na elly no7oto w e7na bene3mel create lel workspace
-
-
-
-
-
-  
-// //Maryam Try
-// export const createReview = asyncHandler(async (req, res, next) => {
-//   let { workspaceId } = req.params;
-//   let {rating } = req.body;
-
-//   const workspace = await findById({ model: workSpaceModel, id: workspaceId });
-//   if (!workspace) {
-//     res.status(404).json({ message: "Workspace not found" });
-//   } else {
-//     req.body.createdBy = req.user._id;
-//     req.body.rating=rating
-//     const review = await create({
-//       model: reviewModel,
-//       data:{
-//         createdBy:req.user._id,
-//         workspace:workspaceId,
-//         rating
-//       }
-//     });
-
-//     res.status(201).json({ message: "Created" ,review});
-//   }
-// });
-// =======
-// //       res.status(200).json(workspace);
-// >>>>>>> 2ee649f0ff30f0a6899ea75f464b0eb33f9bc14b
-
-// //});
-// //3amel function 3ashan el feedback yet3amal men ay user w yet3amalo save fel model automatic
-// // mesh e7na elly no7oto w e7na bene3mel create lel workspace
-
-// //Maryam Try 
-
-
-
-
-
-
-=======
->>>>>>> b4661c831477a1f5d0189fe864fc26e84c6c8b1a
 
 export const createReview = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
@@ -154,11 +93,7 @@ res.status(404).json({message:"Workspace not found"})
       totalRating += reviews[i].rating;
     }
     const avgRating=totalRating/totalReviews
-<<<<<<< HEAD
     const avgRate= await findByIdAndUpdate({model:workSpaceModel,condition:{_id:workspaceId},data:{avgRate:avgRating}})
-=======
-    //  const WorkspaceAvg=await findByIdAndUpdate({model:workSpaceModel,condition:{_id:workspaceId},data:{avgRate:avgRating}})     
->>>>>>> b4661c831477a1f5d0189fe864fc26e84c6c8b1a
     res.status(200).json({message:"Done",avgRating})
   }
 })
@@ -178,13 +113,13 @@ export const searchByRate = asyncHandler(async (req, res, next) => {
 //}
   
  export const HighestRate = asyncHandler(async (req, res, next) => {
-   const HRate=await find({model:workSpaceModel,select:"avgRate"})
+  //  const HRate=await find({model:workSpaceModel,select:"avgRate"}).sort({'avgRate':-1})
+  const HRate=await workSpaceModel.find().sort({'avgRate':1})
    console.log(HRate);
-   if(avgRate<HRate){
-    res.status
-  }else{
-    res.status(404).json({message:"not founded WorkSpace have this rate"})
-  }});
+    // x= HRate.sort({'avgRate':-1})
+    // console.log(x);
+   res.status(200).json({message:"Done",HRate})
+  });
 
 
 
