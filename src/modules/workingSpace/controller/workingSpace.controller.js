@@ -46,7 +46,7 @@ export const getBookingHistoryToWs = asyncHandler(async (req, res, next) => {
   res.status(200).json({ message: "Done", History });
 });
 
-<<<<<<< HEAD
+
 // //MahmoudTry
 // // export const feedback=asyncHandler( async (req, res, next) => {
 // //     const workspaceId = req.params.id;
@@ -101,14 +101,6 @@ export const getBookingHistoryToWs = asyncHandler(async (req, res, next) => {
 
 // //Maryam Try 
 
-
-
-
-
-
-=======
->>>>>>> b4661c831477a1f5d0189fe864fc26e84c6c8b1a
-
 export const createReview = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
   let { rating } = req.body;
@@ -154,11 +146,7 @@ res.status(404).json({message:"Workspace not found"})
       totalRating += reviews[i].rating;
     }
     const avgRating=totalRating/totalReviews
-<<<<<<< HEAD
     const avgRate= await findByIdAndUpdate({model:workSpaceModel,condition:{_id:workspaceId},data:{avgRate:avgRating}})
-=======
-    //  const WorkspaceAvg=await findByIdAndUpdate({model:workSpaceModel,condition:{_id:workspaceId},data:{avgRate:avgRating}})     
->>>>>>> b4661c831477a1f5d0189fe864fc26e84c6c8b1a
     res.status(200).json({message:"Done",avgRating})
   }
 })
@@ -177,10 +165,10 @@ export const searchByRate = asyncHandler(async (req, res, next) => {
 //   return b-a;
 //}
   
- export const HighestRate = asyncHandler(async (req, res, next) => {
-   const HRate=await find({model:workSpaceModel,select:"avgRate"})
-   console.log(HRate);
-   if(avgRate<HRate){
+export const HighestRate = asyncHandler(async (req, res, next) => {
+  const HRate=await find({model:workSpaceModel,select:"avgRate"})
+  console.log(HRate);
+  if(avgRate<HRate){
     res.status
   }else{
     res.status(404).json({message:"not founded WorkSpace have this rate"})

@@ -13,10 +13,7 @@ router.post('/createReview/:workspaceId',auth(endPoints.createReview),workSpaceC
 // router.post('/rating/:WorkSpaceId',workSpaceController.rating)
 
 router.get('/avgRate/:workspaceId',auth(endPoints.avgRate),workSpaceController.avgRate)
-<<<<<<< HEAD
 router.get('/searchByRate/:rate', workSpaceController.searchByRate)
 router.get('/HighestRate',workSpaceController.HighestRate)
-=======
->>>>>>> b4661c831477a1f5d0189fe864fc26e84c6c8b1a
 
 export default router;

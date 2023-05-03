@@ -8,8 +8,8 @@ import roomRouter from './room/room.route.js'
 
 export{
    userRouter,
-    authRouter,
-    workingSpaceRouter,
-    roomRouter,
-    bookingRouter
- }
+   authRouter,
+   workingSpaceRouter,
+   roomRouter,
+   bookingRouter
+}

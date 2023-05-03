@@ -4,15 +4,9 @@ import {
   findById,
   findByIdAndDelete,
   findByIdAndUpdate,
-<<<<<<< HEAD
   findOneAndUpdate,
-  find
-=======
-
-  findOneAndUpdate,find, updateOne
-
->>>>>>> b4661c831477a1f5d0189fe864fc26e84c6c8b1a
-
+  find, 
+  updateOne,
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import reviewModel from "../../../../Database/model/review.model.js";
