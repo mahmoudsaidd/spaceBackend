@@ -4,7 +4,7 @@ import * as workSpaceController from './controller/workingSpace.controller.js'
 import { endPoints } from "./workingSpace.endpoint.js";
 const router= Router();
 
-router.get('/getWsRooms',workSpaceController.getWsRooms)
+router.get('/getAllWsRooms',workSpaceController.getAllWsRooms)
 router.get('/getAllWorkSpaces',workSpaceController.getWorkSpaces)
 
 

@@ -8,3 +8,6 @@ const router = Router();
 router.put("/addFavorites/:workspaceId", auth(endPoints.addFavorites), favoritesController.addFavorites);
 router.put("/removeFavorites/:workspaceId", auth(endPoints.removeFavorites), favoritesController.removeFavorites);
 router.get("/getFavorites", auth(endPoints.getFavorites), favoritesController.getFavorites);
+
+
+export default router

@@ -64,7 +64,7 @@ const userSchema = new mongoose.Schema(
 
     favorites: [
       {
-        type: Types.ObjectId,
+        type:mongoose.Schema.ObjectId,
         ref: "workSpace",
       },
     ],
