@@ -3,6 +3,7 @@ import {
   create,
   find,
   findById,
+  findByIdAndUpdate,
   findOne,
   findOneAndUpdate,
 } from "../../../../Database/DBMethods.js";
@@ -97,6 +98,7 @@ res.status(404).json({message:"Workspace not found"})
       
     }
     const avgRating=totalRating/totalReviews
+    //  const WorkspaceAvg=await findByIdAndUpdate({model:workSpaceModel,condition:{_id:workspaceId},data:{avgRate:avgRating}})     
     res.status(200).json({message:"Done",avgRating})
   }
 

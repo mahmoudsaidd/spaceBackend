@@ -13,7 +13,7 @@ router.get('/getBookingsHistoryToWs/:workspaceId',bookingController.getBookingsH
 
 router.put('/CancelBooking/:bookingId',auth(endPoints.CancelBooking),bookingController.CancelBooking)
 
-router.get('/cancelledBookingsHistoryToUser',bookingController.cancelledBookingsHistoryToUser)
+router.get('/cancelledBookingsHistoryToUser',auth(),bookingController.cancelledBookingsHistoryToUser)
 
 
 // router.get('/CancelledBookings',auth(),bookingController.CancelledBookings)

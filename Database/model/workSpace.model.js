@@ -90,6 +90,7 @@ const workSpaceSchema = new mongoose.Schema(
     contact: contactSchema,
     location: locationSchema,
 
+avgRate:Number,
 
     // latitude: {
     //   type: Number,
