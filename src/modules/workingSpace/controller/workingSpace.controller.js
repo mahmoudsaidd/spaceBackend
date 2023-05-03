@@ -3,6 +3,7 @@ import {
   create,
   find,
   findById,
+  findByIdAndUpdate,
   findOne,
   findOneAndUpdate,
 } from "../../../../Database/DBMethods.js";
@@ -11,6 +12,7 @@ import { bookingModel } from "../../../../Database/model/booking.model.js";
 import cloudinary from "../../../services/cloudinary.js";
 import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import reviewModel from "../../../../Database/model/review.model.js";
+
 
 // workingspace/room/booking
 
@@ -100,41 +102,6 @@ export const getBookingHistoryToWs = asyncHandler(async (req, res, next) => {
 
 
 
-//Salma
-// export const createReview = asyncHandler(async (req, res, next) => {
-//   let { workspaceId } = req.params;
-//   let { rating } = req.body;
-
-//   const workspace = await findById({ model: workSpaceModel, id: workspaceId });
-//   if (!workspace) {
-//     res.status(404).json({ message: "Workspace not found" });
-//   } else{
-//     const review = await find({ model: reviewModel });
-//     // elmoshkela f length
-//     // Don't allow more than one review per user(salma)
-//     for (let i=0; i<review.rating.length; i++) {
-//       console.log(review.rating.length)
-//       if (workspace.rating[i].user._id.toString() === req.user._id.toString()) {
-//         res.status(401).json({message:"Sorry, you can only add one rate per ws"})
-//       }else{
-//         const review = await create({
-//           model: reviewModel,
-//           data: {
-//             createdBy:req.user._id,
-//             workspace: workspaceId,
-//             rating},
-//           });
-//           //console.log(review);
-//           res.status(201).json({ message: "Created" ,review});}}
-//         }});
-
-//try salma
-// Don't allow the course owner to post a review on their own course
-// if (req.user._id.toJSON() === review.user._id.toJSON()) {
-//    res.status(401).json({message:"Sorry, you can't review your own ws.");
-// }
-
-
 
 
 
@@ -170,12 +137,6 @@ export const createReview = asyncHandler(async (req, res, next) => {
 
 
 //try salma
-// Don't allow the ws owner to post a review on their own ws
-// if (req.user._id.toJSON() === review.user._id.toJSON()) {
-//    res.status(401).json({message:"Sorry, you can't review your own ws.");
-// }
-
-
 export const avgRate=asyncHandler(async(req,res,next)=>{
   let {workspaceId}=req.params
   const Workspace=await findById({model:workSpaceModel,id:workspaceId})
@@ -188,10 +149,36 @@ res.status(404).json({message:"Workspace not found"})
     let totalRating=0;
     for (let i = 0; i < totalReviews; i++) {
       totalRating += reviews[i].rating;
-      
     }
     const avgRating=totalRating/totalReviews
+    const avgRate= await findByIdAndUpdate({model:workSpaceModel,condition:{_id:workspaceId},data:{avgRate:avgRating}})
     res.status(200).json({message:"Done",avgRating})
   }
-
 })
+
+export const searchByRate = asyncHandler(async (req, res, next) => {
+  let {rate}=req.params;
+  const WsRate=await find({model:reviewModel,condition:{rating:rate}})
+  if(WsRate.length){
+    res.status(200).json({ message: "founded",WsRate})
+  }else{
+    res.status(404).json({message:"not founded WorkSpace have this rate"})
+  }});
+
+
+// function Descsort(a,b){
+//   return b-a;
+//}
+  
+ export const HighestRate = asyncHandler(async (req, res, next) => {
+   const HRate=await find({model:workSpaceModel,select:"avgRate"})
+   console.log(HRate);
+   if(avgRate<HRate){
+    res.status
+  }else{
+    res.status(404).json({message:"not founded WorkSpace have this rate"})
+  }});
+
+
+
+

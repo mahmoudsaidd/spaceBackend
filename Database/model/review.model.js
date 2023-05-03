@@ -17,6 +17,7 @@ const reviewSchema = new Schema(
         max: 5, 
         default: 0
       },
+      
 // >>>>>>> 2ee649f0ff30f0a6899ea75f464b0eb33f9bc14b
 
     // comments: [

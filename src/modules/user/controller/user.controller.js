@@ -5,10 +5,11 @@ import {
   findByIdAndDelete,
   findByIdAndUpdate,
   findOneAndUpdate,
-  findOneAndUpdate,find
+  find
 
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
+import reviewModel from "../../../../Database/model/review.model.js";
 import { userModel } from "../../../../Database/model/user.model.js";
 import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { roles } from "../../../middleware/auth.js";
@@ -298,26 +299,6 @@ export const deleteWorkspaceInfoByOwner = asyncHandler(
 //modifyOffers
 //ReportUser
 
-//Client
-export const searchByRate = asyncHandler(async (req, res, next) => {
-  const rate = parseInt(req.params.rate);
-  const results = await workingSpaceModel.aggregate([
-    { $unwind: "$feedback" },
-    { $match: { "feedback.rate": { $gte: rate } } },
-    {
-      $group: {
-        _id: "$_id",
-        name: { $first: "$name" },
-        images: { $first: "$images" },
-        schedule: { $first: "$schedule" },
-        feedback: { $push: "$feedback" },
-        owner: { $first: "$owner" },
-        location: { $first: "$location" },
-      },
-    },
-  ]);
-  res.status(200).json(results);
-});
 
 //Admin
 //get client accounts  {admin}

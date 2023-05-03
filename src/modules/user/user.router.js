@@ -21,8 +21,7 @@ router.put('/update/:workspaceId',auth(endPoints.updateWorkspaceInfo),myMulter(f
 router.put('/deleteWorkspaceInfoByOwner/:workspaceId',userController.deleteWorkspaceInfoByOwner)
 
 
-//Client
-router.get('/searchByRate/:rate', userController.searchByRate)
+
 
 //Admin
 router.get('/getClientAccountsByAdmin',auth(endPoints.getClientAccount),userController.getClientAccountsByAdmin)

@@ -86,6 +86,7 @@ const workSpaceSchema = new mongoose.Schema(
     },
     publicImageIds: [String],
     schedule: scheduleSchema,
+    avgRate:Number,
     //feedback: feedbackSchema,
     contact: contactSchema,
     location: locationSchema,
