@@ -62,6 +62,13 @@ const userSchema = new mongoose.Schema(
       default:false
     },
 
+    favorites: [
+      {
+        type: Types.ObjectId,
+        ref: "workSpace",
+      },
+    ],
+
 
   
     
