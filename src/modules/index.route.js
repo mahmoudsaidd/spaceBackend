@@ -9,9 +9,10 @@ import favoriteRouter from './favorites/favorites.router.js'
 
 export{
    userRouter,
-    authRouter,
-    workingSpaceRouter,
-    roomRouter,
-    bookingRouter,
-    favoriteRouter
- }
+   authRouter,
+   workingSpaceRouter,
+   roomRouter,
+   bookingRouter,
+   favoriteRouter
+}
+

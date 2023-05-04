@@ -14,7 +14,8 @@ router.post('/createReview/:workspaceId',auth(endPoints.createReview),workSpaceC
 
 router.get('/searchByRate/:rate',workSpaceController.searchByRate)
 router.get('/avgRate/:workspaceId',auth(endPoints.avgRate),workSpaceController.avgRate)
+router.get('/searchByRate/:rate', workSpaceController.searchByRate)
 router.get('/HighestRate',workSpaceController.HighestRate)
 
-
+router.get('/HighestRate',workSpaceController.HighestRate)
 export default router;

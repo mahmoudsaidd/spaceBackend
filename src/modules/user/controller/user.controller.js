@@ -5,8 +5,16 @@ import {
   findByIdAndDelete,
   findByIdAndUpdate,
   findOneAndUpdate,
+<<<<<<< HEAD
   find,
   updateOne,
+=======
+  find, 
+  updateOne,
+
+
+
+>>>>>>> 9879e11fc63ca369067d8f99d60cbd6b7cbbf070
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import reviewModel from "../../../../Database/model/review.model.js";
