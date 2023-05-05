@@ -13,9 +13,7 @@ import { roomModel } from "../../../../Database/model/room.model.js";
 import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import schedule from "node-schedule";
 
-
 import { userModel } from "../../../../Database/model/user.model.js";
-
 
 //create booking api
 export const createBooking = asyncHandler(async (req, res, next) => {
@@ -29,7 +27,10 @@ export const createBooking = asyncHandler(async (req, res, next) => {
 
   const workspaceId = foundRoom.workingSpace;
 
-  const foundWorkspace = await findOne({ model: workSpaceModel, id:workspaceId });
+  const foundWorkspace = await findOne({
+    model: workSpaceModel,
+    id: workspaceId,
+  });
 
   if (!foundWorkspace) {
     return res.status(404).json({ message: "Workspace not found" });
@@ -37,62 +38,75 @@ export const createBooking = asyncHandler(async (req, res, next) => {
 
   // Convert booking start and end time to hours
   const bookingStartHour = new Date(startTime).getHours();
-  console.log("bookingStartHour :"+ bookingStartHour);
+  console.log("bookingStartHour :" + bookingStartHour);
   const bookingEndHour = new Date(endTime).getHours();
-  console.log("bookingEndHour :"+ bookingEndHour);
+  console.log("bookingEndHour :" + bookingEndHour);
 
   // Convert workspace opening and closing time to hours
 
-  const [openingHour, openingMinutes] = foundWorkspace.schedule.openingTime.split(':');
+  const [openingHour, openingMinutes] =
+    foundWorkspace.schedule.openingTime.split(":");
   const workspaceOpeningHour = parseInt(openingHour);
-//   // const OpenTime= new Date(foundWorkspace.schedule.openingTime).getHours();
+  //   // const OpenTime= new Date(foundWorkspace.schedule.openingTime).getHours();
 
-
-
-//   // const CloseTime= new Date(foundWorkspace.schedule.closingTime).getHours();
+  //   // const CloseTime= new Date(foundWorkspace.schedule.closingTime).getHours();
   // const workspaceOpeningHour = new Date(foundWorkspace.schedule.openingTime).getHours();
-  console.log("workspaceOpeningHour :"+ workspaceOpeningHour);
+  console.log("workspaceOpeningHour :" + workspaceOpeningHour);
 
-
-
-  const [closingHour, closingMinutes] = foundWorkspace.schedule.closingTime.split(':');
+  const [closingHour, closingMinutes] =
+    foundWorkspace.schedule.closingTime.split(":");
   const workspaceClosingHour = parseInt(closingHour);
   // const workspaceClosingHour = new Date(foundWorkspace.schedule.closingTime).getHours();
-  console.log("workspaceClosingHour :" +workspaceClosingHour);
+  console.log("workspaceClosingHour :" + workspaceClosingHour);
 
   // Check if booking time is within workspace opening and closing time
-  if (bookingStartHour < workspaceOpeningHour || bookingEndHour >= workspaceClosingHour) {
-    return res.status(400).json({ message: "Booking time is outside workspace opening and closing time" });
+  if (
+    bookingStartHour < workspaceOpeningHour ||
+    bookingEndHour >= workspaceClosingHour
+  ) {
+    return res
+      .status(400)
+      .json({
+        message: "Booking time is outside workspace opening and closing time",
+      });
   }
 
   function getDayOfWeek(dateString) {
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
 
     const date = new Date(dateString);
-    console.log("date: "+ date);
+    console.log("date: " + date);
 
     const dayOfWeekNumber = date.getDay();
-    console.log("dayOfWeekNumber: "+ dayOfWeekNumber);
-
+    console.log("dayOfWeekNumber: " + dayOfWeekNumber);
 
     const dayOfWeekName = daysOfWeek[dayOfWeekNumber];
-    console.log("dayOfWeekName :"+ dayOfWeekName);
+    console.log("dayOfWeekName :" + dayOfWeekName);
     return dayOfWeekName;
   }
 
   // Check if booking is on a holiday of the workspace
   const dayName = getDayOfWeek(startTime);
-  console.log("dayName: "+ dayName);
+  console.log("dayName: " + dayName);
 
   const workspaceHolidays = foundWorkspace.schedule.holidays;
-  console.log("workspaceHolidays: "+ workspaceHolidays);
+  console.log("workspaceHolidays: " + workspaceHolidays);
 
   // const holidays = Object.values(workspaceHolidays).map(dateString => getDayOfWeek(dateString));
   // console.log("holidays: "+ holidays);
 
-
   if (workspaceHolidays.includes(dayName)) {
-    return res.status(400).json({ message: "Booking is not allowed on workspace holidays" });
+    return res
+      .status(400)
+      .json({ message: "Booking is not allowed on workspace holidays" });
   }
 
   // Calculate Duration automatically
@@ -109,11 +123,13 @@ export const createBooking = asyncHandler(async (req, res, next) => {
       { startTime: { $lte: startTime }, endTime: { $gte: endTime } },
       { startTime: { $gte: startTime }, endTime: { $lte: endTime } },
     ],
-    isCancelled:false,
+    isCancelled: false,
   });
 
   if (overlappingBooking && !overlappingBooking.isCancelled) {
-    return res.status(400).json({ message: "The room is not available at the requested time." });
+    return res
+      .status(400)
+      .json({ message: "The room is not available at the requested time." });
   }
 
   const addedBooking = await create({
@@ -123,9 +139,8 @@ export const createBooking = asyncHandler(async (req, res, next) => {
       startTime,
       endTime,
       price: cost,
-      user:req.user._id,
+      user: req.user._id,
       duration: calculatedDuration,
-     
     },
   });
 
@@ -140,90 +155,119 @@ export const createBooking = asyncHandler(async (req, res, next) => {
   res.json({ message: "Done", addedBooking });
 });
 
-
-
 //modify booking info By Owner
 //hna y2dr y update kol 7aga t5os el booking 3shan hwa el owner
 export const updateBookingInfoByOwner = asyncHandler(async (req, res, next) => {
   let { bookingId } = req.params;
-  let { price, room, startTime, endTime, fees, promoCode } = req.body;
+  const booking = await findById({ model: bookingModel, id: bookingId });
+  const room = await findById({ model: roomModel, id: booking.room });
+  const ws = await findById({ model: workSpaceModel, id: room.workspaceId });
+  const owner = await findById({ model: userModel, id: ws.ownerId });
+  console.log(owner);
+  if (!booking) {
+    res.status(404).json({ message: "Not found" });
+  } else {
+    if (owner._id.toString() == req.user._id && booking.isCancelled == false) {
+      let { price, room, startTime, endTime, fees, promoCode } = req.body;
 
-  const total = new Date(endTime).getTime() - new Date(startTime).getTime();
-  const calculatedDuration = Math.floor(total / 1000) / 3600;
-  console.log(calculatedDuration);
+      // const total = new Date(endTime).getTime() - new Date(startTime).getTime();
+      // const calculatedDuration = Math.floor(total / 1000) / 3600;
+      // console.log(calculatedDuration);
 
-  let updatingBookingInfo = await findByIdAndUpdate({
-    model: bookingModel,
-    condition: { _id: bookingId },
-    data: {
-      price,
-      room,
-      startTime,
-      endTime,
-      user:req.user._id,
-      fees,
-      promoCode,
-      duration: calculatedDuration,
-    },
-    options: { new: true },
-  });
-  res.status(200).json({ message: "Updated", updatingBookingInfo });
+      let calculatedDuration = booking.duration;
+      if (startTime && startTime != booking.startTime || endTime && endTime != booking.endTime) {
+        const total = new Date(endTime).getTime() - new Date(startTime).getTime();
+        calculatedDuration = Math.floor(total / 1000) / 3600;
+      }
+     
+      let updatingBookingInfo = await findByIdAndUpdate({
+        model: bookingModel,
+        condition: { _id: bookingId },
+        data:{
+          price,
+           room, 
+           startTime, 
+           endTime, 
+           fees, 
+           promoCode,
+           duration:calculatedDuration
+        },
+        options: { new: true },
+      });
+      res.status(200).json({ message: "Updated", updatingBookingInfo });
+    } else {
+      res.status(404).json({ message: "Unsuccessful update" });
+    }
+  }
 });
-
-
 
 //updateBookingInfoByUser
 //hna el user y2dr y update 7agat mo3yna zay eno y8ye el room aw startTime aw endTime
 export const updateBookingInfoByUser = asyncHandler(async (req, res, next) => {
   let { bookingId } = req.params;
-  let { room, startTime, endTime} = req.body;
+ const booking=await findById({model:bookingModel,id:bookingId})
+ if(!booking){
 
-  const total = new Date(endTime).getTime() - new Date(startTime).getTime();
-  const calculatedDuration = Math.floor(total / 1000) / 3600;
-  console.log(calculatedDuration);
+ }else{
+  if(booking.user.toString()== req.user._id.toString()){
 
-  let updatingBookingInfo = await findByIdAndUpdate({
-    model: bookingModel,
-    condition: { _id: bookingId },
-    data: {
-      room,
-      startTime,
-      endTime,
-      user:req.user._id,
-      duration: calculatedDuration,
-    },
-    options: { new: true },
-  });
-  res.status(200).json({ message: "Updated", updatingBookingInfo });
+    let { room, startTime, endTime } = req.body;
+
+    // const total = new Date(endTime).getTime() - new Date(startTime).getTime();
+    // const calculatedDuration = Math.floor(total / 1000) / 3600;
+    // console.log(calculatedDuration);
+  
+    let calculatedDuration = booking.duration;
+    if (startTime && startTime != booking.startTime || endTime && endTime != booking.endTime) {
+      const total = new Date(endTime).getTime() - new Date(startTime).getTime();
+      calculatedDuration = Math.floor(total / 1000) / 3600;
+    }
+  
+    let updatingBookingInfo = await findByIdAndUpdate({
+      model: bookingModel,
+      condition: { _id: bookingId },
+      data: {
+        room,
+        startTime,
+        endTime,
+        user: req.user._id,
+        duration: calculatedDuration,
+      },
+      options: { new: true },
+    });
+    res.status(200).json({ message: "Updated", updatingBookingInfo });
+  }else{
+    res.status(401).json({ message: "You are not authorized to update this booking" });
+
+  }
+ }
 });
-
-
-
-
 
 export const getBookingsHistoryToWs = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
   const ws = await findById({ model: workSpaceModel, id: workspaceId });
-  const owner=await findById({model:userModel,id:ws.ownerId})
+  const owner = await findById({ model: userModel, id: ws.ownerId });
+  
   if (!ws) {
     res.status(404).json({ message: "Workspace not found" });
   } else {
-    if(owner.toString()==  req.user._id.toString()){
+    if (owner._id.toString() == req.user._id.toString() && ws._id==workspaceId) {
       // Ws>> Rooms>>Bookings
-    let rooms = await find({
-      model: roomModel,
-      condition: { workspaceId: ws._id },
-    });
-    console.log(rooms);
-    let history = await find({
-      model: bookingModel,
-      condition: { room: rooms },
-    });
-    console.log(history);
-    res.status(200).json({ message: "Done", history });
+      // let rooms = await find({
+      //   model: roomModel,
+      //   condition: { workspaceId: ws._id },
+      // });
+      // console.log(rooms);
+      let history = await find({
+        model: bookingModel,
+            });
+      // console.log(history);
+      res.status(200).json({ message: "Done", history });
     }
   }
 });
+
+
 
 
 export const getBookingsHistoryToUser = asyncHandler(async (req, res, next) => {
@@ -237,8 +281,6 @@ export const getBookingsHistoryToUser = asyncHandler(async (req, res, next) => {
   });
   res.status(200).json({ message: "Done", history });
 });
-
-
 
 //Cancel Booking
 export const CancelBooking = asyncHandler(async (req, res, next) => {
@@ -269,11 +311,11 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
     ) {
       const bookingCancellation = await findOneAndUpdate({
         model: bookingModel,
-        condition: { _id: bookingId , isCancelled: false },
+        condition: { _id: bookingId, isCancelled: false },
         data: { isCancelled: true },
-        options:{new:true}
+        options: { new: true },
       });
-    
+
       res.status(200).json({ message: "Cancelled", bookingCancellation });
     } else {
       res.json({ message: "you cannot cancel this booking" });
@@ -281,10 +323,7 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
   }
 });
 
-
-
-
-//cancelledBookingsHistoryToUser api 
+//cancelledBookingsHistoryToUser api
 export const cancelledBookingsHistoryToUser = asyncHandler(
   async (req, res, next) => {
     let user = await findById({
@@ -298,5 +337,3 @@ export const cancelledBookingsHistoryToUser = asyncHandler(
     res.status(200).json({ message: "Done", history });
   }
 );
-
-

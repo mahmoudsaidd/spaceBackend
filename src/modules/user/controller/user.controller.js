@@ -16,6 +16,7 @@ import { roles } from "../../../middleware/auth.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
 import path from 'path';
+import bcrypt from "bcryptjs";
 
 //Owner
 export const addWsByFillForm = asyncHandler(async (req, res, next) => {
@@ -73,161 +74,15 @@ export const adminValidation = asyncHandler(async (req, res, next) => {
   }
 });
 
-//modify workspaceInfo
-// export const updateWorkspaceInfoByOwner = asyncHandler(
-//   async (req, res, next) => {
-//     let { workspaceId } = req.params;
-//     let {
-//       name,
-//       description,
-//       holidays,
-//       openingTime,
-//       closingTime,
-//       rate,
-//       comments,
-//       phone,
-//       email,
-//       socialMedia,
-//       city,
-//       streetName,
-//       buildingNumber,
-//     } = req.body;
-//     let workspace = await findById({ model: workSpaceModel, id: workspaceId });
-//     if (!workspace) {
-//       next(new Error("Workspace not found", { cause: 404 }));
-//     } else {
-//       // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
-//       if (workspace.ownerId.toString() == req.user._id.toString()) {
-//         if (req.files?.length) {
-//           let imagesURLs = [];
-//           let imagesIds = [];
-//           for (const file of req.files) {
-//             let { secure_url, public_id } = await cloudinary.uploader.upload(
-//               file.path,
-//               { folder: "workspaces" }
-//             );
-//             imagesURLs.push(secure_url);
-//             imagesIds.push(public_id);
-//            }
-//           req.body.images = imagesURLs;
-//           req.body.publicImageIds = imagesIds;
-//         }
-
-//         // for (const day of req.body) {
-//         //    workspace.schedule.holidays[day]=req.body.holidays[day]
-//         // }
-
-//         // ProductModel.findOneAndUpdate({productCode: userData.productCode}, dataToBeUpdated, {new: true})
-
-//         let updatedWorkspaceInfo = await findByIdAndUpdate({
-//           model: workSpaceModel,
-//           condition: { _id: workspaceId },
-//           data: req.body,
-//           options: { new: true },
-//         });
-//         // console.log(workspace.feedback.comments);
-//         // if (!updatedWorkspaceInfo) {
-//         //   if (req.body.publicImageIds) {
-//         //     for (const id of req.body.imagesIds) {
-//         //       await cloudinary.uploader.destroy(id);
-//         //     }
-//         //   }
-//         //   next(new Error("Database Error", { cause: 400 }));
-//         // } else {
-//         //   if (req.body.publicImageIds) {
-//         //     for (const id of workspace.publicImageIds) {
-//         //       await cloudinary.uploader.destroy(id);
-//         //     }
-//         //   }
-//         // }
-//         res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
-//       } else {
-//         next(
-//           new Error("Sorry, you are not the owner of this workspace", {
-//             cause: 403,
-//           })
-//         );
-//       }
-//     }
-//   }
-// );
-
-//3dl f el api de m4 ele fo2
 
 
-
-export const Update = asyncHandler(async (req, res, next) => {
-  let { workspaceId } = req.params;
-  let workspace = await findById({ model: workSpaceModel, id: workspaceId });
-  if (!workspace) {
-    next(new Error("Workspace not found", { cause: 404 }));
-  } else {
-    if (workspace.ownerId.toString() == req.user._id.toString()) {
-      // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
-      if (req.files?.length) {
-        let imagesURLs = [];
-        let imagesIds = [];
-        for (const file of req.files) {
-          let { secure_url, public_id } = await cloudinary.uploader.upload(
-            file.path,
-            { folder: "workspaces" }
-          );
-          imagesURLs.push(secure_url);
-          imagesIds.push(public_id);
-        }
-        req.body.images = imagesURLs;
-        req.body.publicImageIds = imagesIds;
-      }
-
-      
-
-    // workspace.schedule.holidays = req.body.schedule?.holidays;
-    // workspace.schedule.openingTime = req.body.schedule?.openingTime;
-    // workspace.schedule.closingTime = req.body.schedule?.closingTime;
-
-    // workspace.contact.phone = req.body.contact?.phone;
-    // workspace.contact.email = req.body.contact?.email;
-    // workspace.contact.socialMedia = req.body.contact?.socialMedia;
-
-    // workspace.location.city = req.body.location?.city;
-    // workspace.location.streetName = req.body.location?.streetName;
-    // workspace.location.buildingNumber = req.body.location?.buildingNumber;
-  
-
-  // await workspace.save();
-
-
-      let updatedWorkspaceInfo = await findByIdAndUpdate({
-        model: workSpaceModel,
-        condition: { _id: workspaceId },
-        data: req.body,
-        options: { new: true },
-      });
-      res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
-    } else {
-      next(
-        new Error("Sorry, you are not the owner of this workspace", {
-          cause: 403,
-        })
-      );
-    }
-  }
-});
-
-
-
-
-
-
-//hna brdo byms7 kol el obj m4 byms7 ele ana 2oltlo 3leh bs
-//delete workspaceInfo by owner
-export const deleteWorkspaceInfoByOwner = asyncHandler(
+// modify workspaceInfo
+export const updateWorkspaceInfoByOwner = asyncHandler(
   async (req, res, next) => {
     let { workspaceId } = req.params;
     let {
       name,
       description,
-      image,
       holidays,
       openingTime,
       closingTime,
@@ -244,26 +99,58 @@ export const deleteWorkspaceInfoByOwner = asyncHandler(
     if (!workspace) {
       next(new Error("Workspace not found", { cause: 404 }));
     } else {
-      // if(workspace.ownerId.toString()== req.user._id.toString()){
-      // if(workspace.ownerId.toString() == req.user._id.toString()){
+      // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
+      if (workspace.ownerId.toString() == req.user._id.toString()) {
+        if (req.files?.length) {
+          let imagesURLs = [];
+          let imagesIds = [];
+          for (const file of req.files) {
+            let { secure_url, public_id } = await cloudinary.uploader.upload(
+              file.path,
+              { folder: "workspaces" }
+            );
+            imagesURLs.push(secure_url);
+            imagesIds.push(public_id);
+           }
+          req.body.images = imagesURLs;
+          req.body.publicImageIds = imagesIds;
+        }
 
-      let deletedWorkspaceInfo = await findByIdAndUpdate({
-        model: workSpaceModel,
-        condition: { _id: workspaceId },
-        data: {
-          $pull: req.body,
-        },
+        // for (const day of req.body) {
+        //    workspace.schedule.holidays[day]=req.body.holidays[day]
+        // }
 
-        options: { new: true },
-      });
-      res.status(200).json({ message: "Deleted", deletedWorkspaceInfo });
-      //   }else{
-      // next(new Error("Sorry, you are not the owner of this workspace", { cause: 403 }));
+        // ProductModel.findOneAndUpdate({productCode: userData.productCode}, dataToBeUpdated, {new: true})
 
-      //   }
-
-      // cloudinary.v2.uploader.destroy('Asset_2_bdxdsl', function(error,result) {
-      //   console.log(result, error) })
+        let updatedWorkspaceInfo = await findByIdAndUpdate({
+          model: workSpaceModel,
+          condition: { _id: workspaceId },
+          data: req.body,
+          options: { new: true },
+        });
+        // console.log(workspace.feedback.comments);
+        // if (!updatedWorkspaceInfo) {
+        //   if (req.body.publicImageIds) {
+        //     for (const id of req.body.imagesIds) {
+        //       await cloudinary.uploader.destroy(id);
+        //     }
+        //   }
+        //   next(new Error("Database Error", { cause: 400 }));
+        // } else {
+        //   if (req.body.publicImageIds) {
+        //     for (const id of workspace.publicImageIds) {
+        //       await cloudinary.uploader.destroy(id);
+        //     }
+        //   }
+        // }
+        res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
+      } else {
+        next(
+          new Error("Sorry, you are not the owner of this workspace", {
+            cause: 403,
+          })
+        );
+      }
     }
   }
 );
@@ -362,5 +249,79 @@ export const profilePic = asyncHandler(async (req, res,next) => {
 
 
 
+export const updatePassword = asyncHandler( async (req, res) => {
+  let { currentPassword, newPassword, newCPassword } = req.body;
+  if (newPassword == newCPassword) {
+    let user = await userModel.findById(req.user._id);
+    let matched = await bcrypt.compare(currentPassword, user.password);
+    if (matched) {
+      let hashedPass = await bcrypt.hash(
+        newPassword,
+        parseInt(process.env.saltRound)
+      );
+      let updatedUser = await userModel.findByIdAndUpdate(
+        user._id,
+        { password: hashedPass },
+        { new: true }
+      );
+      res.json({ message: "Updated", updatedUser });
+    } else {
+      res.json({ message: "currentPassword Invalid" });
+    }
+  } else {
+    res.json({ message: "newPassword must equal newCPassword" });
+  }
+});
 
+
+
+
+// export const editProfile=asyncHandler(async(req,res,next)=>{
+//   let {userName,email}=req.body
+//   // const user=await findById({model:userModel,id:req.user._id})
+//   // if(user){
+//     const UpdatedInfo=await find({model:userModel,id:req.user._id,data:req.body})
+//     res.status(200).json({message:"Updated",UpdatedInfo})
+//   // }
+
+
+
+// //  console.log(user);
+// })
+
+
+
+//make an udpdate to user profile
+export const updateProfile = asyncHandler(async (req, res, next) => {
+  let { userId } = req.params;
+  let user = await findById({ model: userModel, id: userId });
+  if (!user) {
+    next(new Error("User not found", { cause: 404 }));
+  } else {
+    if (user._id.toString() == req.user._id.toString()) {
+      if (req.file) {
+        let { secure_url, public_id } = await cloudinary.uploader.upload(
+          req.file.path,
+          { folder: "profilePic" }
+        );
+        req.body.profilePic = secure_url;
+        req.body.publicImageId = public_id;
+      }
+
+      let updatedUser = await findByIdAndUpdate({
+        model: userModel,
+        condition: { _id: userId },
+        data: req.body,
+        options: { new: true },
+      });
+      res.status(200).json({ message: "Updated", updatedUser });
+    } else {
+      next(
+        new Error("Sorry, you are not the owner of this account", {
+          cause: 403,
+        })
+      );
+    }
+  }
+});
 

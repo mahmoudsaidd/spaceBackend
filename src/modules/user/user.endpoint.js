@@ -13,8 +13,9 @@ export const endPoints={
     deleteWorkSpace:[roles.Admin],
     
 
-    profilePic:[roles.Admin,roles.User,roles.Owner]
+    profilePic:[roles.Admin,roles.User,roles.Owner],
   
+    updateProfile:[roles.User,roles.Owner,roles.Owner]
     
    
 

@@ -72,6 +72,8 @@ export const getRoomsForSpecificWs = asyncHandler(async (req, res, next) => {
   }
 });
 
+
+
 export const EditRoomOfWs = asyncHandler(async (req, res, next) => {
   let { roomId } = req.params;
   const Room = await findById({ model: roomModel, id: roomId });
@@ -80,21 +82,19 @@ export const EditRoomOfWs = asyncHandler(async (req, res, next) => {
   if (!Room) {
     res.status(404).json({ message: "Room not found" });
   } else {
-    if (owner.toString() == req.user._id.toString()) {
-      
+    if (owner._id.toString() == req.user._id.toString()) {
       let imagesURLs = [];
       let imagesIds = [];
       for (const file of req.files) {
         let { secure_url, public_id } = await cloudinary.uploader.upload(
           file.path,
-          { folder: "workspaces" }
+          { folder: "workspaces/rooms" }
         );
         imagesURLs.push(secure_url);
         imagesIds.push(public_id);
       }
-      req.body.images = imagesURLs;
+      req.body.roomImages = imagesURLs;
       req.body.publicImageIds = imagesIds;
-      req.body.ownerId = req.user._id;
     }}
 
     const updated = await findOneAndUpdate({

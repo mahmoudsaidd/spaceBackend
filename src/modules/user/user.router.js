@@ -3,6 +3,8 @@ import { auth, roles } from "../../middleware/auth.js";
 import { fileValidation, HME, myMulter } from "../../services/multer.js";
 import * as userController from "./controller/user.controller.js";
 import { endPoints } from "./user.endpoint.js";
+import { validation } from "../../middleware/validation.js";
+import { updatePasswordSchema } from "./user.validation.js";
 const router = Router();
 
 //Owner
@@ -18,22 +20,12 @@ router.put(
     auth(endPoints.adminValidation),
     userController.adminValidation
 );
-// router.put('/updateWorkspaceInfoByOwner/:workspaceId',auth(endPoints.updateWorkspaceInfo),myMulter(fileValidation.image).array("image",7),HME,userController.updateWorkspaceInfoByOwner)
+
+router.put('/updateWorkspaceInfoByOwner/:workspaceId',auth(endPoints.updateWorkspaceInfo),
+myMulter(fileValidation.image).array("image",7),HME,userController.updateWorkspaceInfoByOwner)
 
 
 
-router.put(
-    "/update/:workspaceId",
-    auth(endPoints.updateWorkspaceInfo),
-    myMulter(fileValidation.image).array("image", 7),
-    HME,
-    userController.Update
-);
-
-router.put(
-    "/deleteWorkspaceInfoByOwner/:workspaceId",
-    userController.deleteWorkspaceInfoByOwner
-);
 
 
 
@@ -46,6 +38,21 @@ router.put(
     HME,
     userController.profilePic
 );
+
+router.patch("/updatePassword",validation(updatePasswordSchema),auth(),userController.updatePassword)
+
+
+router.put('/updateProfile/:userId',auth(endPoints.updateProfile),myMulter(fileValidation.image).single("image"),
+HME,userController.updateProfile)
+
+
+
+
+
+
+
+
+
 
 
 //Admin
