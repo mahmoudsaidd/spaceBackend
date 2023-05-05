@@ -1,7 +1,14 @@
 import { roles } from "../../middleware/auth.js";
 
 export const endPoints={
-    createBooking:[roles.User],
+    createBooking:[roles.User,roles.Owner],
+
     updateBookingInfoByOwner:[roles.Owner],
-    CancelBooking:[roles.User,roles.Owner]
+    updateBookingInfoByUser:[roles.User],
+
+    getBookingsHistoryToWs:[roles.Owner],
+    getBookingsHistoryToUser:[roles.User],
+
+    CancelBooking:[roles.User,roles.Owner],
+    cancelledBookingsHistoryToUser:[roles.User]
 }

@@ -1,10 +1,15 @@
-<<<<<<< HEAD
-import { create, find, findById, findByIdAndUpdate, findOneAndUpdate } from "../../../../Database/DBMethods.js";
-=======
-import { model } from "mongoose";
-import { create, deleteOne, find, findById, findByIdAndUpdate, findOneAndUpdate, updateOne } from "../../../../Database/DBMethods.js";
->>>>>>> 9879e11fc63ca369067d8f99d60cbd6b7cbbf070
+import {
+  create,
+  deleteOne,
+  find,
+  findById,
+  findByIdAndUpdate,
+  findOneAndUpdate,
+  updateOne,
+} from "../../../../Database/DBMethods.js";
+
 import { roomModel } from "../../../../Database/model/room.model.js";
+import { userModel } from "../../../../Database/model/user.model.js";
 import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
@@ -13,7 +18,8 @@ import cloudinary from "../../../services/cloudinary.js";
 // HTTP method: POST
 // inputs from body:price,roomNumber,capacity,Amenities,type,roomImages,publicImageIds
 export const addRoom = asyncHandler(async (req, res, next) => {
-  let { price, roomNumber, capacity, Amenities, type, roomImages } = req.body;
+  let { price, roomNumber, capacity, Amenities, type, roomImages, roomName } =
+    req.body;
   let { workspaceId } = req.params;
   let workspace = await findById({ model: workSpaceModel, id: workspaceId });
   if (!workspace) {
@@ -42,7 +48,8 @@ export const addRoom = asyncHandler(async (req, res, next) => {
         model: roomModel,
         data: {
           ...req.body,
-          ... req.params},
+          ...req.params,
+        },
       });
       res.status(201).json({ message: "Added", addedRoom });
     } else {
@@ -51,51 +58,76 @@ export const addRoom = asyncHandler(async (req, res, next) => {
   }
 });
 
-
-
-
-export const getRoomsForSpecificWs=asyncHandler(async(req,res,next)=>{
-let {workspaceId}=req.params
-const foundedWs=await findById({model:workSpaceModel,id:workspaceId})
-if(!foundedWs){
-  res.status(404).json({message:"Workspace not found"})
-}else{
+export const getRoomsForSpecificWs = asyncHandler(async (req, res, next) => {
+  let { workspaceId } = req.params;
+  const foundedWs = await findById({ model: workSpaceModel, id: workspaceId });
+  if (!foundedWs) {
+    res.status(404).json({ message: "Workspace not found" });
+  } else {
     let room = await find({
       model: roomModel,
-      condition: { workspaceId},
+      condition: { workspaceId },
     });
-  res.json({ message: "Done", room });
-    
+    res.json({ message: "Done", room });
   }
-}
-)
+});
 
+export const EditRoomOfWs = asyncHandler(async (req, res, next) => {
+  let { roomId } = req.params;
+  const Room = await findById({ model: roomModel, id: roomId });
+  const ws = await findById({ model: workSpaceModel, id: Room.workspaceId });
+  const owner = await findById({ model: userModel, id: ws.ownerId });
+  if (!Room) {
+    res.status(404).json({ message: "Room not found" });
+  } else {
+    if (owner.toString() == req.user._id.toString()) {
+      
+      let imagesURLs = [];
+      let imagesIds = [];
+      for (const file of req.files) {
+        let { secure_url, public_id } = await cloudinary.uploader.upload(
+          file.path,
+          { folder: "workspaces" }
+        );
+        imagesURLs.push(secure_url);
+        imagesIds.push(public_id);
+      }
+      req.body.images = imagesURLs;
+      req.body.publicImageIds = imagesIds;
+      req.body.ownerId = req.user._id;
+    }}
 
-<<<<<<< HEAD
-
-
-=======
-export const EditRoomOfWs=asyncHandler(async(req,res,next)=>{
-  let {roomId}=req.params;
-  const Room= await findById({model:roomModel,id:roomId})
-  if(!Room){
-     res.status(404).json({message:"Room not found"})
-
-  }else{
-    const updated=await findOneAndUpdate({model:roomModel,condition:{_id:roomId},data:req.body,options:{new:true}})
-    res.status(200).json({message:"Updated",updated})
+    const updated = await findOneAndUpdate({
+      model: roomModel,
+      condition: { _id: roomId },
+      data: req.body,
+      options: { new: true },
+    });
+    res.status(200).json({ message: "Updated", updated });
   }
+);
 
-})
 
-export const DeLeteRoomOfWs=asyncHandler(async(req,res,next)=>{
-  let {roomId}=req.params;
-  const DRoom= await findById({model:roomModel,id:roomId})
-if(!DRoom){
-  res.status(404).json({message:"Room not found"})
-}else{
-  const deletedRoom= await deleteOne({model:roomModel})
-  res.status(200).json({message:"Deleted",deletedRoom})
-}
-})
->>>>>>> 9879e11fc63ca369067d8f99d60cbd6b7cbbf070
+
+
+
+export const DeLeteRoomOfWs = asyncHandler(async (req, res, next) => {
+  let { roomId } = req.params;
+  const DRoom = await findById({ model: roomModel, id: roomId });
+  const ws = await findById({ model: workSpaceModel, id: DRoom.workspaceId });
+  const owner = await findById({ model: userModel, id: ws.ownerId });
+  if (!DRoom) {
+    res.status(404).json({ message: "Room not found" });
+  } else {
+    if(owner._id.toString()==req.user._id.toString()){
+      const deletedRoom = await deleteOne({
+        model: roomModel,
+        condition: { _id:roomId},
+      });
+      res.status(200).json({ message: "Deleted", deletedRoom });
+    }else{
+      res.status(401).json({message:"you cannot delete this room as you are not the Owner"})
+    }
+    }
+   
+});

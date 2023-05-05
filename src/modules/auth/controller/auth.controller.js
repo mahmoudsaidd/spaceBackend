@@ -74,7 +74,7 @@ export const confirmEmail = asyncHandler(async (req, res, next) => {
   let { token } = req.params;
   let decoded = jwt.verify (token, process.env.emailToken);
    if (!decoded && !decoded.id) {
-    next(new Error("Invalid data token", { cause: 400 }));
+    next(new Error("Invalid data token", { cause: 401 }));
   } else {
     let updatedUser=await findOneAndUpdate({
       model:userModel,
@@ -83,9 +83,9 @@ export const confirmEmail = asyncHandler(async (req, res, next) => {
       options:{new:true}
     })
     if(updatedUser){
-      next (new Error("Confirmed",{cause:200}))
+      res.status(200).json({message:'Confirmed'})
     }else{
-      next(new Error("Invalid token data confirmmm",{cause:400}))
+      next(new Error("Invalid token data confirm",{cause:401}))
     }
 }});
 
@@ -109,7 +109,7 @@ export const refreshToken = async (req, res) => {
         let token = jwt.sign({ id: user._id }, process.env.emailToken);
         let message = `<a href="http://localhost:3000/api/v1/auth/confirmEmail/${token}">This is the second email</a>`;
         sendEmail(user.email, "Refresh Token", message);
-        res.json({ message: "Done, please check your email" });
+        res.status(200).json({ message: "Done, please check your email" });
       }
     }
   }
@@ -123,7 +123,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await findOne({ model: userModel, condition: { email } });
   if (!user) {
-    next(new Error("you have to register first", { cause: 404 }));
+    next(new Error("you have to register first", { cause: 400}));
   } else {
     let matched = bcrypt.compareSync(
       password,
@@ -132,7 +132,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
     );
     if (matched) {
       if (!user.confirmEmail) {
-        next(new Error("you have to confirm email first", { cause: 404 }));
+        next(new Error("you have to confirm email first", { cause: 401 }));
       } else {
         let token = jwt.sign(
           { id: user._id, isLoggedIn: true },
@@ -142,7 +142,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
         res.status(200).json({ message: "Welcome", token });
       }
     } else {
-      next(new Error("Invalid password", { cause: 400 }));
+      next(new Error("Invalid password", { cause: 400}));
     }
   }
 });
@@ -150,6 +150,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
 // updateRole api 
 // HTTP method: PUT
 // inputs from body:userId
+//if admin want to update someone to be an admin as him
 export const updateRole = async (req, res, next) => {
   let { userId } = req.body;
   let user = await findById({ model: userModel, id: userId });
@@ -157,7 +158,7 @@ export const updateRole = async (req, res, next) => {
     next(new Error("Invalid user id", { cause: 404 }));
   } else {
     if (!user.confirmEmail) {
-      next(new Error("Please confirm your email first", { cause: 400 }));
+      next(new Error("Please confirm your email first", { cause: 401 }));
     } else {
       let updatedUser = await findByIdAndUpdate({
         model: userModel,
@@ -166,7 +167,7 @@ export const updateRole = async (req, res, next) => {
         options: { new: true },
       });
       res.status(200).json({ message: "Updated", updatedUser });
-      console.log(updatedUser);
+     
     }
   }
 };
@@ -181,11 +182,10 @@ export const sendCode = async (req, res) => {
     res.json({ message: "User didn't register yet" });
   } else {
     let OTPCode = nanoid();
-    console.log(OTPCode);
     await userModel.findByIdAndUpdate(user._id, { OTPCode });
     let message = `your OTPCode is ${OTPCode}`;
     sendEmail(user.email, "your OTP Code", message);
-    res.json({ message: "Done, please check your email" });
+    res.status(200).json({ message: "Done, please check your email" });
   }
 };
 
@@ -212,7 +212,7 @@ export const forgetPassword = asyncHandler(async (req, res) => {
         { OTPCode: null, password: hashedPass },
         { new: true }
       );
-      res.json({ message: "Success", updated });
+      res.status(200).json({ message: "Success", updated });
     }
   }
 });

@@ -9,16 +9,15 @@ const roomSchema = new mongoose.Schema({
   roomNumber:{
     type: String,
   },
-  // isBooked: {
-  //   type: Boolean,
-  //   default: false
-  // },
+  roomName:{
+    type:String,
+  },
   capacity: {
     type: Number,
     min:1
     // required: true
   },
-  Amenities:{
+  
     //Equipments
     scanner:{type:Boolean,default:false},
     microphone:{type:Boolean,default:false},
@@ -35,11 +34,12 @@ const roomSchema = new mongoose.Schema({
     desk:{type:Boolean,default:false},
     chairs:{type:Boolean,default:false},
 
-  },
+  
   type: {
     type: String, 
-    // required: [true, 'Please specify room type']
+    required: [true, 'Please specify room type']
   },
+
   roomImages: {
     type: [String],
     required: [true, "Rooms' images are required"],

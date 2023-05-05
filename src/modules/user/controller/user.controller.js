@@ -5,16 +5,8 @@ import {
   findByIdAndDelete,
   findByIdAndUpdate,
   findOneAndUpdate,
-<<<<<<< HEAD
   find,
   updateOne,
-=======
-  find, 
-  updateOne,
-
-
-
->>>>>>> 9879e11fc63ca369067d8f99d60cbd6b7cbbf070
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import reviewModel from "../../../../Database/model/review.model.js";
@@ -23,6 +15,7 @@ import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { roles } from "../../../middleware/auth.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
+import path from 'path';
 
 //Owner
 export const addWsByFillForm = asyncHandler(async (req, res, next) => {
@@ -48,8 +41,10 @@ export const addWsByFillForm = asyncHandler(async (req, res, next) => {
     data: req.body,
   });
 
-  res.json({ message: "Done", addedWorkspace });
+  res.status(201).json({ message: "Done", addedWorkspace });
 });
+
+
 
 export const adminValidation = asyncHandler(async (req, res, next) => {
   let { ownerId, adminValidation } = req.body;
@@ -69,7 +64,6 @@ export const adminValidation = asyncHandler(async (req, res, next) => {
     } else {
       let deleteWorkSpace = await deleteOne({
         model: workSpaceModel,
-        // condition: { owner: ownerId }
         condition: { ownerId },
       });
       res
@@ -168,16 +162,24 @@ export const Update = asyncHandler(async (req, res, next) => {
   if (!workspace) {
     next(new Error("Workspace not found", { cause: 404 }));
   } else {
-    const { schedule, contact, location } = req.body;
-    const updatedWorkspace = new workSpaceModel({
-      ...workspace.toObject(),
-      schedule: { ...workspace.schedule.toObject(), ...schedule },
-      contact: { ...workspace.contact.toObject(), ...contact },
-      location: { ...workspace.location.toObject(), ...location }
-    });
-    
-    await updatedWorkspace.save();
-    
+    if (workspace.ownerId.toString() == req.user._id.toString()) {
+      // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
+      if (req.files?.length) {
+        let imagesURLs = [];
+        let imagesIds = [];
+        for (const file of req.files) {
+          let { secure_url, public_id } = await cloudinary.uploader.upload(
+            file.path,
+            { folder: "workspaces" }
+          );
+          imagesURLs.push(secure_url);
+          imagesIds.push(public_id);
+        }
+        req.body.images = imagesURLs;
+        req.body.publicImageIds = imagesIds;
+      }
+
+      
 
     // workspace.schedule.holidays = req.body.schedule?.holidays;
     // workspace.schedule.openingTime = req.body.schedule?.openingTime;
@@ -192,47 +194,30 @@ export const Update = asyncHandler(async (req, res, next) => {
     // workspace.location.buildingNumber = req.body.location?.buildingNumber;
   
 
-  await workspace.save();
+  // await workspace.save();
 
-  res.status(200).json({ message: "Updated", workspace });
 
-  // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
-  if (workspace.ownerId.toString() == req.user._id.toString()) {
-    // if (req.files?.length) {
-    //   let imagesURLs = [];
-    //   let imagesIds = [];
-    //   for (const file of req.files) {
-    //     let { secure_url, public_id } = await cloudinary.uploader.upload(
-    //       file.path,
-    //       { folder: "workspaces" }
-    //     );
-    //     imagesURLs.push(secure_url);
-    //     imagesIds.push(public_id);
-    //   }
-    //   req.body.images = imagesURLs;
-    //   req.body.publicImageIds = imagesIds;
-    // }
-    console.log(workspace.schedule.holidays);
-
-    let updatedWorkspaceInfo = await findByIdAndUpdate({
-      model: workSpaceModel,
-      condition: { _id: workspaceId },
-      data: req.body,
-
-      options: { new: true },
-      
+      let updatedWorkspaceInfo = await findByIdAndUpdate({
+        model: workSpaceModel,
+        condition: { _id: workspaceId },
+        data: req.body,
+        options: { new: true },
+      });
+      res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
+    } else {
+      next(
+        new Error("Sorry, you are not the owner of this workspace", {
+          cause: 403,
+        })
+      );
     }
-    
-    );
-    return res.json({message:"Done",updatedWorkspaceInfo})
-  } else {
-    next(
-      new Error("Sorry, you are not the owner of this workspace", {
-        cause: 403,
-      })
-    );
   }
-}});
+});
+
+
+
+
+
 
 //hna brdo byms7 kol el obj m4 byms7 ele ana 2oltlo 3leh bs
 //delete workspaceInfo by owner
@@ -283,9 +268,7 @@ export const deleteWorkspaceInfoByOwner = asyncHandler(
   }
 );
 
-//addOffers
-//modifyOffers
-//ReportUser
+
 
 //Admin
 //get client accounts  {admin}
@@ -356,7 +339,7 @@ export const deleteWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
 //HTTP method: PUT
 //inputs from body:profilePic
 
-export const profilePic = async (req, res) => {
+export const profilePic = asyncHandler(async (req, res,next) => {
   if (req.file) {
     let { secure_url, public_id } = await cloudinary.uploader.upload(
       req.file.path,
@@ -372,17 +355,12 @@ export const profilePic = async (req, res) => {
     data: req.body,
     options: { new: true },
   });
+  console.log(uploadedPic);
   res.json({ message: "Done", uploadedPic });
-};
+})
 
-export const getBookingsHistoryToUser = asyncHandler(async (req, res, next) => {
-  let user = await findById({
-    model: userModel,
-    condition: { _id: req.user._id },
-  });
-  let history = await find({
-    model: bookingModel,
-    condition: { user: req.user._id },
-  });
-  res.status(200).json({ message: "Done", history });
-});
+
+
+
+
+
