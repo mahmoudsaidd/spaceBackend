@@ -53,7 +53,6 @@ export const findOne = async ({
   
   export const deleteOne = async ({ model, condition } = {}) => {
     let data = await model.deleteOne(condition);
-  
     return data;
   };
   
