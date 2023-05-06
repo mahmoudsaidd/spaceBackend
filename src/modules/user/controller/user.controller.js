@@ -194,6 +194,12 @@ export const deleteWorkSpace = asyncHandler(async (req, res, next) => {
   if (deletedWS) {
     res.json({ message: "Done", deletedWS });
   } else {
+<<<<<<< Updated upstream
     res.json({ message: "Failed" });
   }
 });
+=======
+    res.json({ message: "Failed" });
+  }
+});
+>>>>>>> Stashed changes
