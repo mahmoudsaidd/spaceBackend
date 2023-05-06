@@ -154,101 +154,52 @@ export const createBooking = asyncHandler(async (req, res, next) => {
 
 
 
-//modify booking info By Owner
-//hna y2dr y update kol 7aga t5os el booking 3shan hwa el owner
-export const updateBookingInfoByOwner = asyncHandler(async (req, res, next) => {
-  let { bookingId } = req.params;
-  const booking = await findById({ model: bookingModel, id: bookingId });
-  const room = await findById({ model: roomModel, id: booking.room });
-  console.log(room._id);
-  const ws = await findById({ model: workSpaceModel, id: room.workspaceId });
-  const owner = await findById({ model: userModel, id: ws.ownerId });
-  
-  if (!booking) {
-    res.status(404).json({ message: "Not found" });
+//modify booking info By Owner according to new booking info as duration, price, room, startTime, endTime
+export const modifyBookingByOwner = asyncHandler(async (req, res, next) => {
+  const { bookingId } = req.params;
+  const { room, startTime, endTime } = req.body;
+  if (!bookingId) {
+    res.status(404).json({ message: "Booking not found" });
   } else {
-    if (owner._id.toString() == req.user._id && booking.isCancelled == false) {
-      let { price, room, startTime, endTime, fees, promoCode } = req.body;
-
-      let calculatedDuration = booking.duration;
-      if (startTime && startTime != booking.startTime || endTime && endTime != booking.endTime) {
-        const total = new Date(endTime).getTime() - new Date(startTime).getTime();
-        calculatedDuration = Math.floor(total / 1000) / 3600;
-      }
-     
-      
-      // if (room._id.toString() != req.body.room.toString()) {
-      //   req.body.price = room.price * calculatedDuration;
-      // }
-      
-    // req.body.price=room.price*calculatedDuration
-      let updatingBookingInfo = await findByIdAndUpdate({
-        model: bookingModel,
-        condition: { _id: bookingId },
-        data:{
-          price,
-           room, 
-           startTime, 
-           endTime, 
-           fees, 
-           promoCode,
-           duration:calculatedDuration
-        },
-        options: { new: true },
-      });
-      res.status(200).json({ message: "Updated", updatingBookingInfo });
-    } else {
-      res.status(404).json({ message: "Unsuccessful update" });
-    }
-  }
-});
-
-
-
-
-//updateBookingInfoByUser
-//hna el user y2dr y update 7agat mo3yna zay eno y8ye el room aw startTime aw endTime
-export const updateBookingInfoByUser = asyncHandler(async (req, res, next) => {
-  let { bookingId } = req.params;
- const booking=await findById({model:bookingModel,id:bookingId})
- if(!booking){
-
- }else{
-  if(booking.user.toString()== req.user._id.toString()){
-
-    let { room, startTime, endTime } = req.body;
-
-    // const total = new Date(endTime).getTime() - new Date(startTime).getTime();
-    // const calculatedDuration = Math.floor(total / 1000) / 3600;
-    // console.log(calculatedDuration);
-  
-    let calculatedDuration = booking.duration;
-    if (startTime && startTime != booking.startTime || endTime && endTime != booking.endTime) {
-      const total = new Date(endTime).getTime() - new Date(startTime).getTime();
-      calculatedDuration = Math.floor(total / 1000) / 3600;
-    }
-
-
-    let updatingBookingInfo = await findByIdAndUpdate({
+    const foundBooking = await findById({
       model: bookingModel,
-      condition: { _id: bookingId },
-      data: {
-        room,
-        startTime,
-        endTime,
-        user: req.user._id,
-        duration: calculatedDuration,
-      },
-      options: { new: true },
+      id: bookingId,
     });
-    res.status(200).json({ message: "Updated", updatingBookingInfo });
-  }else{
-    res.status(401).json({ message: "You are not authorized to update this booking" });
+// check of the new  room
+    const foundRoom = await findById({ model: roomModel, id: room });
+    
+    if (!foundRoom) {
+      return res.status(404).json({ message: "Room not found" });
+    }
+    
 
+    // Calculate Duration automatically
+    const total = new Date(endTime).getTime() - new Date(startTime).getTime();
+    const calculatedDuration = Math.floor(total / 1000) / 3600;
+  
+    // Store price automatically depend on room price stored on room Model
+    const cost = foundRoom.price*calculatedDuration;
+
+    // check if the requested user is the owner of the workspace or the user who booked the room
+    if (user.req._id == foundBooking.user || user.req._id == foundBooking.room.workingSpace.ownerId) {
+      // make the update and save the new price and duration
+      const updatedBooking = await update({
+        model: bookingModel,
+        id: bookingId,
+        data: {
+          room,
+          startTime,
+          endTime,
+          duration: calculatedDuration,
+          price: cost,
+        },
+      });
+      res.status(200).json({ message: "Done", updatedBooking });
+    } else {
+      res.status(401).json({ message: "Unauthorized" });
+    }
   }
- }
 });
-
 
 
 
