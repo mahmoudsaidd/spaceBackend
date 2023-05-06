@@ -27,7 +27,7 @@ export const findOne = async ({
     options = {},
   } = {}) => {
     const res = await model.findByIdAndUpdate(condition, data, options);
-    console.log(findByIdAndUpdate);
+
     return res;
   };
   
@@ -63,12 +63,12 @@ export const findOne = async ({
     return res;
   };
   
-  export const insertMany = async ({ model, data = [] } = {}) => {
+  export const insertMany = async ({ model, data = {} } = {}) => {
     let res = await model.insertMany(data);
     return res;
   };
   
-  export const updateOne = async (model, condition = {}, options = {}) => {
+  export const updateOne = async ({model, condition = {}, options = {}}={}) => {
     const res = await model.updateOne(condition, options);
     return res;
   };

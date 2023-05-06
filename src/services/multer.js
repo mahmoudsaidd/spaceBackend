@@ -9,11 +9,11 @@ export const fileValidation = {
 
 export const HME = (err, req, res, next) => {
     if (err) {
-        res.status(400).json({ message: "Multer error", err:""+err })
+        return  res.status(400).json({ message: "Multer error", err:""+err })
         // res.status(400).json({ message: "Multer error" })
 
     } else {
-        next()
+        return  next()
     }
 }
 

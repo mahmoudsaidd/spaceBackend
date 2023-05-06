@@ -23,37 +23,38 @@ export const getAllWsRooms = asyncHandler(async (req, res, next) => {
       model: roomModel,
       condition: { workspaceId: doc._id },
     });
-    let newObj = doc.toObject(); 
+    let newObj = doc.toObject();
     newObj.room = room;
     allWorkspaces.push(newObj);
   }
-  res.status(200).json({ message: "Done", allWorkspaces });
+  return res.status(200).json({ message: "Done", allWorkspaces });
 });
 
 // get a list of ws from db
 export const getWorkSpaces = asyncHandler(async (req, res, next) => {
   let workSpace = await find({ model: workSpaceModel });
-  res.status(200).json({ message: "Done", workSpace });
+  return res.status(200).json({ message: "Done", workSpace });
 });
 
-export const getBookingHistoryToWsOwner = asyncHandler(async (req, res, next) => {
-  let { workspaceId } = req.params;
-  let workspace=await findById({model:workSpaceModel,id:workspaceId})
-  if(!workspace){
-    res.status(404).json({message:"workspace not found"})
-  }else{
-    const owner=workspace.ownerId
-    const History = await find({
-      model: bookingModel,
-      condition:{
-      "room.workspaceId": workspaceId,
-      owner:req.user._id
-      }
-    });
-    res.status(200).json({ message: "Done", History });
+export const getBookingHistoryToWsOwner = asyncHandler(
+  async (req, res, next) => {
+    let { workspaceId } = req.params;
+    let workspace = await findById({ model: workSpaceModel, id: workspaceId });
+    if (!workspace) {
+      return res.status(404).json({ message: "workspace not found" });
+    } else {
+      const owner = workspace.ownerId;
+      const History = await find({
+        model: bookingModel,
+        condition: {
+          "room.workspaceId": workspaceId,
+          owner: req.user._id,
+        },
+      });
+      return res.status(200).json({ message: "Done", History });
+    }
   }
- 
-});
+);
 
 export const createReview = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
@@ -61,7 +62,7 @@ export const createReview = asyncHandler(async (req, res, next) => {
 
   const workspace = await findById({ model: workSpaceModel, id: workspaceId });
   if (!workspace) {
-    res.status(404).json({ message: "Workspace not found" });
+    return res.status(404).json({ message: "Workspace not found" });
   } else {
     const existingReview = await findOne({
       model: reviewModel,
@@ -71,7 +72,7 @@ export const createReview = asyncHandler(async (req, res, next) => {
       },
     });
     if (existingReview) {
-      res
+      return res
         .status(401)
         .json({ message: "Sorry,you can only add one review per workspace" });
     } else {
@@ -83,7 +84,7 @@ export const createReview = asyncHandler(async (req, res, next) => {
           rating,
         },
       });
-      res.status(201).json({ message: "Created", review });
+      return res.status(201).json({ message: "Created", review });
     }
   }
 });
@@ -93,7 +94,7 @@ export const avgRate = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
   const Workspace = await findById({ model: workSpaceModel, id: workspaceId });
   if (!Workspace) {
-    res.status(404).json({ message: "Workspace not found" });
+    return res.status(404).json({ message: "Workspace not found" });
   } else {
     const reviews = await find({
       model: reviewModel,
@@ -111,10 +112,9 @@ export const avgRate = asyncHandler(async (req, res, next) => {
       condition: { _id: workspaceId },
       data: { avgRate: avgRating },
     });
-    res.status(200).json({ message: "Done", avgRating });
+    return res.status(200).json({ message: "Done", avgRating });
   }
 });
-
 
 export const searchByRate = asyncHandler(async (req, res, next) => {
   let { rate } = req.params;
@@ -123,13 +123,15 @@ export const searchByRate = asyncHandler(async (req, res, next) => {
     condition: { rating: rate },
   });
   if (WsRate.length) {
-    res.status(200).json({ message: "founded", WsRate });
+    return res.status(200).json({ message: "founded", WsRate });
   } else {
-    res.status(404).json({ message: "not founded WorkSpace have this rate" });
+    return res
+      .status(404)
+      .json({ message: "not founded WorkSpace have this rate" });
   }
 });
 
 export const HighestRate = asyncHandler(async (req, res, next) => {
   const HRate = await workSpaceModel.find().sort({ avgRate: 1 });
-  res.status(200).json({ message: "Done", HRate });
+  return res.status(200).json({ message: "Done", HRate });
 });

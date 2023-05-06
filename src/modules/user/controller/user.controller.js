@@ -15,13 +15,13 @@ import { workSpaceModel } from "../../../../Database/model/workSpace.model.js";
 import { roles } from "../../../middleware/auth.js";
 import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
-import path from 'path';
+import path from "path";
 import bcrypt from "bcryptjs";
 
 //Owner
 export const addWsByFillForm = asyncHandler(async (req, res, next) => {
   if (!req.files?.length) {
-    next(new Error("You have to add workspace images", { cause: 400 }));
+    return next(new Error("You have to add workspace images", { cause: 400 }));
   } else {
     let imagesURLs = [];
     let imagesIds = [];
@@ -42,39 +42,36 @@ export const addWsByFillForm = asyncHandler(async (req, res, next) => {
     data: req.body,
   });
 
-  res.status(201).json({ message: "Done", addedWorkspace });
+  return res.status(201).json({ message: "Done", addedWorkspace });
 });
-
-
 
 export const adminValidation = asyncHandler(async (req, res, next) => {
   let { ownerId, adminValidation } = req.body;
   let owner = await findById({ model: userModel, id: ownerId });
   if (!owner) {
-    res.status(404).json({ message: "Owner not found" });
+    return res.status(404).json({ message: "Owner not found" });
   } else {
     if (adminValidation == "true") {
-      console.log(adminValidation);
       let accept = await findOneAndUpdate({
         model: userModel,
         condition: { _id: ownerId, role: "User", adminValidation: "false" },
         data: { adminValidation: "true", role: "Owner" },
         options: { new: true },
       });
-      res.status(200).json({ message: "owner Accepted By Admin", accept });
+      return res
+        .status(200)
+        .json({ message: "owner Accepted By Admin", accept });
     } else {
       let deleteWorkSpace = await deleteOne({
         model: workSpaceModel,
         condition: { ownerId },
       });
-      res
+      return res
         .status(200)
         .json({ message: "owner Refused By Admin", deleteWorkSpace });
     }
   }
 });
-
-
 
 // modify workspaceInfo
 export const updateWorkspaceInfoByOwner = asyncHandler(
@@ -97,9 +94,8 @@ export const updateWorkspaceInfoByOwner = asyncHandler(
     } = req.body;
     let workspace = await findById({ model: workSpaceModel, id: workspaceId });
     if (!workspace) {
-      next(new Error("Workspace not found", { cause: 404 }));
+      return next(new Error("Workspace not found", { cause: 404 }));
     } else {
-      // hna by3ml delete ll swr el adema w by7ot a5r swr atrf3t
       if (workspace.ownerId.toString() == req.user._id.toString()) {
         if (req.files?.length) {
           let imagesURLs = [];
@@ -111,16 +107,10 @@ export const updateWorkspaceInfoByOwner = asyncHandler(
             );
             imagesURLs.push(secure_url);
             imagesIds.push(public_id);
-           }
+          }
           req.body.images = imagesURLs;
           req.body.publicImageIds = imagesIds;
         }
-
-        // for (const day of req.body) {
-        //    workspace.schedule.holidays[day]=req.body.holidays[day]
-        // }
-
-        // ProductModel.findOneAndUpdate({productCode: userData.productCode}, dataToBeUpdated, {new: true})
 
         let updatedWorkspaceInfo = await findByIdAndUpdate({
           model: workSpaceModel,
@@ -128,24 +118,12 @@ export const updateWorkspaceInfoByOwner = asyncHandler(
           data: req.body,
           options: { new: true },
         });
-        // console.log(workspace.feedback.comments);
-        // if (!updatedWorkspaceInfo) {
-        //   if (req.body.publicImageIds) {
-        //     for (const id of req.body.imagesIds) {
-        //       await cloudinary.uploader.destroy(id);
-        //     }
-        //   }
-        //   next(new Error("Database Error", { cause: 400 }));
-        // } else {
-        //   if (req.body.publicImageIds) {
-        //     for (const id of workspace.publicImageIds) {
-        //       await cloudinary.uploader.destroy(id);
-        //     }
-        //   }
-        // }
-        res.status(200).json({ message: "Updated", updatedWorkspaceInfo });
+
+        return res
+          .status(200)
+          .json({ message: "Updated", updatedWorkspaceInfo });
       } else {
-        next(
+        return next(
           new Error("Sorry, you are not the owner of this workspace", {
             cause: 403,
           })
@@ -155,8 +133,6 @@ export const updateWorkspaceInfoByOwner = asyncHandler(
   }
 );
 
-
-
 //Admin
 //get client accounts  {admin}
 export const getClientAccountsByAdmin = asyncHandler(async (req, res, next) => {
@@ -165,9 +141,9 @@ export const getClientAccountsByAdmin = asyncHandler(async (req, res, next) => {
     condition: { $nor: [{ role: "Admin" }] },
   });
   if (user) {
-    res.json({ message: "Founded", user });
+    return res.json({ message: "Founded", user });
   } else {
-    res.json({ message: "Not have account" });
+    return res.json({ message: "Not have account" });
   }
 });
 
@@ -176,9 +152,9 @@ export const getAccountByAdmin = asyncHandler(async (req, res, next) => {
   let { UserId } = req.params;
   const account = await findById({ model: userModel, id: UserId });
   if (account) {
-    res.json({ message: "Founded", account });
+    return res.json({ message: "Founded", account });
   } else {
-    res.json({ message: "Not have account" });
+    return res.json({ message: "Not have account" });
   }
 });
 
@@ -191,9 +167,9 @@ export const deleteClientAccountByAdmin = asyncHandler(
       condition: { _id: DId },
     });
     if (deletedUser) {
-      res.json({ message: "Done", deletedUser });
+      return res.json({ message: "Done", deletedUser });
     } else {
-      res.json({ message: "Failed" });
+      return res.json({ message: "Failed" });
     }
   }
 );
@@ -203,9 +179,9 @@ export const getWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
   let { WorkSpaceId } = req.params;
   const WS = await findById({ model: workSpaceModel, id: WorkSpaceId });
   if (WS) {
-    res.json({ message: "Founded", WS });
+    return res.json({ message: "Founded", WS });
   } else {
-    res.json({ message: "Not Founded" });
+    return res.json({ message: "Not Founded" });
   }
 });
 
@@ -216,9 +192,9 @@ export const deleteWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
     condition: { _id: WorkSpaceId },
   });
   if (deletedWS) {
-    res.json({ message: "Done", deletedWS });
+    return res.json({ message: "Done", deletedWS });
   } else {
-    res.json({ message: "Failed" });
+    return res.json({ message: "Failed" });
   }
 });
 
@@ -226,7 +202,7 @@ export const deleteWorkSpaceByAdmin = asyncHandler(async (req, res, next) => {
 //HTTP method: PUT
 //inputs from body:profilePic
 
-export const profilePic = asyncHandler(async (req, res,next) => {
+export const profilePic = asyncHandler(async (req, res, next) => {
   if (req.file) {
     let { secure_url, public_id } = await cloudinary.uploader.upload(
       req.file.path,
@@ -242,14 +218,11 @@ export const profilePic = asyncHandler(async (req, res,next) => {
     data: req.body,
     options: { new: true },
   });
-  console.log(uploadedPic);
-  res.json({ message: "Done", uploadedPic });
-})
 
+  return res.json({ message: "Done", uploadedPic });
+});
 
-
-
-export const updatePassword = asyncHandler( async (req, res) => {
+export const updatePassword = asyncHandler(async (req, res) => {
   let { currentPassword, newPassword, newCPassword } = req.body;
   if (newPassword == newCPassword) {
     let user = await userModel.findById(req.user._id);
@@ -264,39 +237,21 @@ export const updatePassword = asyncHandler( async (req, res) => {
         { password: hashedPass },
         { new: true }
       );
-      res.json({ message: "Updated", updatedUser });
+      return res.json({ message: "Updated", updatedUser });
     } else {
-      res.json({ message: "currentPassword Invalid" });
+      return res.json({ message: "currentPassword Invalid" });
     }
   } else {
-    res.json({ message: "newPassword must equal newCPassword" });
+    return res.json({ message: "newPassword must equal newCPassword" });
   }
 });
-
-
-
-
-// export const editProfile=asyncHandler(async(req,res,next)=>{
-//   let {userName,email}=req.body
-//   // const user=await findById({model:userModel,id:req.user._id})
-//   // if(user){
-//     const UpdatedInfo=await find({model:userModel,id:req.user._id,data:req.body})
-//     res.status(200).json({message:"Updated",UpdatedInfo})
-//   // }
-
-
-
-// //  console.log(user);
-// })
-
-
 
 //make an udpdate to user profile
 export const updateProfile = asyncHandler(async (req, res, next) => {
   let { userId } = req.params;
   let user = await findById({ model: userModel, id: userId });
   if (!user) {
-    next(new Error("User not found", { cause: 404 }));
+    return next(new Error("User not found", { cause: 404 }));
   } else {
     if (user._id.toString() == req.user._id.toString()) {
       if (req.file) {
@@ -314,14 +269,13 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
         data: req.body,
         options: { new: true },
       });
-      res.status(200).json({ message: "Updated", updatedUser });
+      return res.status(200).json({ message: "Updated", updatedUser });
     } else {
-      next(
+      return next(
         new Error("Sorry, you are not the owner of this account", {
           cause: 403,
         })
       );
-    }
-  }
+    }
+  }
 });
-

@@ -13,10 +13,9 @@ import {
 import { nanoid } from "nanoid";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 
-
-// signUp api 
+// signUp api
 // HTTP method: POST
-// inputs from body:userName, email, password 
+// inputs from body:userName, email, password
 export const signUp = asyncHandler(async (req, res, next) => {
   const { userName, email, password } = req.body;
   const user = await findOne({
@@ -25,7 +24,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
     select: "email",
   });
   if (user) {
-   return next(new Error("This email already register", { cause: 409 }));
+    return next(new Error("This email already register", { cause: 409 }));
   } else {
     let hashedPassword = bcrypt.hashSync(
       password,
@@ -59,71 +58,72 @@ export const signUp = asyncHandler(async (req, res, next) => {
     let emailResult = await sendEmail(email, "Confirm to Register", message);
     if (emailResult.accepted.length) {
       let savedUser = await addUser.save();
-      res.status(201).json({ message: "Added Successfully", savedUser });
+      return res.status(201).json({ message: "Added Successfully", savedUser });
     } else {
       return next(new Error("Invalid Email", { cause: 404 }));
     }
   }
 });
 
-
-// confirmEmail api 
+// confirmEmail api
 // HTTP method: Get
 // inputs from params :Token
 export const confirmEmail = asyncHandler(async (req, res, next) => {
   let { token } = req.params;
-  let decoded = jwt.verify (token, process.env.emailToken);
-   if (!decoded && !decoded.id) {
+  let decoded = jwt.verify(token, process.env.emailToken);
+  if (!decoded && !decoded.id) {
     return next(new Error("Invalid data token", { cause: 401 }));
   } else {
-    let updatedUser=await findOneAndUpdate({
-      model:userModel,
-      condition:{_id:decoded.id,confirmEmail:false},
-      data:{confirmEmail:true},
-      options:{new:true}
-    })
-    if(updatedUser){
-      res.status(200).json({message:'Confirmed'})
-    }else{
-      return next(new Error("Invalid token data confirm",{cause:401}))
+    let updatedUser = await findOneAndUpdate({
+      model: userModel,
+      condition: { _id: decoded.id, confirmEmail: false },
+      data: { confirmEmail: true },
+      options: { new: true },
+    });
+    if (updatedUser) {
+      return res.status(200).json({ message: "Confirmed" });
+    } else {
+      return next(new Error("Invalid token data confirm", { cause: 401 }));
     }
-}});
+  }
+});
 
-// refreshToken api 
+// refreshToken api
 // HTTP method: Get
 // inputs from params :Token
 export const refreshToken = async (req, res) => {
   let { token } = req.params;
   let decoded = jwt.verify(token, process.env.emailToken);
   if (!decoded || !decoded.id) {
-    res.json({ message: "Invalid Token or ID" });
+    return res.json({ message: "Invalid Token or ID" });
   } else {
     let user = await userModel.findById(decoded.id);
     if (!user) {
-      res.json({ message: "user didn't register" });
+      return res.json({ message: "user didn't register" });
     } else {
       if (user.confirmEmail) {
-        res.json({ message: "Already confirmed" });
+        return res.json({ message: "Already confirmed" });
       } else {
         //Create refresh token
         let token = jwt.sign({ id: user._id }, process.env.emailToken);
         let message = `<a href="http://localhost:3000/api/v1/auth/confirmEmail/${token}">This is the second email</a>`;
         sendEmail(user.email, "Refresh Token", message);
-        res.status(200).json({ message: "Done, please check your email" });
+        return res
+          .status(200)
+          .json({ message: "Done, please check your email" });
       }
     }
   }
 };
 
-
-// signIn api 
+// signIn api
 // HTTP method: POST
-// inputs from body:email, password 
+// inputs from body:email, password
 export const signIn = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await findOne({ model: userModel, condition: { email } });
   if (!user) {
-    return next(new Error("you have to register first", { cause: 400}));
+    return next(new Error("you have to register first", { cause: 400 }));
   } else {
     let matched = bcrypt.compareSync(
       password,
@@ -132,22 +132,24 @@ export const signIn = asyncHandler(async (req, res, next) => {
     );
     if (matched) {
       if (!user.confirmEmail) {
-        return next(new Error("you have to confirm email first", { cause: 401 }));
+        return next(
+          new Error("you have to confirm email first", { cause: 401 })
+        );
       } else {
         let token = jwt.sign(
           { id: user._id, isLoggedIn: true },
           process.env.tokenSignature,
           { expiresIn: 60 * 60 * 24 * 2 }
         );
-        res.status(200).json({ message: "Welcome", token });
+        return res.status(200).json({ message: "Welcome", token });
       }
     } else {
-      return next(new Error("Invalid password", { cause: 400}));
+      return next(new Error("Invalid password", { cause: 400 }));
     }
   }
 });
 
-// updateRole api 
+// updateRole api
 // HTTP method: PUT
 // inputs from body:userId
 //if admin want to update someone to be an admin as him
@@ -166,42 +168,39 @@ export const updateRole = async (req, res, next) => {
         data: { role: "Admin" },
         options: { new: true },
       });
-      res.status(200).json({ message: "Updated", updatedUser });
-     
+      return res.status(200).json({ message: "Updated", updatedUser });
     }
   }
 };
 
-// sendCode api 
+// sendCode api
 // HTTP method: POST
 // inputs from body:email
 export const sendCode = async (req, res) => {
   let { email } = req.body;
   let user = await userModel.findOne({ email });
   if (!user) {
-    res.json({ message: "User didn't register yet" });
+    return res.json({ message: "User didn't register yet" });
   } else {
     let OTPCode = nanoid();
     await userModel.findByIdAndUpdate(user._id, { OTPCode });
     let message = `your OTPCode is ${OTPCode}`;
     sendEmail(user.email, "your OTP Code", message);
-    res.status(200).json({ message: "Done, please check your email" });
+    return res.status(200).json({ message: "Done, please check your email" });
   }
 };
 
-
-
-// forgetPassword api 
+// forgetPassword api
 // HTTP method: POST
 // inputs from body: OTPCode, email, password
 export const forgetPassword = asyncHandler(async (req, res) => {
-  let { OTPCode, email, password} = req.body;
+  let { OTPCode, email, password } = req.body;
   if (!OTPCode) {
-    res.json({ message: "Code is not valid" });
+    return res.json({ message: "Code is not valid" });
   } else {
     let user = await userModel.findOne({ email, OTPCode });
     if (!user) {
-      res.json({ message: "Email or code is not valid" });
+      return res.json({ message: "Email or code is not valid" });
     } else {
       const hashedPass = await bcrypt.hash(
         password,
@@ -212,9 +211,7 @@ export const forgetPassword = asyncHandler(async (req, res) => {
         { OTPCode: null, password: hashedPass },
         { new: true }
       );
-      res.status(200).json({ message: "Success", updated });
+      return res.status(200).json({ message: "Success", updated });
     }
   }
 });
-
-

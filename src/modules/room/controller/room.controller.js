@@ -23,11 +23,11 @@ export const addRoom = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
   let workspace = await findById({ model: workSpaceModel, id: workspaceId });
   if (!workspace) {
-    res.status(404).json({ message: "workspace not found" });
+    return res.status(404).json({ message: "workspace not found" });
   } else {
     if (workspace.ownerId.toString() == req.user._id.toString()) {
       if (!req.files?.length) {
-        next(new Error("You have to add rooms' images", { cause: 400 }));
+        return next(new Error("You have to add rooms' images", { cause: 400 }));
       } else {
         let imagesURLs = [];
         let imagesIds = [];
@@ -41,7 +41,6 @@ export const addRoom = asyncHandler(async (req, res, next) => {
         }
         req.body.roomImages = imagesURLs;
         req.body.publicImageIds = imagesIds;
-        // req.params.ownerId = req.user._id;
       }
 
       let addedRoom = await create({
@@ -51,9 +50,9 @@ export const addRoom = asyncHandler(async (req, res, next) => {
           ...req.params,
         },
       });
-      res.status(201).json({ message: "Added", addedRoom });
+      return res.status(201).json({ message: "Added", addedRoom });
     } else {
-      res.status(401).json({ message: "you are not the owner" });
+      return res.status(401).json({ message: "you are not the owner" });
     }
   }
 });
@@ -62,17 +61,15 @@ export const getRoomsForSpecificWs = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
   const foundedWs = await findById({ model: workSpaceModel, id: workspaceId });
   if (!foundedWs) {
-    res.status(404).json({ message: "Workspace not found" });
+    return res.status(404).json({ message: "Workspace not found" });
   } else {
     let room = await find({
       model: roomModel,
       condition: { workspaceId },
     });
-    res.json({ message: "Done", room });
+    return res.json({ message: "Done", room });
   }
 });
-
-
 
 export const EditRoomOfWs = asyncHandler(async (req, res, next) => {
   let { roomId } = req.params;
@@ -80,7 +77,7 @@ export const EditRoomOfWs = asyncHandler(async (req, res, next) => {
   const ws = await findById({ model: workSpaceModel, id: Room.workspaceId });
   const owner = await findById({ model: userModel, id: ws.ownerId });
   if (!Room) {
-    res.status(404).json({ message: "Room not found" });
+    return res.status(404).json({ message: "Room not found" });
   } else {
     if (owner._id.toString() == req.user._id.toString()) {
       let imagesURLs = [];
@@ -95,21 +92,17 @@ export const EditRoomOfWs = asyncHandler(async (req, res, next) => {
       }
       req.body.roomImages = imagesURLs;
       req.body.publicImageIds = imagesIds;
-    }}
-
-    const updated = await findOneAndUpdate({
-      model: roomModel,
-      condition: { _id: roomId },
-      data: req.body,
-      options: { new: true },
-    });
-    res.status(200).json({ message: "Updated", updated });
+    }
   }
-);
 
-
-
-
+  const updated = await findOneAndUpdate({
+    model: roomModel,
+    condition: { _id: roomId },
+    data: req.body,
+    options: { new: true },
+  });
+  return res.status(200).json({ message: "Updated", updated });
+});
 
 export const DeLeteRoomOfWs = asyncHandler(async (req, res, next) => {
   let { roomId } = req.params;
@@ -117,17 +110,20 @@ export const DeLeteRoomOfWs = asyncHandler(async (req, res, next) => {
   const ws = await findById({ model: workSpaceModel, id: DRoom.workspaceId });
   const owner = await findById({ model: userModel, id: ws.ownerId });
   if (!DRoom) {
-    res.status(404).json({ message: "Room not found" });
+    return res.status(404).json({ message: "Room not found" });
   } else {
-    if(owner._id.toString()==req.user._id.toString()){
+    if (owner._id.toString() == req.user._id.toString()) {
       const deletedRoom = await deleteOne({
         model: roomModel,
-        condition: { _id:roomId},
+        condition: { _id: roomId },
       });
-      res.status(200).json({ message: "Deleted", deletedRoom });
-    }else{
-      res.status(401).json({message:"you cannot delete this room as you are not the Owner"})
+      return res.status(200).json({ message: "Deleted", deletedRoom });
+    } else {
+      return res
+        .status(401)
+        .json({
+          message: "you cannot delete this room as you are not the Owner",
+        });
     }
-    }
-   
+  }
 });
