@@ -48,7 +48,6 @@ export const adminValidation=asyncHandler(async(req,res,next)=>{
   if (!owner) {
         res.status(404).json({ message: "Owner not found" });
       } else {
-        
           if(adminValidation=="true"){
              let accept =await findOneAndUpdate({
               model:userModel,
@@ -195,6 +194,12 @@ export const deleteWorkSpace = asyncHandler(async (req, res, next) => {
   if (deletedWS) {
     res.json({ message: "Done", deletedWS });
   } else {
+<<<<<<< Updated upstream
     res.json({ message: "Failed" });
   }
 });
+=======
+    res.json({ message: "Failed" });
+  }
+});
+>>>>>>> Stashed changes
