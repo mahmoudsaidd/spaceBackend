@@ -32,7 +32,7 @@ if(process.env.ENV ==="DEV"){
 
 //setUp API Routing
 app.get('/',(req,res)=>{
-    return res.send("<h1> Home Page </h1>")
+  res.send("<h1> Home Page </h1>")
 })
 
 
