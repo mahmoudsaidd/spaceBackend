@@ -25,7 +25,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
     select: "email",
   });
   if (user) {
-    next(new Error("This email already register", { cause: 409 }));
+   return next(new Error("This email already register", { cause: 409 }));
   } else {
     let hashedPassword = bcrypt.hashSync(
       password,
@@ -61,7 +61,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
       let savedUser = await addUser.save();
       res.status(201).json({ message: "Added Successfully", savedUser });
     } else {
-      next(new Error("Invalid Email", { cause: 404 }));
+      return next(new Error("Invalid Email", { cause: 404 }));
     }
   }
 });
@@ -74,7 +74,7 @@ export const confirmEmail = asyncHandler(async (req, res, next) => {
   let { token } = req.params;
   let decoded = jwt.verify (token, process.env.emailToken);
    if (!decoded && !decoded.id) {
-    next(new Error("Invalid data token", { cause: 401 }));
+    return next(new Error("Invalid data token", { cause: 401 }));
   } else {
     let updatedUser=await findOneAndUpdate({
       model:userModel,
@@ -85,7 +85,7 @@ export const confirmEmail = asyncHandler(async (req, res, next) => {
     if(updatedUser){
       res.status(200).json({message:'Confirmed'})
     }else{
-      next(new Error("Invalid token data confirm",{cause:401}))
+      return next(new Error("Invalid token data confirm",{cause:401}))
     }
 }});
 
@@ -123,7 +123,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await findOne({ model: userModel, condition: { email } });
   if (!user) {
-    next(new Error("you have to register first", { cause: 400}));
+    return next(new Error("you have to register first", { cause: 400}));
   } else {
     let matched = bcrypt.compareSync(
       password,
@@ -132,7 +132,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
     );
     if (matched) {
       if (!user.confirmEmail) {
-        next(new Error("you have to confirm email first", { cause: 401 }));
+        return next(new Error("you have to confirm email first", { cause: 401 }));
       } else {
         let token = jwt.sign(
           { id: user._id, isLoggedIn: true },
@@ -142,7 +142,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
         res.status(200).json({ message: "Welcome", token });
       }
     } else {
-      next(new Error("Invalid password", { cause: 400}));
+      return next(new Error("Invalid password", { cause: 400}));
     }
   }
 });
@@ -155,10 +155,10 @@ export const updateRole = async (req, res, next) => {
   let { userId } = req.body;
   let user = await findById({ model: userModel, id: userId });
   if (!user) {
-    next(new Error("Invalid user id", { cause: 404 }));
+    return next(new Error("Invalid user id", { cause: 404 }));
   } else {
     if (!user.confirmEmail) {
-      next(new Error("Please confirm your email first", { cause: 401 }));
+      return next(new Error("Please confirm your email first", { cause: 401 }));
     } else {
       let updatedUser = await findByIdAndUpdate({
         model: userModel,
