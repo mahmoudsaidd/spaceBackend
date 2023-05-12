@@ -7,12 +7,12 @@ const router= Router();
 router.get('/getAllWsRooms',auth(),workSpaceController.getAllWsRooms)
 router.get('/getWorkSpaces',auth(),workSpaceController.getWorkSpaces)
 router.get('/getBookingHistoryToWsOwner',auth(endPoints.getBookingHistoryToWsOwner),workSpaceController.getBookingHistoryToWsOwner)
-
+router.get('/searchWorkspacesByName',workSpaceController.searchWorkspacesByName)
 
 //Reviews
 router.post('/createReview/:workspaceId',auth(endPoints.createReview),workSpaceController.createReview)
 router.get('/avgRate/:workspaceId',auth(endPoints.avgRate),workSpaceController.avgRate)
-router.get('/searchByRate/:rate',workSpaceController.searchByRate)
+router.get('/searchByRate',auth(),workSpaceController.searchByRate)
 router.get('/HighestRate',workSpaceController.HighestRate)
 
 

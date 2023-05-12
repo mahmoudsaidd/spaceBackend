@@ -116,12 +116,15 @@ export const avgRate = asyncHandler(async (req, res, next) => {
   }
 });
 
+
 export const searchByRate = asyncHandler(async (req, res, next) => {
-  let { rate } = req.params;
+  let { avgRate } = req.query;
+
   const WsRate = await find({
-    model: reviewModel,
-    condition: { rating: rate },
+    model: workSpaceModel,
+    condition: { avgRate },
   });
+
   if (WsRate.length) {
     return res.status(200).json({ message: "founded", WsRate });
   } else {
@@ -131,7 +134,36 @@ export const searchByRate = asyncHandler(async (req, res, next) => {
   }
 });
 
+
+
 export const HighestRate = asyncHandler(async (req, res, next) => {
   const HRate = await workSpaceModel.find().sort({ avgRate: 1 });
   return res.status(200).json({ message: "Done", HRate });
 });
+
+
+
+export const searchWorkspacesByName = asyncHandler(async (req, res, next) => {
+  const { name } = req.query;
+
+  if (!name) {
+    return res
+      .status(400)
+      .json({ message: "Please provide a name to search for." });
+  }
+
+  const regex = new RegExp(name, "i");
+
+  const foundWorkspaces = await find({
+    model: workSpaceModel,
+    condition: { name: { $regex: regex } },
+  });
+
+  if (!foundWorkspaces.length) {
+    return res.status(404).json({ message: "No workspaces found" });
+  }
+
+  return res.status(200).json({ message: "Done", workspaces: foundWorkspaces });
+});
+
+
