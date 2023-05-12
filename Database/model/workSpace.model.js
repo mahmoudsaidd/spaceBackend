@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-// kol el composite attributes 3amaltelha schema lwa7daha
-// badal ma akhaly el model kolo f schema wa7da 7ases keda a7san w as-hal
+
 const scheduleSchema = new mongoose.Schema({
   holidays: [
     {
@@ -29,32 +28,29 @@ const scheduleSchema = new mongoose.Schema({
   },
 });
 
-//  const feedbackSchema = new mongoose.Schema({
-//   rate: {
-//      type:Number,
-//      default:1,
-//      required:true,
-//      min:[1,"min 1"],
-//      max:[5,"max 5"]
-//    },
-//    comments: [{
-//      type: String,
-//      required: true,
-//    },]
-// });
 
 const locationSchema = new mongoose.Schema({
   city: {
     type: String,
-    // required: true,
+    required: true,
   },
   streetName: {
     type: String,
-    // required: true,
+    required: true,
   },
   buildingNumber: {
     type: String,
-    // required: true,
+    required: true,
+  },
+  region:{
+    type: String,
+    required: true,
+  },
+  latitude: {
+    type: String,
+  },
+  longitude: {
+    type: String,
   },
 });
 
@@ -95,12 +91,6 @@ const workSpaceSchema = new mongoose.Schema(
     contact: contactSchema,
     location: locationSchema,
 
-    latitude: {
-      type: String,
-    },
-    longitude: {
-      type: String,
-    },
 
     dateCreated: {
       type: Date,

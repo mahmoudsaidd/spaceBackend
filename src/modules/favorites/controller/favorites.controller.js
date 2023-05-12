@@ -41,10 +41,14 @@ export const removeFavorites = asyncHandler(async (req, res, next) => {
 
 //make a function return favorites of the user
 export const getFavorites = asyncHandler(async (req, res, next) => {
-  let founded = await findById({ model: userModel, id: req.user._id });
+  let founded = await findById({
+    model: userModel,
+    id: req.user._id,
+    populate: "favorites",
+  });
+
   if (!founded) {
     return next(new Error("user not found", { cause: 404 }));
   }
-  let favorites = founded.favorites;
-  return res.status(200).json({ message: "Done", favorites });
+  return res.status(200).json({ message: "Done", founded });
 });

@@ -139,7 +139,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
         let token = jwt.sign(
           { id: user._id, isLoggedIn: true },
           process.env.tokenSignature,
-          { expiresIn: 60 * 60 * 24 * 2 }
+          { expiresIn: 60 * 60 * 24 * 60 }
         );
         return res.status(200).json({ message: "Welcome", token });
       }
