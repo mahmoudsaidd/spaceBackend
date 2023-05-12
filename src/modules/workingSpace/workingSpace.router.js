@@ -8,6 +8,8 @@ router.get('/getAllWsRooms',auth(),workSpaceController.getAllWsRooms)
 router.get('/getWorkSpaces',auth(),workSpaceController.getWorkSpaces)
 router.get('/getBookingHistoryToWsOwner',auth(endPoints.getBookingHistoryToWsOwner),workSpaceController.getBookingHistoryToWsOwner)
 router.get('/searchWorkspacesByName',auth(),workSpaceController.searchWorkspacesByName)
+router.get('/searchWorkspacesByRegion',auth(),workSpaceController.searchWorkspacesByRegion)
+
 
 
 //Reviews

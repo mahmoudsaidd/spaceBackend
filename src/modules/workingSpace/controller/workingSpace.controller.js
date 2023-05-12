@@ -162,3 +162,28 @@ export const searchWorkspacesByName = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({ message: "Done", workspaces: foundWorkspaces });
 });
+
+
+
+export const searchWorkspacesByRegion = asyncHandler(async (req, res, next) => {
+  const { region } = req.query;
+
+  if (!region) {
+    return res
+      .status(400)
+      .json({ message: "Please provide a region to search for." });
+  }
+
+  const regex = new RegExp(region, "i");
+
+  const foundWorkspaces = await find({
+    model: workSpaceModel,
+    condition: { "location.region": { $regex: regex } },
+  });
+
+  if (!foundWorkspaces.length) {
+    return res.status(404).json({ message: "No workspaces found" });
+  }
+
+  return res.status(200).json({ message: "Done", workspaces: foundWorkspaces });
+});

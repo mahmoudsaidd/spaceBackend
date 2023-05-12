@@ -16,7 +16,7 @@ import morgan from "morgan";
 //Express
 const app = express();
 
-const port =process.env.PORT 
+const port =process.env.PORT || 3000
 const baseUrl = process.env.BASEURL;
 
 
