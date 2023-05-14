@@ -17,7 +17,10 @@ const bookingSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    isCancelled: {type: Boolean, default: false}
+    isCancelled: {type: Boolean, default: false},
+    isDone:{type: Boolean, default: false},
+    isUpcoming:{type: Boolean, default: true},
+    isMissed:{type: Boolean, default: false}
   },
   {
     timestamps: true,

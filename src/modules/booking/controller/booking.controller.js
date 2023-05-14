@@ -188,7 +188,7 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
       const bookingCancellation = await findOneAndUpdate({
         model: bookingModel,
         condition: { _id: bookingId, isCancelled: false },
-        data: { isCancelled: true },
+        data: { isCancelled: true ,isUpcoming:false},
         options: { new: true },
       });
 
@@ -212,6 +212,12 @@ export const cancelledBookingsHistoryToUser = asyncHandler(
     let history = await find({
       model: bookingModel,
       condition: { user: req.user._id, isCancelled: true },
+      populate: {
+        path: 'room',
+        populate: {
+          path: 'workspaceId',
+          model: 'workSpace'
+        }}
     });
     return res.status(200).json({ message: "Done", history });
   }
