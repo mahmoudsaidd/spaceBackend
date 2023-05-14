@@ -46,6 +46,8 @@ router.put('/updateProfile/:userId',auth(endPoints.updateProfile),myMulter(fileV
 HME,userController.updateProfile)
 
 
+router.post('/UserReportWs/:workspaceId',auth(endPoints.UserReportWs),userController.UserReportWs)
+router.get('/getReportsToOwner/:workspaceId',auth(endPoints.getReportsToOwner),userController.getReportsToOwner)
 
 
 

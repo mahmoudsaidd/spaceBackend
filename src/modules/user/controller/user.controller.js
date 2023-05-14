@@ -17,6 +17,8 @@ import { asyncHandler } from "../../../services/asyncHandler.js";
 import cloudinary from "../../../services/cloudinary.js";
 import path from "path";
 import bcrypt from "bcryptjs";
+import reportModel from "../../../../Database/model/report.model.js";
+import { roomModel } from "../../../../Database/model/room.model.js";
 
 //Owner
 export const addWsByFillForm = asyncHandler(async (req, res, next) => {
@@ -276,6 +278,52 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
           cause: 403,
         })
       );
-    }
-  }
+    }
+  }
 });
+
+export const UserReportWs = asyncHandler(async (req, res, next) => {
+       let {workspaceId}=req.params
+      let { report } = req.body;
+      const savedReport = await reportModel.create(
+         { createdBy: req.user._id,
+          workspace: workspaceId,
+          report,}
+        
+      );
+      await savedReport.populate('createdBy');
+      await savedReport.populate('workspace');
+
+     return res
+        .status(201)
+        .json({ message: "Report created Successfully", savedReport });
+    
+});
+
+
+
+
+export const getReportsToOwner=asyncHandler(async(req,res,next)=>{
+let {workspaceId}=req.params
+const ws=await findById({model:workSpaceModel,id:workspaceId})
+if(!ws){
+  return res.status(404).json({ message: " Workspace Not Found" });
+}else{
+  if (ws.ownerId.toString() == req.user._id.toString()) {
+      const reports=await find({model:reportModel,condition:{workspace:ws}})
+      console.log(reports);
+
+      return res
+      .status(200)
+      .json({ message: "Done", reports });
+  }
+
+  else{
+    return res
+    .status(401)
+    .json({
+      message: "Fail",
+    });
+  }
+}
+})

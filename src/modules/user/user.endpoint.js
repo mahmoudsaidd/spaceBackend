@@ -6,6 +6,7 @@ export const endPoints={
     adminValidation:[roles.Admin],
     updateWorkspaceInfo:[roles.Owner],
     deleteWorkspaceInfo:[roles.Owner],
+    getReportsToOwner:[roles.Owner],
 
     getClientAccount:[roles.Admin],
     deleteClientAccount:[roles.Admin],
@@ -15,9 +16,10 @@ export const endPoints={
 
     profilePic:[roles.Admin,roles.User,roles.Owner],
   
-    updateProfile:[roles.User,roles.Owner,roles.Owner]
+    updateProfile:[roles.User,roles.Owner,roles.Owner],
     
    
+    UserReportWs:[roles.User]
 
 
 
