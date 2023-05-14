@@ -36,4 +36,6 @@ router.get(
   bookingController.cancelledBookingsHistoryToUser
 );
 
+router.put("/markBookingAsDoneOrMissed/:bookingId", auth(endPoints.markBookingAsDoneOrMissed), bookingController.markBookingAsDoneOrMissed);
+
 export default router;

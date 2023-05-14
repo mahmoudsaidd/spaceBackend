@@ -124,6 +124,10 @@ export const createBooking = asyncHandler(async (req, res, next) => {
       user: req.user._id,
       duration: calculatedDuration,
       price: cost,
+      // workspace name of the booked room
+      workspaceName: foundWorkspace.name,
+      // room name of the booked room
+      roomName: foundRoom.name,
     },
   });
 
@@ -188,7 +192,7 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
       const bookingCancellation = await findOneAndUpdate({
         model: bookingModel,
         condition: { _id: bookingId, isCancelled: false },
-        data: { isCancelled: true ,isUpcoming:false},
+        data: { isCancelled: true },
         options: { new: true },
       });
 
@@ -222,3 +226,28 @@ export const cancelledBookingsHistoryToUser = asyncHandler(
     return res.status(200).json({ message: "Done", history });
   }
 );
+
+
+//marking booking as done or missed by the owner
+export const markBookingAsDoneOrMissed = asyncHandler(async (req, res, next) => {
+  let { bookingId } = req.params;
+  let { isDone, isMissed } = req.body;
+  // check if the booking exists and isUpcoming:true
+  const Booking = await findById({ model: bookingModel, id: bookingId });
+  if (!Booking) {
+    return res.status(404).json({ message: "Booking not found" });
+  } else {
+    // mark the booking as done or missed
+    const bookingMarked = await findOneAndUpdate({
+      model: bookingModel,
+      condition: { _id: bookingId, isUpcoming: true },
+      data: { isUpcoming: false,
+              isDone: req.body.isDone,
+              isMissed: req.body.isMissed },
+      options: { new: true },
+    });
+  }
+  return res.status(200).json({ message: "Done", bookingMarked });
+});
+
+  
