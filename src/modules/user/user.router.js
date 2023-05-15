@@ -83,5 +83,5 @@ router.delete(
 );
 
 
-router.get('/getWsRequests',userController.getWsRequests)
+router.get('/getWsRequests',auth(endPoints.getWsRequests),userController.getWsRequests)
 export default router;
