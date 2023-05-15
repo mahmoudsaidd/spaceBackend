@@ -7,6 +7,7 @@ import {
   findOneAndUpdate,
   find,
   updateOne,
+  findOne,
 } from "../../../../Database/DBMethods.js";
 import { bookingModel } from "../../../../Database/model/booking.model.js";
 import reviewModel from "../../../../Database/model/review.model.js";
@@ -285,45 +286,47 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
 export const UserReportWs = asyncHandler(async (req, res, next) => {
        let {workspaceId}=req.params
       let { report } = req.body;
-      const savedReport = await reportModel.create(
-         { createdBy: req.user._id,
-          workspace: workspaceId,
-          report,}
-        
-      );
-      await savedReport.populate('createdBy');
-      await savedReport.populate('workspace');
-
-     return res
-        .status(201)
-        .json({ message: "Report created Successfully", savedReport });
+      if(!report){
+        return res
+        .status(404)
+        .json({ message: "Please enter your report" });
+      }else{
+        const savedReport = await reportModel.create(
+          { createdBy: req.user._id,
+           workspace: workspaceId,
+           report,}
+         
+       );
+       await savedReport.populate('createdBy');
+       await savedReport.populate('workspace');
+ 
+      return res
+         .status(201)
+         .json({ message: "Report created Successfully", savedReport });
+      }
+     
     
 });
 
 
 
-
+//////
 export const getReportsToOwner=asyncHandler(async(req,res,next)=>{
-let {workspaceId}=req.params
-const ws=await findById({model:workSpaceModel,id:workspaceId})
-if(!ws){
-  return res.status(404).json({ message: " Workspace Not Found" });
-}else{
-  if (ws.ownerId.toString() == req.user._id.toString()) {
-      const reports=await find({model:reportModel,condition:{workspace:ws}})
-      console.log(reports);
+let owner=await findById({model:userModel,id:req.user._id})
+let workspaces = await find({
+  model: workSpaceModel,
+  condition: { ownerId: owner._id }
+});
 
-      return res
-      .status(200)
-      .json({ message: "Done", reports });
-  }
+let workspaceIds = workspaces.map(workspace => workspace._id);
 
-  else{
-    return res
-    .status(401)
-    .json({
-      message: "Fail",
-    });
-  }
-}
+let reports = await find({
+  model: reportModel,
+  populate: { path: "workspace", select: "ownerId" }
+});
+
+let reportsToOwner = reports.filter(report => {
+  return workspaceIds.includes(report.workspace._id) && report.workspace.ownerId.equals(owner._id);
+});
+res.status(200).json({message:"Done",reportsToOwner})
 })

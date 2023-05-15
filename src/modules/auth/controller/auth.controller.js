@@ -182,7 +182,7 @@ export const sendCode = async (req, res) => {
   if (!user) {
     return res.json({ message: "User didn't register yet" });
   } else {
-    let OTPCode = nanoid();
+    let OTPCode =Math.floor(Math.random()*(500000-200000+1)+200000);
     await userModel.findByIdAndUpdate(user._id, { OTPCode });
     let message = `your OTPCode is ${OTPCode}`;
     sendEmail(user.email, "your OTP Code", message);

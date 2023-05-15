@@ -191,7 +191,7 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
     ) {
       const bookingCancellation = await findOneAndUpdate({
         model: bookingModel,
-        condition: { _id: bookingId, isCancelled: false },
+        condition: { _id: bookingId, isCancelled: false ,isDone:false,isUpcoming:true,isMissed:false},
         data: { isCancelled: true },
         options: { new: true },
       });
@@ -228,26 +228,104 @@ export const cancelledBookingsHistoryToUser = asyncHandler(
 );
 
 
+// //marking booking as done or missed by the owner
+// export const markBookingAsDoneOrMissed = asyncHandler(async (req, res, next) => {
+//   let { bookingId } = req.params;
+//   let { isDone, isMissed } = req.body;
+//   // check if the booking exists and isUpcoming:true
+//   const Booking = await findById({ model: bookingModel, id: bookingId });
+//   if (!Booking) {
+//     return res.status(404).json({ message: "Booking not found" });
+//   } else {
+//     // mark the booking as done or missed
+//     const bookingMarked = await findOneAndUpdate({
+//       model: bookingModel,
+//       condition: { _id: bookingId, isUpcoming: true },
+//       data: { isUpcoming: false,
+//               isDone: req.body.isDone,
+//               isMissed: req.body.isMissed },
+//       options: { new: true },
+//     });
+//     if (bookingMarked) {
+//       return res.status(200).json({ message: "Done", bookingMarked });
+//     } else {
+//       return res.status(500).json({ message: "Failed to mark booking as done or missed" });
+//     }
+  
+
+//   }
+// });
+
+  
+
 //marking booking as done or missed by the owner
 export const markBookingAsDoneOrMissed = asyncHandler(async (req, res, next) => {
   let { bookingId } = req.params;
   let { isDone, isMissed } = req.body;
   // check if the booking exists and isUpcoming:true
-  const Booking = await findById({ model: bookingModel, id: bookingId });
+  const Booking = await findById({ model: bookingModel, id: bookingId});
   if (!Booking) {
     return res.status(404).json({ message: "Booking not found" });
-  } else {
-    // mark the booking as done or missed
-    const bookingMarked = await findOneAndUpdate({
-      model: bookingModel,
-      condition: { _id: bookingId, isUpcoming: true },
-      data: { isUpcoming: false,
-              isDone: req.body.isDone,
-              isMissed: req.body.isMissed },
-      options: { new: true },
-    });
   }
-  return res.status(200).json({ message: "Done", bookingMarked });
+
+  else{
+// mark the booking as done or missed
+if(req.body.isDone =="true"){
+  const trueDone = await findByIdAndUpdate({
+    model: bookingModel,
+   condition: { _id: bookingId, isUpcoming: true },
+    data: { isUpcoming: false,
+            isDone: true,
+            isMissed:false
+       },
+    options: { new: true },
+  });
+  res.status(200).json({message:"Done",trueDone})
+}else if (req.body.isDone =="false"){
+  const falseDone = await findByIdAndUpdate({
+    model: bookingModel,
+   condition: { _id: bookingId, isUpcoming: false },
+    data: { isUpcoming: true,
+            isDone: false,
+       },
+    options: { new: true },
+  });
+  res.status(200).json({message:"Done",falseDone})
+
+}else if (req.body.isMissed == "true"){
+  const trueMissed = await findByIdAndUpdate({
+    model: bookingModel,
+   condition: { _id: bookingId, isUpcoming: true ,isDone:false},
+    data: { isUpcoming: false,
+            isMissed: true,
+            isDone:false
+       },
+    options: { new: true },
+  });
+  res.status(200).json({message:"Done",trueMissed})
+}else if(req.body.isMissed == "false"){
+  const falseMissed = await findByIdAndUpdate({
+    model: bookingModel,
+   condition: { _id: bookingId, isUpcoming: false ,isDone:false},
+    data: { isUpcoming: true,
+            isMissed: false,
+       },
+    options: { new: true },
+  });
+  res.status(200).json({message:"Done",falseMissed})
+}else{
+ return res.status(500).json({ message: "Failed to mark booking as done or missed" });
+
+}
+
+
+  }
 });
 
   
+export const getUpcomingBookings=asyncHandler(async(req,res,next)=>{
+  let user=await findById({model:userModel,id:req.user._id})
+  let bookings=await find({model:bookingModel,condition:{user,isUpcoming:true}})
+ return res.status(200).json({message:"Done",bookings})
+})
+

@@ -38,4 +38,7 @@ router.get(
 
 router.put("/markBookingAsDoneOrMissed/:bookingId", auth(endPoints.markBookingAsDoneOrMissed), bookingController.markBookingAsDoneOrMissed);
 
+router.get('/getUpcomingBookings',auth(),bookingController.getUpcomingBookings)
+
+
 export default router;
