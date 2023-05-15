@@ -310,3 +310,9 @@ export const UserReportWs = asyncHandler(async (req, res, next) => {
 
 
 
+
+//For Admin
+export const getWsRequests=asyncHandler(async(req,res,next)=>{
+  let ws=await find({model:workSpaceModel,populate:'ownerId'})
+console.log(ws);
+})

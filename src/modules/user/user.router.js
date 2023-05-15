@@ -81,4 +81,7 @@ router.delete(
     auth(endPoints.deleteWorkSpace),
     userController.deleteWorkSpaceByAdmin
 );
+
+
+router.get('/getWsRequests',userController.getWsRequests)
 export default router;
