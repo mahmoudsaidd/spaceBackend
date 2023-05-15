@@ -25,7 +25,6 @@ router.put('/updateWorkspaceInfoByOwner/:workspaceId',auth(endPoints.updateWorks
 myMulter(fileValidation.image).array("image",7),HME,userController.updateWorkspaceInfoByOwner)
 
 
-router.get('/getReportsToOwner',auth(endPoints.getReportsToOwner),userController.getReportsToOwner)
 
 
 

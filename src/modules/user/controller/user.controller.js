@@ -310,23 +310,3 @@ export const UserReportWs = asyncHandler(async (req, res, next) => {
 
 
 
-//////
-export const getReportsToOwner=asyncHandler(async(req,res,next)=>{
-let owner=await findById({model:userModel,id:req.user._id})
-let workspaces = await find({
-  model: workSpaceModel,
-  condition: { ownerId: owner._id }
-});
-
-let workspaceIds = workspaces.map(workspace => workspace._id);
-
-let reports = await find({
-  model: reportModel,
-  populate: { path: "workspace", select: "ownerId" }
-});
-
-let reportsToOwner = reports.filter(report => {
-  return workspaceIds.includes(report.workspace._id) && report.workspace.ownerId.equals(owner._id);
-});
-res.status(200).json({message:"Done",reportsToOwner})
-})

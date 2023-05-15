@@ -192,7 +192,7 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
       const bookingCancellation = await findOneAndUpdate({
         model: bookingModel,
         condition: { _id: bookingId, isCancelled: false ,isDone:false,isUpcoming:true,isMissed:false},
-        data: { isCancelled: true },
+        data: { isCancelled: true ,isUpcoming:false},
         options: { new: true },
       });
 

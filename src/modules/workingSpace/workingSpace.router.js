@@ -4,10 +4,17 @@ import * as workSpaceController from './controller/workingSpace.controller.js'
 import { endPoints } from "./workingSpace.endpoint.js";
 const router= Router();
 
-router.get('/getAllWsRooms',auth(),workSpaceController.getAllWsRooms)
+router.get('/getAllWsRooms',auth(user,admin),workSpaceController.getAllWsRooms)/////
+
+
 router.get('/getWorkSpaces',auth(),workSpaceController.getWorkSpaces)
 router.get('/getBookingHistoryToWsOwner',auth(endPoints.getBookingHistoryToWsOwner),workSpaceController.getBookingHistoryToWsOwner)
-router.get('/searchWorkspacesByName',auth(),workSpaceController.searchWorkspacesByName)
+
+
+router.get('/searchWorkspacesByName',auth(user,admin),workSpaceController.searchWorkspacesByName)/////
+
+
+
 router.get('/searchWorkspacesByRegion',auth(),workSpaceController.searchWorkspacesByRegion)
 
 
