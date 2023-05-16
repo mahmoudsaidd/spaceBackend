@@ -159,6 +159,13 @@ export const getBookingsHistoryToUser = asyncHandler(async (req, res, next) => {
   let history = await find({
     model: bookingModel,
     condition: { user: req.user._id },
+    populate: {
+      path: "room",
+      populate: {
+        path: "workspaceId",
+        model: "workSpace",
+      },
+    },
   });
   return res.status(200).json({ message: "Done", history });
 });
@@ -224,33 +231,6 @@ export const cancelledBookingsHistoryToUser = asyncHandler(
 );
 
 
-// //marking booking as done or missed by the owner
-// export const markBookingAsDoneOrMissed = asyncHandler(async (req, res, next) => {
-//   let { bookingId } = req.params;
-//   let { isDone, isMissed } = req.body;
-//   // check if the booking exists and isUpcoming:true
-//   const Booking = await findById({ model: bookingModel, id: bookingId });
-//   if (!Booking) {
-//     return res.status(404).json({ message: "Booking not found" });
-//   } else {
-//     // mark the booking as done or missed
-//     const bookingMarked = await findOneAndUpdate({
-//       model: bookingModel,
-//       condition: { _id: bookingId, isUpcoming: true },
-//       data: { isUpcoming: false,
-//               isDone: req.body.isDone,
-//               isMissed: req.body.isMissed },
-//       options: { new: true },
-//     });
-//     if (bookingMarked) {
-//       return res.status(200).json({ message: "Done", bookingMarked });
-//     } else {
-//       return res.status(500).json({ message: "Failed to mark booking as done or missed" });
-//     }
-  
-
-//   }
-// });
 
   
 
@@ -321,9 +301,16 @@ if(req.body.isDone =="true"){
   
 export const getUpcomingBookings=asyncHandler(async(req,res,next)=>{
   let user=await findById({model:userModel,id:req.user._id})
-  let bookings=await find({model:bookingModel,condition:{user,isUpcoming:true}})
+  let bookings=await find({model:bookingModel,condition:{user,isUpcoming:true}, populate: {
+    path: "room",
+    populate: {
+      path: "workspaceId",
+      model: "workSpace",
+    },
+  },})
  return res.status(200).json({message:"Done",bookings})
 })
+
 
 export const getUpcomingBookingsToWs = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
@@ -343,6 +330,9 @@ export const getUpcomingBookingsToWs = asyncHandler(async (req, res, next) => {
       });
 
       return res.status(200).json({ message: "Done", history });
+    }else{
+      return res.status(401).json({ message: "you are not the owner" });
+
     }
   }
 });
