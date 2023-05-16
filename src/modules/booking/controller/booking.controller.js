@@ -207,11 +207,10 @@ export const CancelBooking = asyncHandler(async (req, res, next) => {
       model: workSpaceModel,
       id: room.workspaceId,
     });
-    let owner = await findById({ model: userModel, id: workspace.ownerId });
+    
 
     if (
-      req.user._id.toString() === Booking.user.toString() ||
-      req.user._id.toString() === owner.id.toString()
+      req.user._id.toString() === Booking.user.toString() 
     ) {
       const bookingCancellation = await findOneAndUpdate({
         model: bookingModel,
