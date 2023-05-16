@@ -337,22 +337,27 @@ export const getUpcomingBookingsToWs = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;
   const ws = await findById({ model: workSpaceModel, id: workspaceId });
   const owner = await findById({ model: userModel, id: ws.ownerId });
-
+  const rooms = await find({
+    model: roomModel,
+    condition: { workspaceId },
+  });
+  const roomIds = rooms.map((room) => room._id);
   if (!ws) {
     return res.status(404).json({ message: "Workspace not found" });
   } else {
+
     if (
-      owner._id.toString() == req.user._id.toString() &&
-      ws._id == workspaceId
+      owner._id.toString() == req.user._id.toString() 
     ) {
       let history = await find({
         model: bookingModel,
-        condition: { isUpcoming: true },
+        condition: { room: { $in: roomIds }, isUpcoming: true },
+        
       });
-
+    
       return res.status(200).json({ message: "Done", history });
     }else{
-      return res.status(401).json({ message: "you are not the owner" });
+      return res.status(401).json({ message: "Sorry you are not the owner" });
 
     }
   }
