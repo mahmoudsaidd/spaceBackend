@@ -124,10 +124,6 @@ export const createBooking = asyncHandler(async (req, res, next) => {
       user: req.user._id,
       duration: calculatedDuration,
       price: cost,
-      // workspace name of the booked room
-      workspaceName: foundWorkspace.name,
-      // room name of the booked room
-      roomName: foundRoom.name,
     },
   });
 
@@ -329,3 +325,24 @@ export const getUpcomingBookings=asyncHandler(async(req,res,next)=>{
  return res.status(200).json({message:"Done",bookings})
 })
 
+export const getUpcomingBookingsToWs = asyncHandler(async (req, res, next) => {
+  let { workspaceId } = req.params;
+  const ws = await findById({ model: workSpaceModel, id: workspaceId });
+  const owner = await findById({ model: userModel, id: ws.ownerId });
+
+  if (!ws) {
+    return res.status(404).json({ message: "Workspace not found" });
+  } else {
+    if (
+      owner._id.toString() == req.user._id.toString() &&
+      ws._id == workspaceId
+    ) {
+      let history = await find({
+        model: bookingModel,
+        condition: { isUpcoming: true },
+      });
+
+      return res.status(200).json({ message: "Done", history });
+    }
+  }
+});
