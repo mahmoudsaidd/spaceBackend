@@ -36,25 +36,7 @@ export const getWorkSpaces = asyncHandler(async (req, res, next) => {
   return res.status(200).json({ message: "Done", workSpace });
 });
 
-export const getBookingHistoryToWsOwner = asyncHandler(
-  async (req, res, next) => {
-    let { workspaceId } = req.params;
-    let workspace = await findById({ model: workSpaceModel, id: workspaceId });
-    if (!workspace) {
-      return res.status(404).json({ message: "workspace not found" });
-    } else {
-      const owner = workspace.ownerId;
-      const History = await find({
-        model: bookingModel,
-        condition: {
-          "room.workspaceId": workspaceId,
-          owner: req.user._id,
-        },
-      });
-      return res.status(200).json({ message: "Done", History });
-    }
-  }
-);
+
 
 export const createReview = asyncHandler(async (req, res, next) => {
   let { workspaceId } = req.params;

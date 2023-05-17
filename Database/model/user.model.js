@@ -30,7 +30,9 @@ const userSchema = new mongoose.Schema(
       required: [true, "password is required"],
     },
 
-    phone: Number,
+    phone:{type: String,
+      required: [true, "phone is required"],
+    },
 
     role: {
       type: String,

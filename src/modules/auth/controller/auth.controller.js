@@ -17,7 +17,7 @@ import { bookingModel } from "../../../../Database/model/booking.model.js";
 // HTTP method: POST
 // inputs from body:userName, email, password
 export const signUp = asyncHandler(async (req, res, next) => {
-  const { userName, email, password } = req.body;
+  const { userName, email, phone, password } = req.body;
   const user = await findOne({
     model: userModel,
     condition: { email },
@@ -33,6 +33,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
     let addUser = new userModel({
       userName,
       email,
+      phone,
       password: hashedPassword,
     });
 
@@ -141,7 +142,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
           process.env.tokenSignature,
           { expiresIn: 60 * 60 * 24 * 60 }
         );
-        return res.status(200).json({ message: "Welcome", token });
+        return res.status(200).json({ message: "Welcome", token, user});
       }
     } else {
       return next(new Error("Invalid password", { cause: 400 }));
