@@ -8,6 +8,7 @@ router.get('/getAllWsRooms',auth(endPoints.getAllWsRooms),workSpaceController.ge
 
 
 router.get('/getWorkSpaces',auth(),workSpaceController.getWorkSpaces)
+
 router.get('/getBookingHistoryToWsOwner',auth(endPoints.getBookingHistoryToWsOwner),workSpaceController.getBookingHistoryToWsOwner)
 
 
