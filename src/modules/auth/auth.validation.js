@@ -9,6 +9,7 @@ export const signUpSchema={
           "string.pattern.base":"Not matching pattern"
         }),
       cPassword: joi.string().valid(joi.ref("password")).required(),
+      phone:joi.string().pattern(new RegExp("^(011|012|010|015)[0-9]{8}$")).required()
     })
 }
 
