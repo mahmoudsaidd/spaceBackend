@@ -84,9 +84,10 @@ router.delete(
 
 
 router.get('/getWsRequests',auth(endPoints.getWsRequests),userController.getWsRequests)
-export default router;
 
 
 router.get('/searchUser',auth(endPoints.searchUser),userController.searchUser)
 
 router.get('/getUserProfile',auth(),userController.getUserProfile)
+
+export default router;
