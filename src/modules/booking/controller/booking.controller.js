@@ -351,6 +351,8 @@ export const getUpcomingBookingsToWs = asyncHandler(async (req, res, next) => {
       let history = await find({
         model: bookingModel,
         condition: { room: { $in: roomIds }, isUpcoming: true },
+        populate: { path: "room", model: "room", select: "roomNumber roomName" }, populate: {path: "user", model: "user", select: "userName"}
+        
         
       });
     
