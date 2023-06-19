@@ -18,6 +18,7 @@ router.get('/searchWorkspacesByRegion',auth(),workSpaceController.searchWorkspac
 
 
 
+
 //Reviews
 router.post('/createReview/:workspaceId',auth(endPoints.createReview),workSpaceController.createReview)
 router.get('/avgRate/:workspaceId',auth(endPoints.avgRate),workSpaceController.avgRate)
