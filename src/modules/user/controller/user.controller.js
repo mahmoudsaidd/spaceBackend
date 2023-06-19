@@ -319,7 +319,7 @@ export const getWsRequests = asyncHandler(async (req, res, next) => {
     let workspace = workspaces[i];
     let ownerId = workspace.ownerId;
   
-    let owners = await find({ model: userModel, condition: { _id: { $in: [ownerId] }, role: "Owner", adminValidation: false }});
+    let owners = await find({ model: userModel, condition: { _id: { $in: [ownerId] }, role: "User", adminValidation: false }});
     
     if (owners.length > 0) {
       unvalidatedOwners = [...unvalidatedOwners, ...owners];

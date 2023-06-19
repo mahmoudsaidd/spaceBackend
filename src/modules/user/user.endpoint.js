@@ -13,6 +13,7 @@ export const endPoints={
     deleteClientAccount:[roles.Admin],
     getWorkSpace:[roles.Admin],
     deleteWorkSpace:[roles.Admin],
+    
     getWsRequests:[roles.Admin],
     
 
