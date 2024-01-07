@@ -4,7 +4,7 @@
 <a href="https://www.canva.com/design/DAFhwp7_DRI/wIpJrdicYHpP_MJr22pthA/edit?utm_content=DAFhwp7_DRI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">View Demo</a>
 </p>
 
-<p align="left">•A native Android mobile application using Kotlin to address the challenge of finding suitable workspaces.</p>
+<p align="left">• A Mobile application to address the challenge of finding suitable workspaces.</p>
 <p align="left">• Implemented features that provide users with detailed information about the nearest and highly-rated workspaces, tailored to their specific needs.</p>
 <p align="left">• Streamlined the workspace booking process, ensuring a seamless user experience.</p>
 <p align="left">• Leveraged GPS technology to suggest the closest workspaces based on the user's location.</p>
@@ -12,7 +12,6 @@
 <p align="left">• Optimized users' time and reduced costs by avoiding overcrowded workspaces.</p>
 <p align="left">• Facilitated reservations and increased bookings for lesser-known workspaces.</p>
 <p align="left">• Streamlined the booking process and implemented efficient room management capabilities for workspace owners.</p>
-<p align="left">• Utilized various technologies including MVVM, LiveData, View Binding, Navigation Component, Kotlin Coroutines, Kotlin Flows, Retrofit2, Dagger Hilt, Room Database, Datastore Preferences, User Location, Media Permissions, and Glide.</p>
 
 ## Registration 
 <img src="https://github.com/noureldensaid/SPACE/assets/93207605/b2a790d9-2349-4a7f-96cf-21eabe42e203"  />
